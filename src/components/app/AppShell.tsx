@@ -1,21 +1,32 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { ReactNode, useEffect, useMemo, useState } from "react";
-import type { Session } from "@supabase/supabase-js";
+import { ReactNode, useEffect, useState } from "react";
+import type { Session, SupabaseClient } from "@supabase/supabase-js";
 import { LogOut } from "lucide-react";
 import { createSupabaseBrowserClient } from "@/lib/supabase/browser";
 
 export function AppShell({ children }: { children: (session: Session) => ReactNode }) {
   const router = useRouter();
-  const supabase = useMemo(() => createSupabaseBrowserClient(), []);
+  const [supabase, setSupabase] = useState<SupabaseClient | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [configError, setConfigError] = useState<string | null>(null);
 
   useEffect(() => {
     let mounted = true;
+    let client: SupabaseClient;
 
-    supabase.auth.getSession().then(({ data }) => {
+    try {
+      client = createSupabaseBrowserClient();
+      setSupabase(client);
+    } catch (error) {
+      setConfigError(error instanceof Error ? error.message : "Supabase is not configured.");
+      setIsLoading(false);
+      return;
+    }
+
+    client.auth.getSession().then(({ data }) => {
       if (!mounted) {
         return;
       }
@@ -27,7 +38,7 @@ export function AppShell({ children }: { children: (session: Session) => ReactNo
       setIsLoading(false);
     });
 
-    const { data: authListener } = supabase.auth.onAuthStateChange((_event, nextSession) => {
+    const { data: authListener } = client.auth.onAuthStateChange((_event, nextSession) => {
       if (!nextSession) {
         router.replace("/sign-up");
         return;
@@ -40,11 +51,24 @@ export function AppShell({ children }: { children: (session: Session) => ReactNo
       mounted = false;
       authListener.subscription.unsubscribe();
     };
-  }, [router, supabase]);
+  }, [router]);
 
   async function signOut() {
+    if (!supabase) {
+      return;
+    }
     await supabase.auth.signOut();
     router.replace("/sign-in");
+  }
+
+  if (configError) {
+    return (
+      <main className="auth-page">
+        <div className="notice notice-error" role="alert">
+          {configError}
+        </div>
+      </main>
+    );
   }
 
   if (isLoading || !session) {

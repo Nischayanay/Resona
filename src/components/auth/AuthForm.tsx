@@ -2,14 +2,13 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { FormEvent, useMemo, useState } from "react";
+import { FormEvent, useState } from "react";
 import { createSupabaseBrowserClient } from "@/lib/supabase/browser";
 
 type AuthMode = "sign-up" | "sign-in";
 
 export function AuthForm({ mode }: { mode: AuthMode }) {
   const router = useRouter();
-  const supabase = useMemo(() => createSupabaseBrowserClient(), []);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -25,6 +24,7 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
     setMessage(null);
 
     try {
+      const supabase = createSupabaseBrowserClient();
       const result = isSignUp
         ? await supabase.auth.signUp({ email, password })
         : await supabase.auth.signInWithPassword({ email, password });
@@ -40,6 +40,8 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
       }
 
       router.replace("/app");
+    } catch (error) {
+      setError(error instanceof Error ? error.message : "Authentication is not configured.");
     } finally {
       setIsSubmitting(false);
     }
