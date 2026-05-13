@@ -82,4 +82,34 @@ describe("conversationExtractionSchema", () => {
       })
     ).toThrow();
   });
+
+  it("normalizes empty optional strings from model output", () => {
+    const parsed = conversationExtractionSchema.parse({
+      summary: "Several personal events were mentioned.",
+      people: [],
+      action_items: [],
+      opportunities: [],
+      follow_ups: [],
+      memory_facts: [],
+      tool_suggestions: [
+        {
+          tool: "google_calendar",
+          action: "create_event",
+          reason: "A meeting was mentioned for 4 PM.",
+          payload: {
+            title: "Hackathon discussion",
+            start_time: "2026-05-13T16:00:00+05:30",
+            end_time: "2026-05-13T16:30:00+05:30",
+            related_person_name: "",
+            related_action_title: ""
+          },
+          requires_approval: true,
+          confidence: 0.78
+        }
+      ]
+    });
+
+    expect(parsed.tool_suggestions[0].payload.related_person_name).toBeUndefined();
+    expect(parsed.tool_suggestions[0].payload.related_action_title).toBeUndefined();
+  });
 });

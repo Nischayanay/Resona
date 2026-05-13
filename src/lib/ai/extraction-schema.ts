@@ -2,22 +2,34 @@ import { z } from "zod";
 
 export const confidenceSchema = z.number().min(0).max(1);
 export const prioritySchema = z.enum(["low", "medium", "high"]);
+const optionalNonEmptyStringSchema = z.preprocess((value) => {
+  if (typeof value === "string" && value.trim().length === 0) {
+    return undefined;
+  }
+  return value;
+}, z.string().min(1).optional());
+const optionalEmailSchema = z.preprocess((value) => {
+  if (typeof value === "string" && value.trim().length === 0) {
+    return undefined;
+  }
+  return value;
+}, z.string().email().optional());
 
 export const personExtractionSchema = z.object({
   name: z.string().min(1),
-  email: z.string().email().optional(),
-  company: z.string().min(1).optional(),
-  role: z.string().min(1).optional(),
-  relationship_context: z.string().min(1).optional(),
+  email: optionalEmailSchema,
+  company: optionalNonEmptyStringSchema,
+  role: optionalNonEmptyStringSchema,
+  relationship_context: optionalNonEmptyStringSchema,
   confidence: confidenceSchema
 });
 
 export const actionItemExtractionSchema = z.object({
   title: z.string().min(1),
-  description: z.string().min(1).optional(),
-  owner: z.string().min(1).optional(),
-  due_date: z.string().min(1).optional(),
-  related_person: z.string().min(1).optional(),
+  description: optionalNonEmptyStringSchema,
+  owner: optionalNonEmptyStringSchema,
+  due_date: optionalNonEmptyStringSchema,
+  related_person: optionalNonEmptyStringSchema,
   priority: prioritySchema,
   confidence: confidenceSchema
 });
@@ -32,10 +44,10 @@ export const opportunityExtractionSchema = z.object({
 });
 
 export const followUpExtractionSchema = z.object({
-  person_name: z.string().min(1).optional(),
+  person_name: optionalNonEmptyStringSchema,
   reason: z.string().min(1),
   suggested_message: z.string().min(1),
-  suggested_date: z.string().min(1).optional(),
+  suggested_date: optionalNonEmptyStringSchema,
   confidence: confidenceSchema
 });
 
@@ -52,19 +64,19 @@ export const toolSuggestionExtractionSchema = z.object({
   reason: z.string().min(1),
   payload: z.object({
     title: z.string().min(1),
-    description: z.string().min(1).optional(),
-    start_time: z.string().min(1).optional(),
-    end_time: z.string().min(1).optional(),
+    description: optionalNonEmptyStringSchema,
+    start_time: optionalNonEmptyStringSchema,
+    end_time: optionalNonEmptyStringSchema,
     attendees: z
       .array(
         z.object({
-          name: z.string().min(1).optional(),
-          email: z.string().email().optional()
+          name: optionalNonEmptyStringSchema,
+          email: optionalEmailSchema
         })
       )
       .optional(),
-    related_person_name: z.string().min(1).optional(),
-    related_action_title: z.string().min(1).optional()
+    related_person_name: optionalNonEmptyStringSchema,
+    related_action_title: optionalNonEmptyStringSchema
   }),
   requires_approval: z.literal(true),
   confidence: confidenceSchema

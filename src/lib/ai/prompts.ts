@@ -20,6 +20,8 @@ Extract durable intelligence from this transcript:
 Rules:
 - AI never executes tools. It only suggests tool actions.
 - Every google_calendar suggestion must set requires_approval to true.
+- Calendar tool suggestions are only for real meetings, appointments, calls, interviews, demos, syncs, follow-ups, or scheduled discussions with another person/team/company.
+- Do not create calendar tool suggestions for personal routines, meals, meditation, sleep, study blocks, or generic reminders unless the transcript explicitly says it is a meeting/appointment with another party.
 - If a date is ambiguous, include the original phrase in descriptions but avoid inventing a calendar start_time.
 - Use confidence values between 0 and 1.
 - Prefer empty arrays over nulls.

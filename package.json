@@ -8,8 +8,8 @@
     "lint": "next lint",
     "test": "vitest run",
     "test:watch": "vitest",
-    "trigger:dev": "trigger dev",
-    "trigger:deploy": "trigger deploy"
+    "trigger:dev": "trigger dev -p proj_phhrltyszbptpkclinrr --env-file .env.local",
+    "trigger:deploy": "trigger deploy -p proj_phhrltyszbptpkclinrr --env-file .env.local"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.49.1",
@@ -19,12 +19,14 @@
     "next": "^15.2.4",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "ws": "^8.20.1",
     "zod": "^3.24.2"
   },
   "devDependencies": {
     "@types/node": "^22.13.10",
     "@types/react": "^19.0.12",
     "@types/react-dom": "^19.0.4",
+    "@types/ws": "^8.18.1",
     "eslint": "^9.22.0",
     "eslint-config-next": "^15.2.4",
     "trigger.dev": "^3.3.17",

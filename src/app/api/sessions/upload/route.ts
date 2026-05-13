@@ -40,8 +40,9 @@ export async function POST(request: NextRequest) {
     const extension = audio.name.split(".").pop() || "audio";
     const sessionId = crypto.randomUUID();
     const storagePath = `${user.id}/${sessionId}/original.${extension}`;
+    const normalizedAudio = new Blob([await audio.arrayBuffer()], { type: audioContentType });
 
-    const { error: uploadError } = await supabase.storage.from("session-audio").upload(storagePath, audio, {
+    const { error: uploadError } = await supabase.storage.from("session-audio").upload(storagePath, normalizedAudio, {
       contentType: audioContentType,
       upsert: false
     });
@@ -85,8 +86,13 @@ export async function POST(request: NextRequest) {
       .update({ trigger_run_id: triggerRun.id, updated_at: new Date().toISOString() })
       .eq("id", job.id)
       .eq("user_id", user.id);
+    await supabase
+      .from("sessions")
+      .update({ status: "queued", updated_at: new Date().toISOString() })
+      .eq("id", sessionId)
+      .eq("user_id", user.id);
 
-    return json({ session_id: session.id, status: session.status });
+    return json({ session_id: session.id, status: "queued" });
   } catch (error) {
     if (error instanceof Error && error.message === "UNAUTHORIZED") {
       return unauthorized();

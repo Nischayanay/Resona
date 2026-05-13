@@ -119,6 +119,11 @@ async function findActionItemForToolAction(
   return data as { id: string } | null;
 }
 
+function isCalendarWorthyToolSuggestion(suggestion: ConversationExtraction["tool_suggestions"][number]) {
+  const text = [suggestion.payload.title, suggestion.payload.description, suggestion.reason].filter(Boolean).join(" ").toLowerCase();
+  return /\b(meet|meeting|appointment|call|interview|demo|sync|follow[-\s]?up|discussion|discuss|review)\b/.test(text);
+}
+
 export async function normalizeConversationExtraction(params: {
   supabase: SupabaseClient;
   userId: string;
@@ -216,6 +221,10 @@ export async function normalizeConversationExtraction(params: {
   }
 
   for (const suggestion of extraction.tool_suggestions) {
+    if (!isCalendarWorthyToolSuggestion(suggestion)) {
+      continue;
+    }
+
     const linkedAction =
       (await findActionItemForToolAction(supabase, userId, sessionId, suggestion.payload.related_action_title)) ??
       actionRows.find((action) => action.title.toLowerCase() === suggestion.payload.related_action_title?.toLowerCase()) ??
