@@ -13,6 +13,26 @@ type OAuthState = {
   return_to: string;
 };
 
+function getOAuthFailureReason(url: URL) {
+  const oauthError = (url.searchParams.get("error") ?? "").toLowerCase();
+  const description = `${url.searchParams.get("error_description") ?? ""} ${url.searchParams.get("error_subtype") ?? ""}`.toLowerCase();
+
+  if (
+    oauthError === "access_denied" &&
+    (description.includes("has not completed the google verification process") ||
+      description.includes("can only be accessed by developer-approved testers") ||
+      description.includes("app is currently being tested"))
+  ) {
+    return "google_oauth_testing";
+  }
+
+  if (oauthError === "access_denied") {
+    return "access_denied";
+  }
+
+  return "oauth_error";
+}
+
 export async function GET(request: NextRequest) {
   try {
     const url = new URL(request.url);
@@ -22,7 +42,8 @@ export async function GET(request: NextRequest) {
     const fallbackReturnPath = normalizeReturnPath(url.searchParams.get("return_to"));
 
     if (oauthError) {
-      return Response.redirect(`${env.appUrl()}${appendStatusToReturnPath(fallbackReturnPath, "oauth_denied")}`, 302);
+      const reason = getOAuthFailureReason(url);
+      return Response.redirect(`${env.appUrl()}${appendStatusToReturnPath(fallbackReturnPath, "oauth_error", reason)}`, 302);
     }
     if (!code || !state) {
       return badRequest("Missing Google OAuth code or state.");

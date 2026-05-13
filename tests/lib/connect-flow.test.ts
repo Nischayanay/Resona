@@ -16,5 +16,8 @@ describe("calendar connect flow helpers", () => {
   it("appends calendar status to the return path", () => {
     expect(appendStatusToReturnPath("/app/sessions/abc", "connected")).toBe("/app/sessions/abc?calendar=connected");
     expect(appendStatusToReturnPath("/app/sessions/abc?foo=bar", "oauth_denied")).toBe("/app/sessions/abc?foo=bar&calendar=oauth_denied");
+    expect(appendStatusToReturnPath("/app/sessions/abc", "oauth_error", "google_oauth_testing")).toBe(
+      "/app/sessions/abc?calendar=oauth_error&calendar_reason=google_oauth_testing"
+    );
   });
 });

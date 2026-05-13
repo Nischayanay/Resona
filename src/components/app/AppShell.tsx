@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { ReactNode, useEffect, useState } from "react";
 import type { Session, SupabaseClient } from "@supabase/supabase-js";
 import { LogOut } from "lucide-react";
@@ -91,6 +92,10 @@ export function AppShell({ children }: { children: (session: Session) => ReactNo
           <span>Resona</span>
         </div>
         <div className="button-row" style={{ alignItems: "center" }}>
+          <nav className="app-legal-nav" aria-label="Legal links">
+            <Link href="/privacy">Privacy</Link>
+            <Link href="/terms">Terms</Link>
+          </nav>
           <span className="app-user">{session.user.email}</span>
           <button className="button button-secondary" type="button" onClick={signOut}>
             <LogOut size={16} aria-hidden="true" />

@@ -115,6 +115,15 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
             {isSignUp ? "Sign in" : "Create account"}
           </Link>
         </p>
+
+        <p className="legal-links" aria-label="Legal links">
+          <Link className="text-link" href="/privacy">
+            Privacy
+          </Link>
+          <Link className="text-link" href="/terms">
+            Terms
+          </Link>
+        </p>
       </div>
     </main>
   );

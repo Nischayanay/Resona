@@ -11,8 +11,13 @@ export function normalizeReturnPath(value?: string | null) {
   }
 }
 
-export function appendStatusToReturnPath(path: string, status: string) {
+export function appendStatusToReturnPath(path: string, status: string, reason?: string) {
   const url = new URL(path, "https://resona.local");
   url.searchParams.set("calendar", status);
+  if (reason) {
+    url.searchParams.set("calendar_reason", reason);
+  } else {
+    url.searchParams.delete("calendar_reason");
+  }
   return `${url.pathname}${url.search}${url.hash}`;
 }

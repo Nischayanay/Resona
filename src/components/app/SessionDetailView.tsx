@@ -75,13 +75,20 @@ export function SessionDetailView({ session }: { session: Session }) {
 
   useEffect(() => {
     const calendarStatus = searchParams.get("calendar");
+    const calendarReason = searchParams.get("calendar_reason");
     if (calendarStatus === "connected") {
       setNeedsCalendarConnect(false);
       setMessage("Google Calendar connected. Approve the suggestion again to create the event.");
       setError(null);
-    } else if (calendarStatus === "oauth_denied") {
+    } else if (calendarStatus === "oauth_error") {
       setNeedsCalendarConnect(false);
-      setError("Google Calendar connection was canceled.");
+      setError(
+        calendarReason === "google_oauth_testing"
+          ? "Google Calendar connection is blocked because this OAuth app is still in Google testing mode. Add your Google account as a test user in Google Cloud Console, or publish and verify the consent screen."
+          : calendarReason === "access_denied"
+            ? "Google Calendar connection was denied."
+            : "Google Calendar connection failed before the app could finish the handshake."
+      );
     }
   }, [searchParams]);
 
