@@ -5,9 +5,9 @@ import { badRequest, json, serverError, unauthorized } from "@/lib/http";
 import { createSupabaseServiceClient } from "@/lib/supabase/client";
 import { sourceTypes } from "@/lib/types";
 import { triggerConversationProcessing } from "@/lib/processing/trigger";
+import { normalizeAudioMimeType } from "@/lib/audio/mime";
 
 const MAX_AUDIO_BYTES = 100 * 1024 * 1024;
-const allowedAudioTypes = new Set(["audio/mpeg", "audio/mp3", "audio/mp4", "audio/wav", "audio/x-wav", "audio/webm", "audio/ogg", "audio/m4a"]);
 
 const uploadFieldsSchema = z.object({
   title: z.string().min(1).max(140).optional(),
@@ -23,7 +23,8 @@ export async function POST(request: NextRequest) {
     if (!(audio instanceof File)) {
       return badRequest("Expected multipart file field named audio.");
     }
-    if (!allowedAudioTypes.has(audio.type)) {
+    const audioContentType = normalizeAudioMimeType(audio.type, audio.name);
+    if (!audioContentType) {
       return badRequest(`Unsupported audio type: ${audio.type || "unknown"}.`);
     }
     if (audio.size > MAX_AUDIO_BYTES) {
@@ -41,7 +42,7 @@ export async function POST(request: NextRequest) {
     const storagePath = `${user.id}/${sessionId}/original.${extension}`;
 
     const { error: uploadError } = await supabase.storage.from("session-audio").upload(storagePath, audio, {
-      contentType: audio.type,
+      contentType: audioContentType,
       upsert: false
     });
     if (uploadError) {

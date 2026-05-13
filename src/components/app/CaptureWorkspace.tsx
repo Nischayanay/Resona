@@ -177,6 +177,7 @@ export function CaptureWorkspace({ session }: { session: Session }) {
       router.push(`/app/sessions/${payload.session_id}`);
     } catch (submitError) {
       setError(submitError instanceof Error ? submitError.message : "Upload failed.");
+      setStatusMessage(null);
     } finally {
       setIsUploading(false);
     }

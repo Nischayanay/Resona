@@ -3,6 +3,7 @@ import { createSupabaseServiceClient } from "@/lib/supabase/client";
 import { normalizeConversationExtraction } from "@/lib/processing/normalization";
 import { setProcessingStep } from "@/lib/processing/job-status";
 import type { ProcessingPayload } from "@/lib/types";
+import { normalizeAudioMimeType } from "@/lib/audio/mime";
 
 type SessionRow = {
   id: string;
@@ -35,7 +36,8 @@ export async function processConversationSession(payload: ProcessingPayload) {
     }
 
     const audio = await audioBlob.arrayBuffer();
-    const transcription = await transcribeAudioWithGemini(audio, audioBlob.type || "audio/mpeg");
+    const transcriptionMimeType = normalizeAudioMimeType(audioBlob.type, typedSession.audio_storage_path) ?? "audio/mpeg";
+    const transcription = await transcribeAudioWithGemini(audio, transcriptionMimeType);
 
     const { error: transcriptError } = await supabase.from("transcripts").insert({
       user_id: userId,
