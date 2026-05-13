@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, usePathname, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import type { Session } from "@supabase/supabase-js";
 import { ArrowLeft, Calendar, Check, ExternalLink, RefreshCw, X } from "lucide-react";
@@ -37,12 +37,15 @@ function dateLabel(value?: string | null) {
 
 export function SessionDetailView({ session }: { session: Session }) {
   const params = useParams<{ id: string }>();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const sessionId = params.id;
   const [detail, setDetail] = useState<SessionDetail | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isActing, setIsActing] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [needsCalendarConnect, setNeedsCalendarConnect] = useState(false);
 
   const loadDetail = useCallback(async () => {
     setError(null);
@@ -70,10 +73,44 @@ export function SessionDetailView({ session }: { session: Session }) {
     return () => window.clearInterval(interval);
   }, [detail, loadDetail]);
 
+  useEffect(() => {
+    const calendarStatus = searchParams.get("calendar");
+    if (calendarStatus === "connected") {
+      setNeedsCalendarConnect(false);
+      setMessage("Google Calendar connected. Approve the suggestion again to create the event.");
+      setError(null);
+    } else if (calendarStatus === "oauth_denied") {
+      setNeedsCalendarConnect(false);
+      setError("Google Calendar connection was canceled.");
+    }
+  }, [searchParams]);
+
+  async function startGoogleCalendarConnect() {
+    setIsActing("connect-google-calendar");
+    setError(null);
+
+    try {
+      const payload = await apiFetch<{ auth_url: string }>(session, "/api/integrations/google-calendar/connect", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          return_to: pathname
+        })
+      });
+      window.location.assign(payload.auth_url);
+    } catch (connectError) {
+      setError(connectError instanceof Error ? connectError.message : "Could not start Google Calendar connection.");
+      setIsActing(null);
+    }
+  }
+
   async function approveToolAction(action: ToolAction) {
     setIsActing(action.id);
     setMessage(null);
     setError(null);
+    setNeedsCalendarConnect(false);
 
     try {
       await apiFetch(session, `/api/tool-actions/${action.id}/approve`, { method: "POST" });
@@ -83,6 +120,7 @@ export function SessionDetailView({ session }: { session: Session }) {
       const typedError = actionError as Error & { code?: string; payload?: { connect_url?: string } };
       if (typedError.code === "GOOGLE_CALENDAR_NOT_CONNECTED" || typedError.payload?.connect_url) {
         setMessage("Connect Google Calendar to create this event.");
+        setNeedsCalendarConnect(true);
         return;
       }
       setError(actionError instanceof Error ? actionError.message : "Could not approve this action.");
@@ -167,12 +205,19 @@ export function SessionDetailView({ session }: { session: Session }) {
         {message ? (
           <div className="notice" role="status" aria-live="polite">
             {message}
-            {message.includes("Connect Google Calendar") ? (
+            {needsCalendarConnect ? (
               <>
                 {" "}
-                <a className="text-link" href="/api/integrations/google-calendar/connect">
-                  Connect now <ExternalLink size={12} aria-hidden="true" style={{ display: "inline" }} />
-                </a>
+                <button
+                  className="text-link"
+                  type="button"
+                  onClick={() => void startGoogleCalendarConnect()}
+                  disabled={isActing === "connect-google-calendar"}
+                  style={{ background: "none", border: 0, padding: 0, cursor: "pointer" }}
+                >
+                  {isActing === "connect-google-calendar" ? "Connecting..." : "Connect now"}{" "}
+                  <ExternalLink size={12} aria-hidden="true" style={{ display: "inline" }} />
+                </button>
               </>
             ) : null}
           </div>
