@@ -1,4 +1,4 @@
-import { task } from "@trigger.dev/sdk/v3";
+import { task } from "@trigger.dev/sdk";
 import { processConversationSession } from "@/lib/processing/process-session";
 import type { ProcessingPayload } from "@/lib/types";
 

@@ -1,8 +1,8 @@
-import { defineConfig } from "@trigger.dev/sdk/v3";
+import { defineConfig } from "@trigger.dev/sdk";
 
 export default defineConfig({
   project: process.env.TRIGGER_PROJECT_ID ?? "proj_resona_local",
-  runtime: "node",
+  runtime: "node-22",
   maxDuration: 600,
   logLevel: "log",
   dirs: ["./src/trigger"]

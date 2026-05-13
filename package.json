@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.49.1",
-    "@trigger.dev/sdk": "^3.3.17",
+    "@trigger.dev/sdk": "^4.4.6",
     "date-fns": "^4.1.0",
     "lucide-react": "^1.14.0",
     "next": "^15.2.4",
@@ -29,7 +29,7 @@
     "@types/ws": "^8.18.1",
     "eslint": "^9.22.0",
     "eslint-config-next": "^15.2.4",
-    "trigger.dev": "^3.3.17",
+    "trigger.dev": "^4.4.6",
     "typescript": "^5.8.2",
     "vitest": "^3.0.9"
   }
