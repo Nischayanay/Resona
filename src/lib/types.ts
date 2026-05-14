@@ -4,6 +4,8 @@ export const sessionStatuses = [
   "transcribing",
   "extracting",
   "normalizing",
+  "prioritizing",
+  "linking_memory",
   "suggesting_tools",
   "completed",
   "failed",

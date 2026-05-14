@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ReactNode, useEffect, useState } from "react";
 import type { Session, SupabaseClient } from "@supabase/supabase-js";
-import { LogOut } from "lucide-react";
+import { LogOut, Settings, UserCircle } from "lucide-react";
 import { createSupabaseBrowserClient } from "@/lib/supabase/browser";
 
 export function AppShell({ children }: { children: (session: Session) => ReactNode }) {
@@ -83,21 +83,31 @@ export function AppShell({ children }: { children: (session: Session) => ReactNo
   }
 
   return (
-    <div className="app-shell">
-      <header className="app-topbar">
-        <div className="brand-lockup" aria-label="Resona">
-          <div className="brand-mark" aria-hidden="true">
+    <div className="app-shell app-shell-clarity">
+      <header className="home-topbar">
+        <Link className="home-brand" href="/home" aria-label="Resona home">
+          <div className="home-brand-mark" aria-hidden="true">
             R
           </div>
           <span>Resona</span>
-        </div>
-        <div className="button-row" style={{ alignItems: "center" }}>
-          <nav className="app-legal-nav" aria-label="Legal links">
-            <Link href="/privacy">Privacy</Link>
-            <Link href="/terms">Terms</Link>
+        </Link>
+        <nav className="home-nav-center" aria-label="Primary app navigation">
+          <Link href="/home">Home</Link>
+          <Link href="/conversations">Conversations</Link>
+          <Link href="/memory">Memory</Link>
+        </nav>
+        <div className="home-nav-right">
+          <span className="home-profile">
+            <UserCircle size={16} aria-hidden="true" />
+            <span>{session.user.email}</span>
+          </span>
+          <nav className="home-settings-nav" aria-label="Account navigation">
+            <Link href="/settings">
+              <Settings size={15} aria-hidden="true" />
+              Settings
+            </Link>
           </nav>
-          <span className="app-user">{session.user.email}</span>
-          <button className="button button-secondary" type="button" onClick={signOut}>
+          <button className="home-sign-out" type="button" onClick={signOut}>
             <LogOut size={16} aria-hidden="true" />
             Sign out
           </button>

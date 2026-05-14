@@ -1,0 +1,34 @@
+import { normalizeAudioMimeType } from "@/lib/audio/mime";
+import { sourceTypes } from "@/lib/types";
+
+export const MAX_AUDIO_BYTES = 100 * 1024 * 1024;
+
+export type IngestedAudioInput = {
+  title: string;
+  sourceType: (typeof sourceTypes)[number];
+  contentType: string;
+  extension: string;
+  bytes: ArrayBuffer;
+};
+
+export async function prepareUploadedAudio(audio: File, fields: { title?: string; source_type?: (typeof sourceTypes)[number] }): Promise<IngestedAudioInput> {
+  const contentType = normalizeAudioMimeType(audio.type, audio.name);
+  if (!contentType) {
+    throw new Error(`Unsupported audio type: ${audio.type || "unknown"}.`);
+  }
+  if (audio.size > MAX_AUDIO_BYTES) {
+    throw new Error("Audio file is larger than 100MB.");
+  }
+
+  return {
+    title: fields.title ?? audio.name,
+    sourceType: fields.source_type ?? "other",
+    contentType,
+    extension: audio.name.split(".").pop() || "audio",
+    bytes: await audio.arrayBuffer()
+  };
+}
+
+export function buildSessionAudioStoragePath(userId: string, sessionId: string, extension: string) {
+  return `${userId}/${sessionId}/original.${extension}`;
+}

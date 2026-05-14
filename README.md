@@ -9,18 +9,31 @@ Audio upload
 → Supabase Storage
 → sessions + processing_jobs
 → Trigger.dev worker
-→ Gemini transcription
-→ structured extraction + Zod validation
-→ normalized people/actions/opportunities/memory/follow-ups
-→ suggested tool_actions
+→ Ingestion Engine
+→ Transcription Engine
+→ Understanding Engine
+→ Priority Engine
+→ Memory Engine
+→ Action Engine
 → approval-based Google Calendar event creation
 ```
+
+## Six Intelligence Engines
+
+The backend is organized under `src/lib/intelligence` so each engine has one job:
+
+- `ingestion`: validates uploaded audio, normalizes source metadata, and prepares session storage paths.
+- `transcription`: produces raw and cleaned transcript layers without overwriting source truth.
+- `understanding`: turns transcript text into validated semantic extraction.
+- `priority`: scores what deserves attention and writes clarity-first session insights.
+- `memory`: evolves person profiles, compressed summaries, and graph edges across conversations.
+- `actions`: suggests external tool actions while keeping execution approval-based.
 
 ## Setup
 
 1. Copy `.env.example` to `.env.local`.
 2. Fill Supabase, Trigger.dev, Google OAuth, Google AI, and `ENCRYPTION_KEY` values.
-3. Apply `supabase/migrations/20260511072226_resona_backend_mvp.sql` in Supabase.
+3. Apply the Supabase migrations in order, including `20260511072226_resona_backend_mvp.sql` and `20260514073454_six_engine_intelligence.sql`.
 4. Install dependencies:
 
 ```bash

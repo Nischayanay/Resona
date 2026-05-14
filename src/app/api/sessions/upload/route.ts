@@ -5,9 +5,7 @@ import { badRequest, json, serverError, unauthorized } from "@/lib/http";
 import { createSupabaseServiceClient } from "@/lib/supabase/client";
 import { sourceTypes } from "@/lib/types";
 import { triggerConversationProcessing } from "@/lib/processing/trigger";
-import { normalizeAudioMimeType } from "@/lib/audio/mime";
-
-const MAX_AUDIO_BYTES = 100 * 1024 * 1024;
+import { buildSessionAudioStoragePath, prepareUploadedAudio } from "@/lib/intelligence/ingestion/engine";
 
 const uploadFieldsSchema = z.object({
   title: z.string().min(1).max(140).optional(),
@@ -23,27 +21,19 @@ export async function POST(request: NextRequest) {
     if (!(audio instanceof File)) {
       return badRequest("Expected multipart file field named audio.");
     }
-    const audioContentType = normalizeAudioMimeType(audio.type, audio.name);
-    if (!audioContentType) {
-      return badRequest(`Unsupported audio type: ${audio.type || "unknown"}.`);
-    }
-    if (audio.size > MAX_AUDIO_BYTES) {
-      return badRequest("Audio file is larger than 100MB.");
-    }
-
     const fields = uploadFieldsSchema.parse({
       title: formData.get("title") || undefined,
       source_type: formData.get("source_type") || undefined
     });
+    const preparedAudio = await prepareUploadedAudio(audio, fields);
 
     const supabase = createSupabaseServiceClient();
-    const extension = audio.name.split(".").pop() || "audio";
     const sessionId = crypto.randomUUID();
-    const storagePath = `${user.id}/${sessionId}/original.${extension}`;
-    const normalizedAudio = new Blob([await audio.arrayBuffer()], { type: audioContentType });
+    const storagePath = buildSessionAudioStoragePath(user.id, sessionId, preparedAudio.extension);
+    const normalizedAudio = new Blob([preparedAudio.bytes], { type: preparedAudio.contentType });
 
     const { error: uploadError } = await supabase.storage.from("session-audio").upload(storagePath, normalizedAudio, {
-      contentType: audioContentType,
+      contentType: preparedAudio.contentType,
       upsert: false
     });
     if (uploadError) {
@@ -55,8 +45,8 @@ export async function POST(request: NextRequest) {
       .insert({
         id: sessionId,
         user_id: user.id,
-        title: fields.title ?? audio.name,
-        source_type: fields.source_type ?? "other",
+        title: preparedAudio.title,
+        source_type: preparedAudio.sourceType,
         audio_storage_path: storagePath,
         status: "uploaded"
       })
@@ -99,6 +89,9 @@ export async function POST(request: NextRequest) {
     }
     if (error instanceof z.ZodError) {
       return badRequest("Invalid upload fields.", error.flatten());
+    }
+    if (error instanceof Error && (error.message.startsWith("Unsupported audio type") || error.message.includes("larger than 100MB"))) {
+      return badRequest(error.message);
     }
     return serverError(error);
   }

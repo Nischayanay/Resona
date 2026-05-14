@@ -1,9 +1,13 @@
-import { extractConversationWithGemini, transcribeAudioWithGemini } from "@/lib/ai/gemini";
 import { createSupabaseServiceClient } from "@/lib/supabase/client";
 import { normalizeConversationExtraction } from "@/lib/processing/normalization";
 import { setProcessingStep } from "@/lib/processing/job-status";
 import type { ProcessingPayload } from "@/lib/types";
 import { normalizeAudioMimeType } from "@/lib/audio/mime";
+import { transcribeConversationAudio } from "@/lib/intelligence/transcription/engine";
+import { understandConversation } from "@/lib/intelligence/understanding/engine";
+import { buildPrioritySignals, buildSessionInsights, persistPriorityOutputs } from "@/lib/intelligence/priority/engine";
+import { updateConversationMemory } from "@/lib/intelligence/memory/engine";
+import { suggestApprovedToolActions } from "@/lib/intelligence/actions/engine";
 
 type SessionRow = {
   id: string;
@@ -37,12 +41,15 @@ export async function processConversationSession(payload: ProcessingPayload) {
 
     const audio = await audioBlob.arrayBuffer();
     const transcriptionMimeType = normalizeAudioMimeType(audioBlob.type, typedSession.audio_storage_path) ?? "audio/mpeg";
-    const transcription = await transcribeAudioWithGemini(audio, transcriptionMimeType);
+    const transcription = await transcribeConversationAudio(audio, transcriptionMimeType);
 
     const { error: transcriptError } = await supabase.from("transcripts").insert({
       user_id: userId,
       session_id: sessionId,
-      raw_text: transcription.transcript,
+      raw_text: transcription.rawText,
+      cleaned_text: transcription.cleanedText,
+      segments_json: transcription.segments,
+      confidence: transcription.confidence,
       language: transcription.language,
       model_used: transcription.model,
       provider: transcription.provider
@@ -53,17 +60,17 @@ export async function processConversationSession(payload: ProcessingPayload) {
 
     await setProcessingStep({ supabase, userId, sessionId, status: "extracting", currentStep: "extracting" });
 
-    let extractionResult: Awaited<ReturnType<typeof extractConversationWithGemini>>;
+    let understandingResult: Awaited<ReturnType<typeof understandConversation>>;
     try {
-      extractionResult = await extractConversationWithGemini(transcription.transcript);
+      understandingResult = await understandConversation(transcription.cleanedText);
       await supabase.from("ai_extraction_runs").insert({
         user_id: userId,
         session_id: sessionId,
-        provider: extractionResult.provider,
-        model: extractionResult.model,
-        prompt_version: extractionResult.promptVersion,
-        raw_output_json: JSON.parse(extractionResult.raw),
-        validated_output_json: extractionResult.extraction,
+        provider: understandingResult.provider,
+        model: understandingResult.model,
+        prompt_version: understandingResult.promptVersion,
+        raw_output_json: JSON.parse(understandingResult.raw),
+        validated_output_json: understandingResult.extraction,
         status: "validated"
       });
     } catch (error) {
@@ -88,15 +95,44 @@ export async function processConversationSession(payload: ProcessingPayload) {
       return;
     }
 
-    await setProcessingStep({ supabase, userId, sessionId, status: "normalizing", currentStep: "normalizing" });
-    await normalizeConversationExtraction({
+    const extraction = understandingResult.extraction;
+
+    await setProcessingStep({ supabase, userId, sessionId, status: "prioritizing", currentStep: "prioritizing" });
+    const prioritySignals = buildPrioritySignals(extraction);
+    const sessionInsights = buildSessionInsights(extraction, prioritySignals);
+    await persistPriorityOutputs({
       supabase,
       userId,
       sessionId,
-      extraction: extractionResult.extraction
+      signals: prioritySignals,
+      insights: sessionInsights
+    });
+
+    await setProcessingStep({ supabase, userId, sessionId, status: "normalizing", currentStep: "normalizing" });
+    const normalized = await normalizeConversationExtraction({
+      supabase,
+      userId,
+      sessionId,
+      extraction
+    });
+
+    await setProcessingStep({ supabase, userId, sessionId, status: "linking_memory", currentStep: "linking_memory" });
+    await updateConversationMemory({
+      supabase,
+      userId,
+      sessionId,
+      extraction,
+      context: normalized
     });
 
     await setProcessingStep({ supabase, userId, sessionId, status: "suggesting_tools", currentStep: "suggesting_tools" });
+    await suggestApprovedToolActions({
+      supabase,
+      userId,
+      sessionId,
+      suggestions: extraction.tool_suggestions,
+      actionRows: normalized.actionRows
+    });
     await setProcessingStep({ supabase, userId, sessionId, status: "completed", currentStep: "completed" });
   } catch (error) {
     await setProcessingStep({

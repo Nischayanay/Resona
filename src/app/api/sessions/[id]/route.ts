@@ -23,17 +23,19 @@ export async function GET(request: NextRequest, context: { params: Promise<{ id:
       return notFound("Session");
     }
 
-    const [transcript, people, actionItems, opportunities, memoryFacts, followUps, toolActions] = await Promise.all([
+    const [transcript, people, actionItems, opportunities, memoryFacts, followUps, toolActions, sessionInsights, prioritySignals] = await Promise.all([
       supabase.from("transcripts").select("*").eq("session_id", id).eq("user_id", user.id).order("created_at", { ascending: false }).limit(1).maybeSingle(),
       supabase.from("session_people").select("relationship_context,confidence,people(*)").eq("session_id", id).eq("user_id", user.id),
       supabase.from("action_items").select("*").eq("session_id", id).eq("user_id", user.id).order("created_at", { ascending: true }),
       supabase.from("opportunities").select("*").eq("session_id", id).eq("user_id", user.id).order("created_at", { ascending: true }),
       supabase.from("memory_facts").select("*").eq("session_id", id).eq("user_id", user.id).order("created_at", { ascending: true }),
       supabase.from("follow_ups").select("*").eq("session_id", id).eq("user_id", user.id).order("created_at", { ascending: true }),
-      supabase.from("tool_actions").select("*").eq("session_id", id).eq("user_id", user.id).order("created_at", { ascending: true })
+      supabase.from("tool_actions").select("*").eq("session_id", id).eq("user_id", user.id).order("created_at", { ascending: true }),
+      supabase.from("session_insights").select("*").eq("session_id", id).eq("user_id", user.id).order("priority_score", { ascending: false }),
+      supabase.from("priority_signals").select("*").eq("session_id", id).eq("user_id", user.id).order("rank", { ascending: true })
     ]);
 
-    for (const result of [transcript, people, actionItems, opportunities, memoryFacts, followUps, toolActions]) {
+    for (const result of [transcript, people, actionItems, opportunities, memoryFacts, followUps, toolActions, sessionInsights, prioritySignals]) {
       if (result.error) {
         throw result.error;
       }
@@ -47,7 +49,9 @@ export async function GET(request: NextRequest, context: { params: Promise<{ id:
       opportunities: opportunities.data ?? [],
       memory_facts: memoryFacts.data ?? [],
       follow_ups: followUps.data ?? [],
-      tool_actions: toolActions.data ?? []
+      tool_actions: toolActions.data ?? [],
+      session_insights: sessionInsights.data ?? [],
+      priority_signals: prioritySignals.data ?? []
     });
   } catch (error) {
     if (error instanceof Error && error.message === "UNAUTHORIZED") {

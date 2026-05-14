@@ -1,0 +1,48 @@
+[     471ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ webpack-internal:///(app-pages-browser)/./node_modules/next/dist/compiled/react-dom/cjs/react-dom-client.development.js:25630
+[   89996ms] [LOG] [Fast Refresh] rebuilding @ webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/dev/hot-reloader/app/hot-reloader-app.js:196
+[   90257ms] [LOG] [Fast Refresh] done in 260ms @ webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/dev/report-hmr-latency.js:13
+[  509433ms] [LOG] [Fast Refresh] rebuilding @ webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/dev/hot-reloader/app/hot-reloader-app.js:196
+[  510325ms] [LOG] [Fast Refresh] done in 893ms @ webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/dev/report-hmr-latency.js:13
+[  510421ms] TypeError: Cannot read properties of undefined (reading 'call')
+    at options.factory (http://localhost:3000/_next/static/chunks/webpack.js?v=1778756250234:692:31)
+    at __webpack_require__ (http://localhost:3000/_next/static/chunks/webpack.js?v=1778756250234:29:33)
+    at fn (http://localhost:3000/_next/static/chunks/webpack.js?v=1778756250234:349:21)
+    at requireModule (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/compiled/react-server-dom-webpack/cjs/react-server-dom-webpack-client.browser.development.js:100:27)
+    at initializeModuleChunk (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/compiled/react-server-dom-webpack/cjs/react-server-dom-webpack-client.browser.development.js:1299:21)
+    at readChunk (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/compiled/react-server-dom-webpack/cjs/react-server-dom-webpack-client.browser.development.js:953:11)
+    at Object.react_stack_bottom_frame (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/compiled/react-dom/cjs/react-dom-client.development.js:23691:18)
+    at resolveLazy (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/compiled/react-dom/cjs/react-dom-client.development.js:5177:16)
+    at beginWork (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/compiled/react-dom/cjs/react-dom-client.development.js:10784:24)
+    at runWithFiberInDEV (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/compiled/react-dom/cjs/react-dom-client.development.js:872:30)
+    at performUnitOfWork (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/compiled/react-dom/cjs/react-dom-client.development.js:15727:22)
+    at workLoopConcurrentByScheduler (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/compiled/react-dom/cjs/react-dom-client.development.js:15721:9)
+    at renderRootConcurrent (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/compiled/react-dom/cjs/react-dom-client.development.js:15696:15)
+    at performWorkOnRoot (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/compiled/react-dom/cjs/react-dom-client.development.js:14990:13)
+    at performWorkOnRootViaSchedulerTask (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/compiled/react-dom/cjs/react-dom-client.development.js:16816:7)
+    at MessagePort.performWorkUntilDeadline (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/compiled/scheduler/cjs/scheduler.development.js:45:48)
+[  511052ms] [LOG] [Fast Refresh] rebuilding @ webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/dev/hot-reloader/app/hot-reloader-app.js:196
+[  511511ms] [WARNING] [Fast Refresh] performing full reload because your application had an unrecoverable error @ webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/dev/hot-reloader/app/hot-reloader-app.js:113
+[  512195ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3000/:0
+[  512387ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ webpack-internal:///(pages-dir-browser)/./node_modules/react-dom/cjs/react-dom-client.development.js:28004
+[  512457ms] TypeError: a[d] is not a function
+    at Object.c [as require] (file:///Users/anaybauskar/Downloads/resona/.next/server/webpack-runtime.js:1:127)
+    at Object.require (file:///Users/anaybauskar/Downloads/resona/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:21:17464)
+    at globalThis.__next_require__ (file:///Users/anaybauskar/Downloads/resona/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:21:18033)
+    at d (file:///Users/anaybauskar/Downloads/resona/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:2:135536)
+    at B (file:///Users/anaybauskar/Downloads/resona/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:2:146377)
+    at J (file:///Users/anaybauskar/Downloads/resona/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:2:149960)
+    at Array._fromJSON (file:///Users/anaybauskar/Downloads/resona/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:2:152668)
+    at JSON.parse (<anonymous>)
+    at H (file:///Users/anaybauskar/Downloads/resona/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:2:146082)
+    at L (file:///Users/anaybauskar/Downloads/resona/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:2:145274)
+    at ep (file:///Users/anaybauskar/Downloads/resona/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:2:157785)
+    at <unknown> (file:///Users/anaybauskar/Downloads/resona/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:2:159037)
+    at em (file:///Users/anaybauskar/Downloads/resona/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:2:159063)
+    at t (file:///Users/anaybauskar/Downloads/resona/node_modules/next/dist/compiled/next-server/app-page.runtime.prod.js:2:159906)
+[  512458ms] [LOG] [HMR] connected @ webpack-internal:///(pages-dir-browser)/./node_modules/next/dist/client/dev/hot-reloader/pages/websocket.js:45
+[  512462ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3000/favicon.ico:0
+[  538556ms] [LOG] [Fast Refresh] rebuilding @ webpack-internal:///(pages-dir-browser)/./node_modules/next/dist/client/dev/hot-reloader/pages/hot-reloader-pages.js:206
+[  538866ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3000/_next/static/css/app/layout.css?v=1778756788918:0
+[  538873ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3000/_next/static/chunks/main-app.js?v=1778756788918:0
+[  538874ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3000/_next/static/chunks/app-pages-internals.js:0
+[  538875ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3000/_next/static/chunks/app/page.js:0

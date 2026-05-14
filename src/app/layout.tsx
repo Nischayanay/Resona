@@ -3,7 +3,10 @@ import "./globals.css";
 
 export const metadata = {
   title: "Resona",
-  description: "AI memory layer for conversations, people, and opportunities."
+  description: "AI memory layer for conversations, people, and opportunities.",
+  icons: {
+    icon: "/favicon.svg"
+  }
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {

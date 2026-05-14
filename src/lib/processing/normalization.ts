@@ -20,6 +20,14 @@ type PersonRow = {
   id: string;
   name: string;
   email?: string | null;
+  company?: string | null;
+  role?: string | null;
+};
+
+export type NormalizedConversationContext = {
+  people: PersonRow[];
+  peopleByName: Map<string, PersonRow>;
+  actionRows: { id: string; title: string }[];
 };
 
 async function upsertPerson(
@@ -30,14 +38,14 @@ async function upsertPerson(
 ): Promise<PersonRow> {
   const name = person.name.trim();
   const email = person.email?.toLowerCase();
-  const baseQuery = supabase.from("people").select("id,name,email").eq("user_id", userId).limit(1);
+  const baseQuery = supabase.from("people").select("id,name,email,company,role").eq("user_id", userId).limit(1);
   const { data: existingByEmail } = email ? await baseQuery.ilike("email", email).maybeSingle() : { data: null };
 
   let existing = existingByEmail as PersonRow | null;
   if (!existing) {
     const { data } = await supabase
       .from("people")
-      .select("id,name,email")
+      .select("id,name,email,company,role")
       .eq("user_id", userId)
       .ilike("name", name)
       .limit(1)
@@ -69,7 +77,7 @@ async function upsertPerson(
         notes: person.relationship_context,
         confidence: person.confidence
       })
-      .select("id,name,email")
+      .select("id,name,email,company,role")
       .single();
 
     if (error) {
@@ -99,42 +107,19 @@ function findPerson(peopleByName: Map<string, PersonRow>, name?: string) {
   return peopleByName.get(normalizeName(name)) ?? null;
 }
 
-async function findActionItemForToolAction(
-  supabase: SupabaseClient,
-  userId: string,
-  sessionId: string,
-  relatedActionTitle?: string
-) {
-  if (!relatedActionTitle) {
-    return null;
-  }
-  const { data } = await supabase
-    .from("action_items")
-    .select("id,title")
-    .eq("user_id", userId)
-    .eq("session_id", sessionId)
-    .ilike("title", relatedActionTitle)
-    .limit(1)
-    .maybeSingle();
-  return data as { id: string } | null;
-}
-
-function isCalendarWorthyToolSuggestion(suggestion: ConversationExtraction["tool_suggestions"][number]) {
-  const text = [suggestion.payload.title, suggestion.payload.description, suggestion.reason].filter(Boolean).join(" ").toLowerCase();
-  return /\b(meet|meeting|appointment|call|interview|demo|sync|follow[-\s]?up|discussion|discuss|review)\b/.test(text);
-}
-
 export async function normalizeConversationExtraction(params: {
   supabase: SupabaseClient;
   userId: string;
   sessionId: string;
   extraction: ConversationExtraction;
-}) {
+}): Promise<NormalizedConversationContext> {
   const { supabase, userId, sessionId, extraction } = params;
 
   const peopleByName = new Map<string, PersonRow>();
+  const people: PersonRow[] = [];
   for (const person of extraction.people) {
     const row = await upsertPerson(supabase, userId, sessionId, person);
+    people.push(row);
     peopleByName.set(normalizeName(row.name), row);
     if (person.email) {
       peopleByName.set(normalizeName(person.email), row);
@@ -220,33 +205,6 @@ export async function normalizeConversationExtraction(params: {
     }
   }
 
-  for (const suggestion of extraction.tool_suggestions) {
-    if (!isCalendarWorthyToolSuggestion(suggestion)) {
-      continue;
-    }
-
-    const linkedAction =
-      (await findActionItemForToolAction(supabase, userId, sessionId, suggestion.payload.related_action_title)) ??
-      actionRows.find((action) => action.title.toLowerCase() === suggestion.payload.related_action_title?.toLowerCase()) ??
-      null;
-
-    const { error } = await supabase.from("tool_actions").insert({
-      user_id: userId,
-      session_id: sessionId,
-      action_item_id: linkedAction?.id,
-      tool_name: suggestion.tool,
-      action_type: suggestion.action,
-      payload_json: suggestion.payload,
-      reason: suggestion.reason,
-      status: "suggested",
-      confidence: suggestion.confidence,
-      requires_approval: true
-    });
-    if (error) {
-      throw error;
-    }
-  }
-
   await supabase
     .from("sessions")
     .update({
@@ -255,4 +213,6 @@ export async function normalizeConversationExtraction(params: {
     })
     .eq("id", sessionId)
     .eq("user_id", userId);
+
+  return { people, peopleByName, actionRows };
 }

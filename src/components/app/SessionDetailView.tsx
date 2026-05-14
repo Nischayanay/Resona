@@ -178,7 +178,7 @@ export function SessionDetailView({ session }: { session: Session }) {
     <main className="app-main">
       <div className="section-stack">
         <div className="button-row" style={{ justifyContent: "space-between", alignItems: "center" }}>
-          <Link className="button button-secondary" href="/app">
+          <Link className="button button-secondary" href="/home">
             <ArrowLeft size={16} aria-hidden="true" />
             Back
           </Link>

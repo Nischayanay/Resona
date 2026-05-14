@@ -4,6 +4,8 @@ export type SessionStatus =
   | "transcribing"
   | "extracting"
   | "normalizing"
+  | "prioritizing"
+  | "linking_memory"
   | "suggesting_tools"
   | "completed"
   | "failed"
@@ -85,6 +87,26 @@ export type ToolAction = {
   confidence: number;
 };
 
+export type SessionInsight = {
+  id: string;
+  insight_type: string;
+  title: string;
+  description?: string | null;
+  priority: "low" | "medium" | "high";
+  priority_score: number;
+  signal_reason?: string | null;
+  confidence: number;
+};
+
+export type PrioritySignal = {
+  id: string;
+  entity_type: string;
+  title: string;
+  reason: string;
+  final_score: number;
+  rank: number;
+};
+
 export type SessionDetail = {
   session: ResonaSession;
   transcript?: Transcript | null;
@@ -94,4 +116,6 @@ export type SessionDetail = {
   memory_facts: MemoryFact[];
   follow_ups: FollowUp[];
   tool_actions: ToolAction[];
+  session_insights?: SessionInsight[];
+  priority_signals?: PrioritySignal[];
 };

@@ -190,143 +190,202 @@ export function CaptureWorkspace({ session }: { session: Session }) {
     return recordedBlob ? `Recorded audio - ${formatTimer(recordSeconds)}` : "No recording yet";
   }, [file, mode, recordedBlob, recordSeconds]);
 
+  const completedSessions = sessions.filter((item) => item.status === "completed");
+  const activeSessions = sessions.filter((item) => item.status !== "completed").slice(0, 3);
+  const meaningfulSessions = (completedSessions.length > 0 ? completedSessions : sessions).slice(0, 3);
+  const attentionItems = [
+    ...activeSessions.map((item) => ({
+      title: item.title,
+      meta: `${item.status.replaceAll("_", " ")} - ${item.source_type}`,
+      href: `/app/sessions/${item.id}`
+    })),
+    ...completedSessions.slice(0, Math.max(0, 3 - activeSessions.length)).map((item) => ({
+      title: item.title,
+      meta: item.summary ? item.summary : `${item.source_type} conversation is ready to review.`,
+      href: `/app/sessions/${item.id}`
+    }))
+  ].slice(0, 3);
+
+  const fallbackAttention = [
+    {
+      title: "Follow up with Rahul",
+      meta: "Internship opportunity discussed - Tomorrow - 4:00 PM",
+      href: "/home"
+    },
+    {
+      title: "You mentioned AI infrastructure",
+      meta: "4 times this week.",
+      href: "/home"
+    },
+    {
+      title: "2 conversations contain unresolved opportunities.",
+      meta: "Review before they fade.",
+      href: "/home"
+    }
+  ];
+
+  const visibleAttention = attentionItems.length > 0 ? attentionItems : fallbackAttention;
+
   return (
-    <main className="app-main">
-      <div className="workspace-grid">
-        <section className="panel" aria-labelledby="capture-title">
-          <div className="panel-header">
-            <div>
-              <h1 id="capture-title" className="panel-title">
-                Capture a conversation
-              </h1>
-              <p className="panel-copy">Record now or upload audio from a meeting, lecture, event, or quick follow-up.</p>
-            </div>
-          </div>
+    <main className="home-surface">
+      <section className="memory-entry-card" aria-labelledby="capture-title">
+        <div className="home-ambient" aria-hidden="true">
+          <span />
+          <span />
+          <span />
+        </div>
+        <p className="home-kicker">Memory entry point</p>
+        <h1 id="capture-title">Start a conversation memory</h1>
+        <p className="home-entry-copy">Capture what happened. Resona will compress it into priorities, memory, and action.</p>
 
-          <div className="panel-body">
-            <div className="capture-tabs" role="tablist" aria-label="Capture mode">
-              <button className="tab-button" type="button" data-active={mode === "record"} onClick={() => setMode("record")}>
-                Record
-              </button>
-              <button className="tab-button" type="button" data-active={mode === "upload"} onClick={() => setMode("upload")}>
-                Upload
-              </button>
-            </div>
+        <div className="home-capture-actions" role="tablist" aria-label="Capture mode">
+          <button className="home-action-button" type="button" data-active={mode === "record"} onClick={() => setMode("record")}>
+            <Mic size={18} aria-hidden="true" />
+            Record Conversation
+          </button>
+          <button className="home-action-button" type="button" data-active={mode === "upload"} onClick={() => setMode("upload")}>
+            <Upload size={18} aria-hidden="true" />
+            Upload Recording
+          </button>
+        </div>
 
-            {mode === "upload" ? (
-              <label className="dropzone">
-                <Upload size={26} aria-hidden="true" />
-                <strong>{selectedFileLabel}</strong>
-                <span>Choose MP3, WAV, M4A, OGG, or WebM audio.</span>
-                <input className="sr-only" type="file" accept="audio/*" onChange={onFileChange} />
-              </label>
-            ) : (
-              <div className="record-stage">
-                <div>
-                  <div className="record-time">{formatTimer(recordSeconds)}</div>
-                  <div className="record-state">{isRecording ? "Recording..." : selectedFileLabel}</div>
-                  <div className="button-row" style={{ justifyContent: "center", marginTop: 18 }}>
-                    {isRecording ? (
-                      <button className="button button-danger" type="button" onClick={stopRecording}>
-                        <Square size={16} aria-hidden="true" />
-                        Stop
-                      </button>
-                    ) : (
-                      <button className="button button-primary" type="button" onClick={startRecording}>
-                        <Mic size={16} aria-hidden="true" />
-                        Start recording
-                      </button>
-                    )}
-                  </div>
-                  {recordedUrl ? (
-                    <audio style={{ marginTop: 16, width: "100%" }} src={recordedUrl} controls>
-                      <track kind="captions" />
-                    </audio>
-                  ) : null}
-                </div>
-              </div>
-            )}
-
-            <div className="form-stack">
-              <label className="field">
-                <span className="label">Title</span>
-                <input className="input" value={title} onChange={(event) => setTitle(event.target.value)} placeholder={defaultTitle()} />
-              </label>
-
-              <label className="field">
-                <span className="label">Source type</span>
-                <select className="select" value={sourceType} onChange={(event) => setSourceType(event.target.value as typeof sourceType)}>
-                  {sourceTypes.map((source) => (
-                    <option key={source} value={source}>
-                      {source}
-                    </option>
-                  ))}
-                </select>
-              </label>
-
-              {error ? (
-                <div className="notice notice-error" role="alert">
-                  {error}
-                </div>
+        <div className="home-capture-body">
+          {mode === "upload" ? (
+            <label className="home-dropzone">
+              <Upload size={22} aria-hidden="true" />
+              <strong>{selectedFileLabel}</strong>
+              <span>MP3, WAV, M4A, OGG, or WebM audio.</span>
+              <input className="sr-only" type="file" accept="audio/*" onChange={onFileChange} />
+            </label>
+          ) : (
+            <div className="home-record-stage">
+              <div className="home-record-time">{formatTimer(recordSeconds)}</div>
+              <div className="home-record-state">{isRecording ? "Recording..." : selectedFileLabel}</div>
+              {isRecording ? (
+                <button className="home-submit-button home-danger-button" type="button" onClick={stopRecording}>
+                  <Square size={16} aria-hidden="true" />
+                  Stop recording
+                </button>
+              ) : (
+                <button className="home-submit-button" type="button" onClick={startRecording}>
+                  <Mic size={16} aria-hidden="true" />
+                  Start recording
+                </button>
+              )}
+              {recordedUrl ? (
+                <audio className="home-audio-preview" src={recordedUrl} controls>
+                  <track kind="captions" />
+                </audio>
               ) : null}
-
-              {statusMessage ? (
-                <div className="notice" role="status" aria-live="polite">
-                  {statusMessage}
-                </div>
-              ) : null}
-
-              <button className="button button-primary" type="button" onClick={submitAudio} disabled={!canSubmit}>
-                {isUploading ? (
-                  <>
-                    <RefreshCw size={16} aria-hidden="true" />
-                    Uploading...
-                  </>
-                ) : (
-                  <>
-                    <Play size={16} aria-hidden="true" />
-                    Submit audio
-                  </>
-                )}
-              </button>
             </div>
-          </div>
-        </section>
+          )}
 
-        <section className="panel" aria-labelledby="sessions-title">
-          <div className="panel-header">
-            <div>
-              <h2 id="sessions-title" className="panel-title">
-                Recent sessions
-              </h2>
-              <p className="panel-copy">{isLoadingSessions ? "Refreshing..." : "Processing updates appear automatically."}</p>
-            </div>
-            <button className="button button-secondary" type="button" onClick={() => void loadSessions()}>
-              <RefreshCw size={16} aria-hidden="true" />
-              Refresh
-            </button>
-          </div>
-          <div className="panel-body">
-            {sessions.length === 0 ? (
-              <div className="empty-state">No sessions yet. Record or upload your first conversation.</div>
-            ) : (
-              <div className="session-list">
-                {sessions.map((item) => (
-                  <Link className="session-row" key={item.id} href={`/app/sessions/${item.id}`}>
-                    <div className="button-row" style={{ justifyContent: "space-between", alignItems: "center" }}>
-                      <h3 className="session-row-title">{item.title}</h3>
-                      <StatusChip status={item.status} />
-                    </div>
-                    <div className="session-row-meta">
-                      {item.source_type} · {new Date(item.created_at).toLocaleString()}
-                    </div>
-                  </Link>
+          <div className="home-capture-fields">
+            <label className="field">
+              <span className="label">Memory title</span>
+              <input className="input" value={title} onChange={(event) => setTitle(event.target.value)} placeholder={defaultTitle()} />
+            </label>
+            <label className="field">
+              <span className="label">Conversation type</span>
+              <select className="select" value={sourceType} onChange={(event) => setSourceType(event.target.value as typeof sourceType)}>
+                {sourceTypes.map((source) => (
+                  <option key={source} value={source}>
+                    {source}
+                  </option>
                 ))}
-              </div>
-            )}
+              </select>
+            </label>
           </div>
-        </section>
-      </div>
+
+          {error ? (
+            <div className="notice notice-error" role="alert">
+              {error}
+            </div>
+          ) : null}
+
+          {statusMessage ? (
+            <div className="notice" role="status" aria-live="polite">
+              {statusMessage}
+            </div>
+          ) : null}
+
+          <button className="home-submit-button home-upload-submit" type="button" onClick={submitAudio} disabled={!canSubmit}>
+            {isUploading ? <RefreshCw size={16} aria-hidden="true" /> : <Play size={16} aria-hidden="true" />}
+            {isUploading ? "Uploading..." : "Submit audio"}
+          </button>
+        </div>
+      </section>
+
+      <section className="attention-section" aria-labelledby="attention-title">
+        <div className="home-section-heading">
+          <p className="home-kicker">What matters now</p>
+          <h2 id="attention-title">What deserves your attention</h2>
+        </div>
+        <div className="attention-stack">
+          {visibleAttention.map((item, index) => (
+            <Link className="attention-card" href={item.href} key={`${item.title}-${index}`}>
+              <span className="attention-index">0{index + 1}</span>
+              <div>
+                <h3>{item.title}</h3>
+                <p>{item.meta}</p>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      <section className="important-conversations" aria-labelledby="important-title">
+        <div className="home-section-heading">
+          <p className="home-kicker">{isLoadingSessions ? "Refreshing memory" : "Important conversations"}</p>
+          <h2 id="important-title">Meaningful, actionable, unresolved.</h2>
+        </div>
+        <div className="conversation-card-grid">
+          {meaningfulSessions.length === 0 ? (
+            <article className="conversation-card">
+              <p>First memory</p>
+              <h3>AI Builders Meetup</h3>
+              <span>Rahul Sharma</span>
+              <span>Internship discussion</span>
+              <span>3 action items</span>
+              <span>1 unresolved opportunity</span>
+            </article>
+          ) : (
+            meaningfulSessions.map((item) => (
+              <Link className="conversation-card" key={item.id} href={`/app/sessions/${item.id}`}>
+                <p>{new Date(item.created_at).toLocaleDateString()}</p>
+                <h3>{item.title}</h3>
+                <span>{item.source_type}</span>
+                <span>{item.summary ?? "Memory is still compressing."}</span>
+                <StatusChip status={item.status} />
+              </Link>
+            ))
+          )}
+        </div>
+      </section>
+
+      <section className="memory-signals-section" aria-labelledby="signals-title">
+        <div className="home-section-heading">
+          <p className="home-kicker">Memory signals</p>
+          <h2 id="signals-title">Patterns you should not have to hold yourself.</h2>
+        </div>
+        <div className="memory-signal-list">
+          <span>You&apos;ve discussed startup hiring in 3 separate conversations.</span>
+          <span>2 people recently mentioned AI infrastructure roles.</span>
+          <span>You tend to postpone follow-ups after networking events.</span>
+        </div>
+      </section>
+
+      <section className="continuity-section" aria-labelledby="continuity-title">
+        <div className="home-section-heading">
+          <p className="home-kicker">Continuity layer</p>
+          <h2 id="continuity-title">Recently resurfaced</h2>
+        </div>
+        <article className="resurfaced-card">
+          <span className="resurfaced-thread" aria-hidden="true" />
+          <h3>Conversation with Aryan resurfaced</h3>
+          <p>because Rahul mentioned the same startup.</p>
+        </article>
+      </section>
     </main>
   );
 }

@@ -1,4 +1,4 @@
-export const EXTRACTION_PROMPT_VERSION = "resona-extraction-v1";
+export const EXTRACTION_PROMPT_VERSION = "resona-extraction-v2-six-engine";
 
 export function buildExtractionPrompt(transcript: string, currentIsoDate: string) {
   return `
@@ -11,9 +11,14 @@ Current date: ${currentIsoDate}
 Extract durable intelligence from this transcript:
 - concise session summary
 - people and relationship context
+- recurring topics
 - explicit action items
 - opportunities
+- risks
 - follow-up suggestions
+- unresolved loops
+- emotionally important signals
+- key moments
 - memory facts
 - Google Calendar tool suggestions only when the transcript contains clear meeting or appointment intent with a date/time and purpose
 
@@ -30,9 +35,14 @@ JSON shape:
 {
   "summary": "string",
   "people": [{ "name": "string", "email": "optional email", "company": "optional", "role": "optional", "relationship_context": "optional", "confidence": 0.8 }],
+  "topics": [{ "name": "string", "summary": "optional", "related_people": ["optional"], "importance": "low|medium|high", "confidence": 0.8 }],
   "action_items": [{ "title": "string", "description": "optional", "owner": "optional", "due_date": "optional ISO or original phrase", "related_person": "optional", "priority": "low|medium|high", "confidence": 0.8 }],
   "opportunities": [{ "type": "internship|startup|collaboration|intro|funding|learning|hiring|research|other", "title": "string", "description": "string", "related_people": ["optional"], "priority": "low|medium|high", "confidence": 0.8 }],
+  "risks": [{ "title": "string", "description": "string", "severity": "low|medium|high", "related_people": ["optional"], "confidence": 0.8 }],
   "follow_ups": [{ "person_name": "optional", "reason": "string", "suggested_message": "string", "suggested_date": "optional ISO or original phrase", "confidence": 0.8 }],
+  "unresolved_loops": [{ "title": "string", "description": "string", "owner": "optional", "related_person": "optional", "urgency": "low|medium|high", "confidence": 0.8 }],
+  "key_moments": [{ "title": "string", "description": "string", "related_people": ["optional"], "importance": "low|medium|high", "confidence": 0.8 }],
+  "emotional_signals": [{ "label": "string", "description": "string", "related_people": ["optional"], "importance": "low|medium|high", "confidence": 0.8 }],
   "memory_facts": [{ "fact": "string", "category": "person|preference|opportunity|commitment|topic|decision|relationship|context", "related_people": ["optional"], "confidence": 0.8 }],
   "tool_suggestions": [{ "tool": "google_calendar", "action": "create_event", "reason": "string", "payload": { "title": "string", "description": "optional", "start_time": "optional ISO", "end_time": "optional ISO", "attendees": [{ "name": "optional", "email": "optional email" }], "related_person_name": "optional", "related_action_title": "optional" }, "requires_approval": true, "confidence": 0.8 }]
 }
