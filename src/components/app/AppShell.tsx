@@ -94,7 +94,6 @@ export function AppShell({ children }: { children: (session: Session) => ReactNo
         <nav className="home-nav-center" aria-label="Primary app navigation">
           <Link href="/home">Home</Link>
           <Link href="/conversations">Conversations</Link>
-          <Link href="/memory">Memory</Link>
         </nav>
         <div className="home-nav-right">
           <span className="home-profile">

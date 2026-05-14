@@ -31,6 +31,8 @@ export function SettingsControlCenter({ session }: { session: Session }) {
   const [error, setError] = useState<string | null>(null);
   const [isConnecting, setIsConnecting] = useState(false);
   const [isDisconnecting, setIsDisconnecting] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
+  const [isDeletingMemory, setIsDeletingMemory] = useState(false);
   const [rememberLongTerm, setRememberLongTerm] = useState(true);
   const [priorityOnly, setPriorityOnly] = useState(true);
   const [emotionalContext, setEmotionalContext] = useState(true);
@@ -95,6 +97,65 @@ export function SettingsControlCenter({ session }: { session: Session }) {
     }
   }
 
+  async function exportMemoryArchive() {
+    setIsExporting(true);
+    setError(null);
+    setMessage(null);
+
+    try {
+      const response = await fetch("/api/privacy/export", {
+        headers: {
+          Authorization: `Bearer ${session.access_token}`
+        }
+      });
+
+      if (!response.ok) {
+        const payload = (await response.json().catch(() => null)) as { message?: string } | null;
+        throw new Error(payload?.message ?? `Export failed with ${response.status}.`);
+      }
+
+      const blob = await response.blob();
+      const objectUrl = URL.createObjectURL(blob);
+      const disposition = response.headers.get("content-disposition");
+      const filename = disposition?.match(/filename="([^"]+)"/)?.[1] ?? `resona-memory-archive-${new Date().toISOString()}.json`;
+      const anchor = document.createElement("a");
+      anchor.href = objectUrl;
+      anchor.download = filename;
+      document.body.append(anchor);
+      anchor.click();
+      anchor.remove();
+      URL.revokeObjectURL(objectUrl);
+      setMessage("Memory archive exported.");
+    } catch (exportError) {
+      setError(exportError instanceof Error ? exportError.message : "Could not export memory archive.");
+    } finally {
+      setIsExporting(false);
+    }
+  }
+
+  async function deleteAllStoredMemory() {
+    const confirmation = window.prompt("This permanently deletes your stored Resona conversation memory and uploaded audio. Type DELETE MEMORY to continue.");
+    if (confirmation !== "DELETE MEMORY") {
+      setMessage("Memory deletion cancelled.");
+      return;
+    }
+
+    setIsDeletingMemory(true);
+    setError(null);
+    setMessage(null);
+
+    try {
+      const payload = await apiFetch<{ deleted_sessions: number; deleted_audio_objects: number }>(session, "/api/privacy/memory", {
+        method: "DELETE"
+      });
+      setMessage(`Deleted ${payload.deleted_sessions} conversation memories and ${payload.deleted_audio_objects} uploaded audio files.`);
+    } catch (deleteError) {
+      setError(deleteError instanceof Error ? deleteError.message : "Could not delete stored memory.");
+    } finally {
+      setIsDeletingMemory(false);
+    }
+  }
+
   const connectedCalendar = calendar?.connections[0];
 
   return (
@@ -143,9 +204,9 @@ export function SettingsControlCenter({ session }: { session: Session }) {
                 </button>
               ))}
             </div>
-            <button className="settings-danger-action" type="button">
+            <button className="settings-danger-action" type="button" onClick={() => void deleteAllStoredMemory()} disabled={isDeletingMemory}>
               <Trash2 size={16} aria-hidden="true" />
-              Delete conversation memory permanently
+              {isDeletingMemory ? "Deleting memory" : "Delete conversation memory permanently"}
             </button>
           </div>
         </section>
@@ -252,17 +313,17 @@ export function SettingsControlCenter({ session }: { session: Session }) {
           </div>
 
           <div className="privacy-action-list">
-            <button type="button">
+            <button type="button" onClick={() => void exportMemoryArchive()} disabled={isExporting}>
               <Download size={16} aria-hidden="true" />
-              Download your memory archive
+              {isExporting ? "Preparing archive" : "Download your memory archive"}
             </button>
             <button type="button">
               <Eye size={16} aria-hidden="true" />
               See how Resona processes conversations
             </button>
-            <button className="settings-danger-action" type="button">
+            <button className="settings-danger-action" type="button" onClick={() => void deleteAllStoredMemory()} disabled={isDeletingMemory}>
               <Trash2 size={16} aria-hidden="true" />
-              Delete all stored memory
+              {isDeletingMemory ? "Deleting memory" : "Delete all stored memory"}
             </button>
           </div>
         </section>
