@@ -1595,6 +1595,164 @@ a {
   margin-top: 8px;
 }
 
+.conversations-surface {
+  width: min(100% - 36px, 1040px);
+  margin: 0 auto;
+  padding: 62px 0 120px;
+  display: grid;
+  gap: 22px;
+}
+
+.conversations-hero {
+  display: grid;
+  gap: 14px;
+  border-bottom: 1px solid rgba(32, 35, 35, 0.08);
+  padding-bottom: 26px;
+}
+
+.conversations-hero-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 24px;
+}
+
+.conversations-hero h1 {
+  margin: 0;
+  color: #202323;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
+  font-size: 46px;
+  line-height: 1.05;
+  font-weight: 640;
+  letter-spacing: 0;
+}
+
+.conversations-hero p {
+  width: min(100%, 680px);
+  margin: 12px 0 0;
+  color: rgba(32, 35, 35, 0.58);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 20px;
+  line-height: 1.5;
+}
+
+.memory-search {
+  min-height: 54px;
+  display: grid;
+  grid-template-columns: 20px 1fr;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid rgba(32, 35, 35, 0.08);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.52);
+  padding: 0 18px;
+  color: rgba(32, 35, 35, 0.46);
+  box-shadow: 0 20px 70px rgba(45, 61, 58, 0.05);
+}
+
+.memory-search input {
+  width: 100%;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: #202323;
+  font: inherit;
+}
+
+.memory-search input::placeholder {
+  color: rgba(32, 35, 35, 0.42);
+}
+
+.conversation-memory-list {
+  display: grid;
+  gap: 12px;
+}
+
+.conversation-memory-card {
+  min-height: 132px;
+  display: grid;
+  grid-template-columns: 46px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 18px;
+  border: 1px solid rgba(32, 35, 35, 0.08);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.5);
+  padding: 18px 20px;
+  box-shadow: 0 24px 76px rgba(45, 61, 58, 0.055);
+  transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
+}
+
+.conversation-memory-card:hover {
+  transform: translateY(-1px);
+  border-color: rgba(32, 35, 35, 0.16);
+  background: rgba(255, 255, 255, 0.68);
+}
+
+.conversation-memory-icon {
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(72, 125, 120, 0.16);
+  border-radius: 50%;
+  background: rgba(110, 157, 150, 0.1);
+  color: rgba(49, 92, 88, 0.78);
+}
+
+.conversation-memory-main {
+  min-width: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.conversation-memory-title-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  justify-content: space-between;
+}
+
+.conversation-memory-card h2 {
+  min-width: 0;
+  margin: 0;
+  color: #202323;
+  font-size: 22px;
+  line-height: 1.2;
+  font-weight: 610;
+}
+
+.conversation-memory-summary {
+  margin: 0;
+  color: rgba(32, 35, 35, 0.58);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 17px;
+  line-height: 1.42;
+}
+
+.conversation-memory-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  color: rgba(32, 35, 35, 0.44);
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 11px;
+}
+
+.conversation-memory-meta span:not(:last-child)::after {
+  content: "/";
+  margin-left: 8px;
+  color: rgba(32, 35, 35, 0.22);
+}
+
+.conversation-open-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: rgba(32, 35, 35, 0.5);
+  font-size: 13px;
+  white-space: nowrap;
+}
+
 .memory-signal-list {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -2068,6 +2226,38 @@ a {
   .home-surface {
     width: min(100% - 24px, 1040px);
     padding: 42px 0 82px;
+  }
+
+  .conversations-surface {
+    width: min(100% - 24px, 1040px);
+    padding: 42px 0 82px;
+  }
+
+  .conversations-hero-row {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .conversations-hero h1 {
+    font-size: 34px;
+  }
+
+  .conversations-hero p {
+    font-size: 18px;
+  }
+
+  .conversation-memory-card {
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+
+  .conversation-memory-title-row {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .conversation-open-indicator {
+    justify-self: start;
   }
 
   .memory-entry-card {

@@ -174,7 +174,7 @@ export function CaptureWorkspace({ session }: { session: Session }) {
       });
       setStatusMessage("Audio submitted. Processing has started.");
       await loadSessions();
-      router.push(`/app/sessions/${payload.session_id}`);
+      router.push(`/conversations/${payload.session_id}`);
     } catch (submitError) {
       setError(submitError instanceof Error ? submitError.message : "Upload failed.");
       setStatusMessage(null);
@@ -197,12 +197,12 @@ export function CaptureWorkspace({ session }: { session: Session }) {
     ...activeSessions.map((item) => ({
       title: item.title,
       meta: `${item.status.replaceAll("_", " ")} - ${item.source_type}`,
-      href: `/app/sessions/${item.id}`
+      href: `/conversations/${item.id}`
     })),
     ...completedSessions.slice(0, Math.max(0, 3 - activeSessions.length)).map((item) => ({
       title: item.title,
       meta: item.summary ? item.summary : `${item.source_type} conversation is ready to review.`,
-      href: `/app/sessions/${item.id}`
+      href: `/conversations/${item.id}`
     }))
   ].slice(0, 3);
 
@@ -351,7 +351,7 @@ export function CaptureWorkspace({ session }: { session: Session }) {
             </article>
           ) : (
             meaningfulSessions.map((item) => (
-              <Link className="conversation-card" key={item.id} href={`/app/sessions/${item.id}`}>
+              <Link className="conversation-card" key={item.id} href={`/conversations/${item.id}`}>
                 <p>{new Date(item.created_at).toLocaleDateString()}</p>
                 <h3>{item.title}</h3>
                 <span>{item.source_type}</span>

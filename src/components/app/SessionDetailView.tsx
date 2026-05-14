@@ -35,7 +35,7 @@ function dateLabel(value?: string | null) {
   return date.toLocaleString();
 }
 
-export function SessionDetailView({ session }: { session: Session }) {
+export function SessionDetailView({ session, backHref = "/home" }: { session: Session; backHref?: string }) {
   const params = useParams<{ id: string }>();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -178,7 +178,7 @@ export function SessionDetailView({ session }: { session: Session }) {
     <main className="app-main">
       <div className="section-stack">
         <div className="button-row" style={{ justifyContent: "space-between", alignItems: "center" }}>
-          <Link className="button button-secondary" href="/home">
+          <Link className="button button-secondary" href={backHref}>
             <ArrowLeft size={16} aria-hidden="true" />
             Back
           </Link>
@@ -238,6 +238,72 @@ export function SessionDetailView({ session }: { session: Session }) {
 
         <div className="detail-grid">
           <div className="section-stack">
+            <section className="panel" aria-labelledby="opps-title">
+              <div className="panel-header">
+                <div>
+                  <h2 id="opps-title" className="panel-title">
+                    Opportunities
+                  </h2>
+                  <p className="panel-copy">Internships, intros, collaborations, learning, or startup signals.</p>
+                </div>
+              </div>
+              <div className="panel-body">
+                <DataList<Opportunity>
+                  items={detail.opportunities}
+                  empty="No opportunities extracted yet."
+                  render={(item) => (
+                    <article className="data-item" key={item.id}>
+                      <h3 className="data-item-title">{item.title}</h3>
+                      <p className="data-item-copy">
+                        {item.type} · {item.priority}
+                      </p>
+                      <p className="data-item-copy">{item.description}</p>
+                    </article>
+                  )}
+                />
+              </div>
+            </section>
+
+            <section className="panel" aria-labelledby="people-title">
+              <div className="panel-header">
+                <div>
+                  <h2 id="people-title" className="panel-title">
+                    People
+                  </h2>
+                  <p className="panel-copy">People and relationship context found in the session.</p>
+                </div>
+              </div>
+              <div className="panel-body">
+                <DataList<Person>
+                  items={detail.people}
+                  empty="No people extracted yet."
+                  render={(person) => (
+                    <article className="data-item" key={person.id}>
+                      <h3 className="data-item-title">{person.name}</h3>
+                      <p className="data-item-copy">{[person.role, person.company, person.email].filter(Boolean).join(" · ")}</p>
+                      {person.relationship_context || person.notes ? <p className="data-item-copy">{person.relationship_context ?? person.notes}</p> : null}
+                    </article>
+                  )}
+                />
+              </div>
+            </section>
+
+            <section className="panel" aria-labelledby="transcript-title">
+              <div className="panel-header">
+                <div>
+                  <h2 id="transcript-title" className="panel-title">
+                    Transcript
+                  </h2>
+                  <p className="panel-copy">Source text used by the extraction pipeline.</p>
+                </div>
+              </div>
+              <div className="panel-body">
+                {detail.transcript?.raw_text ? <div className="transcript-box">{detail.transcript.raw_text}</div> : <div className="empty-state">Transcript not available yet.</div>}
+              </div>
+            </section>
+          </div>
+
+          <div className="section-stack">
             <section className="panel" aria-labelledby="actions-title">
               <div className="panel-header">
                 <div>
@@ -268,48 +334,6 @@ export function SessionDetailView({ session }: { session: Session }) {
               </div>
             </section>
 
-            <section className="panel" aria-labelledby="opps-title">
-              <div className="panel-header">
-                <div>
-                  <h2 id="opps-title" className="panel-title">
-                    Opportunities
-                  </h2>
-                  <p className="panel-copy">Internships, intros, collaborations, learning, or startup signals.</p>
-                </div>
-              </div>
-              <div className="panel-body">
-                <DataList<Opportunity>
-                  items={detail.opportunities}
-                  empty="No opportunities extracted yet."
-                  render={(item) => (
-                    <article className="data-item" key={item.id}>
-                      <h3 className="data-item-title">{item.title}</h3>
-                      <p className="data-item-copy">
-                        {item.type} · {item.priority}
-                      </p>
-                      <p className="data-item-copy">{item.description}</p>
-                    </article>
-                  )}
-                />
-              </div>
-            </section>
-
-            <section className="panel" aria-labelledby="transcript-title">
-              <div className="panel-header">
-                <div>
-                  <h2 id="transcript-title" className="panel-title">
-                    Transcript
-                  </h2>
-                  <p className="panel-copy">Source text used by the extraction pipeline.</p>
-                </div>
-              </div>
-              <div className="panel-body">
-                {detail.transcript?.raw_text ? <div className="transcript-box">{detail.transcript.raw_text}</div> : <div className="empty-state">Transcript not available yet.</div>}
-              </div>
-            </section>
-          </div>
-
-          <div className="section-stack">
             <section className="panel" aria-labelledby="calendar-title">
               <div className="panel-header">
                 <div>
@@ -343,30 +367,6 @@ export function SessionDetailView({ session }: { session: Session }) {
                           </button>
                         </div>
                       ) : null}
-                    </article>
-                  )}
-                />
-              </div>
-            </section>
-
-            <section className="panel" aria-labelledby="people-title">
-              <div className="panel-header">
-                <div>
-                  <h2 id="people-title" className="panel-title">
-                    People
-                  </h2>
-                  <p className="panel-copy">People and relationship context found in the session.</p>
-                </div>
-              </div>
-              <div className="panel-body">
-                <DataList<Person>
-                  items={detail.people}
-                  empty="No people extracted yet."
-                  render={(person) => (
-                    <article className="data-item" key={person.id}>
-                      <h3 className="data-item-title">{person.name}</h3>
-                      <p className="data-item-copy">{[person.role, person.company, person.email].filter(Boolean).join(" · ")}</p>
-                      {person.relationship_context || person.notes ? <p className="data-item-copy">{person.relationship_context ?? person.notes}</p> : null}
                     </article>
                   )}
                 />
