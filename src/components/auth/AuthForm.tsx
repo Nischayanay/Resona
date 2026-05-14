@@ -39,7 +39,7 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
         return;
       }
 
-      router.replace("/app");
+      router.replace("/home");
     } catch (error) {
       setError(error instanceof Error ? error.message : "Authentication is not configured.");
     } finally {

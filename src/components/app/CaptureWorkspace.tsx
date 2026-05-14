@@ -193,6 +193,7 @@ export function CaptureWorkspace({ session }: { session: Session }) {
   const completedSessions = sessions.filter((item) => item.status === "completed");
   const activeSessions = sessions.filter((item) => item.status !== "completed").slice(0, 3);
   const meaningfulSessions = (completedSessions.length > 0 ? completedSessions : sessions).slice(0, 3);
+  const latestCompletedSession = completedSessions[0];
   const attentionItems = [
     ...activeSessions.map((item) => ({
       title: item.title,
@@ -205,26 +206,12 @@ export function CaptureWorkspace({ session }: { session: Session }) {
       href: `/conversations/${item.id}`
     }))
   ].slice(0, 3);
-
-  const fallbackAttention = [
-    {
-      title: "Follow up with Rahul",
-      meta: "Internship opportunity discussed - Tomorrow - 4:00 PM",
-      href: "/home"
-    },
-    {
-      title: "You mentioned AI infrastructure",
-      meta: "4 times this week.",
-      href: "/home"
-    },
-    {
-      title: "2 conversations contain unresolved opportunities.",
-      meta: "Review before they fade.",
-      href: "/home"
-    }
-  ];
-
-  const visibleAttention = attentionItems.length > 0 ? attentionItems : fallbackAttention;
+  const processingCount = sessions.filter((item) => item.status !== "completed" && item.status !== "failed").length;
+  const memorySignals = [
+    completedSessions.length > 0 ? `${completedSessions.length} conversation${completedSessions.length === 1 ? "" : "s"} completed extraction.` : null,
+    processingCount > 0 ? `${processingCount} recording${processingCount === 1 ? " is" : "s are"} still moving through the intelligence engines.` : null,
+    latestCompletedSession?.summary ? `Latest clarity: ${latestCompletedSession.summary}` : null
+  ].filter((item): item is string => Boolean(item));
 
   return (
     <main className="home-surface">
@@ -322,15 +309,19 @@ export function CaptureWorkspace({ session }: { session: Session }) {
           <h2 id="attention-title">What deserves your attention</h2>
         </div>
         <div className="attention-stack">
-          {visibleAttention.map((item, index) => (
-            <Link className="attention-card" href={item.href} key={`${item.title}-${index}`}>
-              <span className="attention-index">0{index + 1}</span>
-              <div>
-                <h3>{item.title}</h3>
-                <p>{item.meta}</p>
-              </div>
-            </Link>
-          ))}
+          {attentionItems.length === 0 ? (
+            <div className="empty-state">No extracted priorities yet. Record or upload a conversation to create your first clarity surface.</div>
+          ) : (
+            attentionItems.map((item, index) => (
+              <Link className="attention-card" href={item.href} key={`${item.title}-${index}`}>
+                <span className="attention-index">0{index + 1}</span>
+                <div>
+                  <h3>{item.title}</h3>
+                  <p>{item.meta}</p>
+                </div>
+              </Link>
+            ))
+          )}
         </div>
       </section>
 
@@ -341,14 +332,7 @@ export function CaptureWorkspace({ session }: { session: Session }) {
         </div>
         <div className="conversation-card-grid">
           {meaningfulSessions.length === 0 ? (
-            <article className="conversation-card">
-              <p>First memory</p>
-              <h3>AI Builders Meetup</h3>
-              <span>Rahul Sharma</span>
-              <span>Internship discussion</span>
-              <span>3 action items</span>
-              <span>1 unresolved opportunity</span>
-            </article>
+            <div className="empty-state">No conversation memories yet. Your recordings will appear here after upload.</div>
           ) : (
             meaningfulSessions.map((item) => (
               <Link className="conversation-card" key={item.id} href={`/conversations/${item.id}`}>
@@ -368,11 +352,15 @@ export function CaptureWorkspace({ session }: { session: Session }) {
           <p className="home-kicker">Memory signals</p>
           <h2 id="signals-title">Patterns you should not have to hold yourself.</h2>
         </div>
-        <div className="memory-signal-list">
-          <span>You&apos;ve discussed startup hiring in 3 separate conversations.</span>
-          <span>2 people recently mentioned AI infrastructure roles.</span>
-          <span>You tend to postpone follow-ups after networking events.</span>
-        </div>
+        {memorySignals.length === 0 ? (
+          <div className="empty-state">Memory signals will appear after Resona has at least one extracted conversation.</div>
+        ) : (
+          <div className="memory-signal-list">
+            {memorySignals.slice(0, 3).map((signal) => (
+              <span key={signal}>{signal}</span>
+            ))}
+          </div>
+        )}
       </section>
 
       <section className="continuity-section" aria-labelledby="continuity-title">
@@ -380,11 +368,15 @@ export function CaptureWorkspace({ session }: { session: Session }) {
           <p className="home-kicker">Continuity layer</p>
           <h2 id="continuity-title">Recently resurfaced</h2>
         </div>
-        <article className="resurfaced-card">
-          <span className="resurfaced-thread" aria-hidden="true" />
-          <h3>Conversation with Aryan resurfaced</h3>
-          <p>because Rahul mentioned the same startup.</p>
-        </article>
+        {latestCompletedSession ? (
+          <Link className="resurfaced-card" href={`/conversations/${latestCompletedSession.id}`}>
+            <span className="resurfaced-thread" aria-hidden="true" />
+            <h3>{latestCompletedSession.title}</h3>
+            <p>{latestCompletedSession.summary ?? "Recently completed and ready to reopen."}</p>
+          </Link>
+        ) : (
+          <div className="empty-state">Completed conversations will resurface here when there is memory to reconnect.</div>
+        )}
       </section>
     </main>
   );

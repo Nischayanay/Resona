@@ -92,7 +92,7 @@ export default function Home() {
             <Link className="landing-button landing-button-primary" href="/sign-up">
               Start Remembering
             </Link>
-            <Link className="landing-button landing-button-secondary" href="/app">
+            <Link className="landing-button landing-button-secondary" href="/home">
               Watch Conversation Demo
             </Link>
           </div>

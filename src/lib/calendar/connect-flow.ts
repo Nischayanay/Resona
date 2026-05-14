@@ -1,13 +1,13 @@
 export function normalizeReturnPath(value?: string | null) {
   if (!value || !value.startsWith("/") || value.startsWith("//")) {
-    return "/app";
+    return "/home";
   }
 
   try {
     const url = new URL(value, "https://resona.local");
     return `${url.pathname}${url.search}${url.hash}`;
   } catch {
-    return "/app";
+    return "/home";
   }
 }
 
