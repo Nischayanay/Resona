@@ -215,115 +215,117 @@ export function CaptureWorkspace({ session }: { session: Session }) {
 
   return (
     <main className="home-surface">
-      <section className="memory-entry-card" aria-labelledby="capture-title">
-        <div className="home-ambient" aria-hidden="true">
-          <span />
-          <span />
-          <span />
-        </div>
-        <p className="home-kicker">Memory entry point</p>
-        <h1 id="capture-title">Start a conversation memory</h1>
-        <p className="home-entry-copy">Capture what happened. Resona will compress it into priorities, memory, and action.</p>
+      <div className="home-command-grid">
+        <section className="memory-entry-card intelligence-surface" aria-labelledby="capture-title">
+          <div className="home-ambient ambient-field" aria-hidden="true">
+            <span />
+            <span />
+            <span />
+          </div>
+          <p className="home-kicker">Memory entry point</p>
+          <h1 id="capture-title">Start a conversation memory</h1>
+          <p className="home-entry-copy editorial-copy">Capture what happened. Resona will compress it into priorities, memory, and action.</p>
 
-        <div className="home-capture-actions" role="tablist" aria-label="Capture mode">
-          <button className="home-action-button" type="button" data-active={mode === "record"} onClick={() => setMode("record")}>
-            <Mic size={18} aria-hidden="true" />
-            Record Conversation
-          </button>
-          <button className="home-action-button" type="button" data-active={mode === "upload"} onClick={() => setMode("upload")}>
-            <Upload size={18} aria-hidden="true" />
-            Upload Recording
-          </button>
-        </div>
-
-        <div className="home-capture-body">
-          {mode === "upload" ? (
-            <label className="home-dropzone">
-              <Upload size={22} aria-hidden="true" />
-              <strong>{selectedFileLabel}</strong>
-              <span>MP3, WAV, M4A, OGG, or WebM audio.</span>
-              <input className="sr-only" type="file" accept="audio/*" onChange={onFileChange} />
-            </label>
-          ) : (
-            <div className="home-record-stage">
-              <div className="home-record-time">{formatTimer(recordSeconds)}</div>
-              <div className="home-record-state">{isRecording ? "Recording..." : selectedFileLabel}</div>
-              {isRecording ? (
-                <button className="home-submit-button home-danger-button" type="button" onClick={stopRecording}>
-                  <Square size={16} aria-hidden="true" />
-                  Stop recording
-                </button>
-              ) : (
-                <button className="home-submit-button" type="button" onClick={startRecording}>
-                  <Mic size={16} aria-hidden="true" />
-                  Start recording
-                </button>
-              )}
-              {recordedUrl ? (
-                <audio className="home-audio-preview" src={recordedUrl} controls>
-                  <track kind="captions" />
-                </audio>
-              ) : null}
-            </div>
-          )}
-
-          <div className="home-capture-fields">
-            <label className="field">
-              <span className="label">Memory title</span>
-              <input className="input" value={title} onChange={(event) => setTitle(event.target.value)} placeholder={defaultTitle()} />
-            </label>
-            <label className="field">
-              <span className="label">Conversation type</span>
-              <select className="select" value={sourceType} onChange={(event) => setSourceType(event.target.value as typeof sourceType)}>
-                {sourceTypes.map((source) => (
-                  <option key={source} value={source}>
-                    {source}
-                  </option>
-                ))}
-              </select>
-            </label>
+          <div className="home-capture-actions" role="tablist" aria-label="Capture mode">
+            <button className="home-action-button" type="button" data-active={mode === "record"} onClick={() => setMode("record")}>
+              <Mic size={18} aria-hidden="true" />
+              Record Conversation
+            </button>
+            <button className="home-action-button" type="button" data-active={mode === "upload"} onClick={() => setMode("upload")}>
+              <Upload size={18} aria-hidden="true" />
+              Upload Recording
+            </button>
           </div>
 
-          {error ? (
-            <div className="notice notice-error" role="alert">
-              {error}
+          <div className="home-capture-body">
+            {mode === "upload" ? (
+              <label className="home-dropzone">
+                <Upload size={22} aria-hidden="true" />
+                <strong>{selectedFileLabel}</strong>
+                <span>MP3, WAV, M4A, OGG, or WebM audio.</span>
+                <input className="sr-only" type="file" accept="audio/*" onChange={onFileChange} />
+              </label>
+            ) : (
+              <div className="home-record-stage">
+                <div className="home-record-time">{formatTimer(recordSeconds)}</div>
+                <div className="home-record-state">{isRecording ? "Recording..." : selectedFileLabel}</div>
+                {isRecording ? (
+                  <button className="home-submit-button home-danger-button" type="button" onClick={stopRecording}>
+                    <Square size={16} aria-hidden="true" />
+                    Stop recording
+                  </button>
+                ) : (
+                  <button className="home-submit-button" type="button" onClick={startRecording}>
+                    <Mic size={16} aria-hidden="true" />
+                    Start recording
+                  </button>
+                )}
+                {recordedUrl ? (
+                  <audio className="home-audio-preview" src={recordedUrl} controls>
+                    <track kind="captions" />
+                  </audio>
+                ) : null}
+              </div>
+            )}
+
+            <div className="home-capture-fields">
+              <label className="field">
+                <span className="label">Memory title</span>
+                <input className="input" value={title} onChange={(event) => setTitle(event.target.value)} placeholder={defaultTitle()} />
+              </label>
+              <label className="field">
+                <span className="label">Conversation type</span>
+                <select className="select" value={sourceType} onChange={(event) => setSourceType(event.target.value as typeof sourceType)}>
+                  {sourceTypes.map((source) => (
+                    <option key={source} value={source}>
+                      {source}
+                    </option>
+                  ))}
+                </select>
+              </label>
             </div>
-          ) : null}
 
-          {statusMessage ? (
-            <div className="notice" role="status" aria-live="polite">
-              {statusMessage}
-            </div>
-          ) : null}
+            {error ? (
+              <div className="notice notice-error" role="alert">
+                {error}
+              </div>
+            ) : null}
 
-          <button className="home-submit-button home-upload-submit" type="button" onClick={submitAudio} disabled={!canSubmit}>
-            {isUploading ? <RefreshCw size={16} aria-hidden="true" /> : <Play size={16} aria-hidden="true" />}
-            {isUploading ? "Uploading..." : "Submit audio"}
-          </button>
-        </div>
-      </section>
+            {statusMessage ? (
+              <div className="notice" role="status" aria-live="polite">
+                {statusMessage}
+              </div>
+            ) : null}
 
-      <section className="attention-section" aria-labelledby="attention-title">
-        <div className="home-section-heading">
-          <p className="home-kicker">What matters now</p>
-          <h2 id="attention-title">What deserves your attention</h2>
-        </div>
-        <div className="attention-stack">
-          {attentionItems.length === 0 ? (
-            <div className="empty-state">No extracted priorities yet. Record or upload a conversation to create your first clarity surface.</div>
-          ) : (
-            attentionItems.map((item, index) => (
-              <Link className="attention-card" href={item.href} key={`${item.title}-${index}`}>
-                <span className="attention-index">0{index + 1}</span>
-                <div>
-                  <h3>{item.title}</h3>
-                  <p>{item.meta}</p>
-                </div>
-              </Link>
-            ))
-          )}
-        </div>
-      </section>
+            <button className="home-submit-button home-upload-submit" type="button" onClick={submitAudio} disabled={!canSubmit}>
+              {isUploading ? <RefreshCw size={16} aria-hidden="true" /> : <Play size={16} aria-hidden="true" />}
+              {isUploading ? "Uploading..." : "Submit audio"}
+            </button>
+          </div>
+        </section>
+
+        <section className="attention-section attention-section-command" aria-labelledby="attention-title">
+          <div className="home-section-heading">
+            <p className="home-kicker">What matters now</p>
+            <h2 id="attention-title">What deserves your attention</h2>
+          </div>
+          <div className="attention-stack">
+            {attentionItems.length === 0 ? (
+              <div className="empty-state">No extracted priorities yet. Record or upload a conversation to create your first clarity surface.</div>
+            ) : (
+              attentionItems.map((item, index) => (
+                <Link className={`attention-card ${index === 0 ? "priority-card" : "signal-card"}`} href={item.href} key={`${item.title}-${index}`}>
+                  <span className="attention-index">0{index + 1}</span>
+                  <div>
+                    <h3>{item.title}</h3>
+                    <p>{item.meta}</p>
+                  </div>
+                </Link>
+              ))
+            )}
+          </div>
+        </section>
+      </div>
 
       <section className="important-conversations" aria-labelledby="important-title">
         <div className="home-section-heading">

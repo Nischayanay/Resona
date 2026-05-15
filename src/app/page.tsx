@@ -1,29 +1,29 @@
 import Link from "next/link";
 
 const fragments = [
-  "Rahul - follow up",
+  "Rahul mentioned the intro",
   "May 16 - 4 PM",
-  "AI infrastructure",
-  "send resume",
-  "what mattered",
-  "memory layer",
-  "not meeting notes",
+  "AI infrastructure thread",
+  "send the resume",
+  "why it mattered",
+  "memory is reconnecting",
+  "not another note",
   "tomorrow evening"
 ];
 
 const productCards = [
   {
-    label: "Follow up",
+    label: "Most important now",
     title: "Follow up with Rahul",
     lines: ["Internship opportunity discussed", "AI infrastructure role", "Meeting tomorrow - 4 PM"]
   },
   {
-    label: "Pattern",
+    label: "Context",
     title: "You mentioned AI infrastructure",
     lines: ["4 times this week.", "Resona kept the thread open."]
   },
   {
-    label: "Resurfaced",
+    label: "Ambient memory",
     title: "Important conversations resurfaced",
     lines: ["before they were forgotten.", "No transcript digging required."]
   }
@@ -87,7 +87,7 @@ export default function Home() {
             <span>Conversations disappear too fast.</span>
             <span>Resona remembers what mattered.</span>
           </h1>
-          <p className="hero-support">Your AI memory layer for conversations, people, and opportunities.</p>
+          <p className="hero-support editorial-copy">A quiet intelligence layer for people, opportunities, commitments, and the emotional context you cannot keep carrying alone.</p>
           <div className="landing-actions">
             <Link className="landing-button landing-button-primary" href="/sign-up">
               Start Remembering
@@ -100,8 +100,8 @@ export default function Home() {
         <AmbientMemoryArtwork />
       </section>
 
-      <section className="problem-section" aria-labelledby="problem-title">
-        <p className="landing-kicker">The problem</p>
+      <section className="problem-section reveal-section" aria-labelledby="problem-title">
+        <p className="landing-kicker">Chaos</p>
         <h2 id="problem-title" className="sr-only">
           What conversation overload feels like
         </h2>
@@ -119,9 +119,9 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="shift-section" aria-labelledby="shift-title">
+      <section className="shift-section reveal-section" aria-labelledby="shift-title">
         <div>
-          <p className="landing-kicker">The shift</p>
+          <p className="landing-kicker">Relief</p>
           <h2 id="shift-title">Resona turns conversations into clarity.</h2>
         </div>
         <div className="clarity-flow" aria-label="Conversation to action flow">
@@ -132,14 +132,14 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="experience-section" aria-labelledby="experience-title">
+      <section className="experience-section reveal-section" aria-labelledby="experience-title">
         <div className="section-heading">
-          <p className="landing-kicker">Product experience</p>
+          <p className="landing-kicker">Intelligence</p>
           <h2 id="experience-title">A quiet surface for what deserves attention.</h2>
         </div>
         <div className="calm-card-grid">
-          {productCards.map((card) => (
-            <article className="calm-card" key={card.title}>
+          {productCards.map((card, index) => (
+            <article className={`calm-card ${index === 0 ? "calm-card-primary priority-card" : "signal-card"}`} key={card.title}>
               <p>{card.label}</p>
               <h3>{card.title}</h3>
               {card.lines.map((line) => (
@@ -150,9 +150,9 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="graph-section" id="memory" aria-labelledby="graph-title">
+      <section className="graph-section reveal-section" id="memory" aria-labelledby="graph-title">
         <div className="section-heading">
-          <p className="landing-kicker">Memory topology</p>
+          <p className="landing-kicker">Continuity</p>
           <h2 id="graph-title">People, ideas, and opportunities stay softly connected.</h2>
         </div>
         <div className="memory-topology" aria-hidden="true">
@@ -168,9 +168,9 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="trust-section" id="about" aria-labelledby="trust-title">
+      <section className="trust-section reveal-section" id="about" aria-labelledby="trust-title">
         <div className="trust-copy">
-          <p className="landing-kicker">Trust and privacy</p>
+          <p className="landing-kicker">Calmness</p>
           <h2 id="trust-title">Your conversations belong to you.</h2>
           <p>Control what Resona remembers. Control what it forgets.</p>
         </div>

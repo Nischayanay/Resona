@@ -175,7 +175,7 @@ export function SessionDetailView({ session, backHref = "/home" }: { session: Se
   const calendarActions = detail.tool_actions.filter((action) => action.tool_name === "google_calendar");
 
   return (
-    <main className="app-main">
+    <main className="app-main session-detail-surface">
       <div className="section-stack">
         <div className="button-row" style={{ justifyContent: "space-between", alignItems: "center" }}>
           <Link className="button button-secondary" href={backHref}>
@@ -188,7 +188,7 @@ export function SessionDetailView({ session, backHref = "/home" }: { session: Se
           </button>
         </div>
 
-        <section className="panel" aria-labelledby="session-title">
+        <section className="panel session-summary-panel intelligence-surface" aria-labelledby="session-title">
           <div className="panel-header">
             <div>
               <h1 id="session-title" className="panel-title">
@@ -238,7 +238,7 @@ export function SessionDetailView({ session, backHref = "/home" }: { session: Se
 
         <div className="detail-grid">
           <div className="section-stack">
-            <section className="panel" aria-labelledby="opps-title">
+            <section className="panel detail-intelligence-panel" aria-labelledby="opps-title">
               <div className="panel-header">
                 <div>
                   <h2 id="opps-title" className="panel-title">
@@ -252,7 +252,7 @@ export function SessionDetailView({ session, backHref = "/home" }: { session: Se
                   items={detail.opportunities}
                   empty="No opportunities extracted yet."
                   render={(item) => (
-                    <article className="data-item" key={item.id}>
+                    <article className="data-item signal-card" key={item.id}>
                       <h3 className="data-item-title">{item.title}</h3>
                       <p className="data-item-copy">
                         {item.type} · {item.priority}
@@ -264,7 +264,7 @@ export function SessionDetailView({ session, backHref = "/home" }: { session: Se
               </div>
             </section>
 
-            <section className="panel" aria-labelledby="people-title">
+            <section className="panel detail-intelligence-panel" aria-labelledby="people-title">
               <div className="panel-header">
                 <div>
                   <h2 id="people-title" className="panel-title">
@@ -278,7 +278,7 @@ export function SessionDetailView({ session, backHref = "/home" }: { session: Se
                   items={detail.people}
                   empty="No people extracted yet."
                   render={(person) => (
-                    <article className="data-item" key={person.id}>
+                    <article className="data-item signal-card" key={person.id}>
                       <h3 className="data-item-title">{person.name}</h3>
                       <p className="data-item-copy">{[person.role, person.company, person.email].filter(Boolean).join(" · ")}</p>
                       {person.relationship_context || person.notes ? <p className="data-item-copy">{person.relationship_context ?? person.notes}</p> : null}
@@ -288,7 +288,7 @@ export function SessionDetailView({ session, backHref = "/home" }: { session: Se
               </div>
             </section>
 
-            <section className="panel" aria-labelledby="transcript-title">
+            <section className="panel detail-intelligence-panel detail-transcript-panel" aria-labelledby="transcript-title">
               <div className="panel-header">
                 <div>
                   <h2 id="transcript-title" className="panel-title">
@@ -304,7 +304,7 @@ export function SessionDetailView({ session, backHref = "/home" }: { session: Se
           </div>
 
           <div className="section-stack">
-            <section className="panel" aria-labelledby="actions-title">
+            <section className="panel detail-action-panel priority-card" aria-labelledby="actions-title">
               <div className="panel-header">
                 <div>
                   <h2 id="actions-title" className="panel-title">
@@ -318,7 +318,7 @@ export function SessionDetailView({ session, backHref = "/home" }: { session: Se
                   items={detail.action_items}
                   empty="No action items extracted yet."
                   render={(item) => (
-                    <article className="data-item" key={item.id}>
+                    <article className="data-item signal-card" key={item.id}>
                       <div className="button-row" style={{ justifyContent: "space-between", alignItems: "center" }}>
                         <h3 className="data-item-title">{item.title}</h3>
                         <StatusChip status={item.status} />
@@ -334,7 +334,7 @@ export function SessionDetailView({ session, backHref = "/home" }: { session: Se
               </div>
             </section>
 
-            <section className="panel" aria-labelledby="calendar-title">
+            <section className="panel detail-action-panel priority-card" aria-labelledby="calendar-title">
               <div className="panel-header">
                 <div>
                   <h2 id="calendar-title" className="panel-title">
@@ -348,7 +348,7 @@ export function SessionDetailView({ session, backHref = "/home" }: { session: Se
                   items={calendarActions}
                   empty="No calendar suggestions detected."
                   render={(action) => (
-                    <article className="data-item" key={action.id}>
+                    <article className="data-item signal-card" key={action.id}>
                       <div className="button-row" style={{ justifyContent: "space-between", alignItems: "center" }}>
                         <h3 className="data-item-title">{action.payload_json.title ?? "Calendar event"}</h3>
                         <StatusChip status={action.status} />
@@ -373,7 +373,7 @@ export function SessionDetailView({ session, backHref = "/home" }: { session: Se
               </div>
             </section>
 
-            <section className="panel" aria-labelledby="followups-title">
+            <section className="panel detail-action-panel" aria-labelledby="followups-title">
               <div className="panel-header">
                 <div>
                   <h2 id="followups-title" className="panel-title">
@@ -387,7 +387,7 @@ export function SessionDetailView({ session, backHref = "/home" }: { session: Se
                   items={detail.follow_ups}
                   empty="No follow-ups suggested yet."
                   render={(item) => (
-                    <article className="data-item" key={item.id}>
+                    <article className="data-item signal-card" key={item.id}>
                       <div className="button-row" style={{ justifyContent: "space-between", alignItems: "center" }}>
                         <h3 className="data-item-title">{item.reason}</h3>
                         <StatusChip status={item.status} />
@@ -400,7 +400,7 @@ export function SessionDetailView({ session, backHref = "/home" }: { session: Se
               </div>
             </section>
 
-            <section className="panel" aria-labelledby="memory-title">
+            <section className="panel detail-intelligence-panel" aria-labelledby="memory-title">
               <div className="panel-header">
                 <div>
                   <h2 id="memory-title" className="panel-title">
@@ -414,7 +414,7 @@ export function SessionDetailView({ session, backHref = "/home" }: { session: Se
                   items={detail.memory_facts}
                   empty="No memory facts saved yet."
                   render={(item) => (
-                    <article className="data-item" key={item.id}>
+                    <article className="data-item signal-card" key={item.id}>
                       <div className="button-row" style={{ alignItems: "center" }}>
                         <Check size={15} aria-hidden="true" />
                         <h3 className="data-item-title">{item.fact}</h3>
