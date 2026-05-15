@@ -891,47 +891,10 @@ a {
   align-items: start;
 }
 
-.seo-section,
 .faq-section {
   width: min(100% - 40px, 1180px);
   margin: 0 auto;
   padding: 118px 0;
-}
-
-.seo-priority-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 14px;
-}
-
-.seo-priority-card {
-  min-height: 230px;
-  display: grid;
-  align-content: start;
-  gap: 14px;
-  border: 1px solid rgba(32, 35, 35, 0.08);
-  border-radius: 12px;
-  padding: 24px;
-}
-
-.seo-priority-card span {
-  color: rgba(72, 125, 120, 0.72);
-  font-family: "IBM Plex Mono", ui-monospace, monospace;
-  font-size: 12px;
-}
-
-.seo-priority-card h3 {
-  margin: 0;
-  color: #202323;
-  font-size: 22px;
-  line-height: 1.14;
-}
-
-.seo-priority-card p {
-  margin: 0;
-  color: rgba(32, 35, 35, 0.58);
-  font-size: 14px;
-  line-height: 1.55;
 }
 
 .faq-list {
@@ -2673,7 +2636,6 @@ a {
   .shift-section,
   .experience-section,
   .graph-section,
-  .seo-section,
   .faq-section,
   .trust-section,
   .final-cta {
@@ -2701,10 +2663,6 @@ a {
   }
 
   .calm-card-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .seo-priority-grid {
     grid-template-columns: 1fr;
   }
 
@@ -3864,8 +3822,8 @@ body {
   top: 18px;
   left: 50%;
   z-index: 70;
-  width: min(100% - 40px, 1160px);
-  min-height: 70px;
+  width: min(100% - 40px, 1050px);
+  min-height: 64px;
   margin: 0;
   grid-template-columns: minmax(160px, 1fr) auto minmax(230px, 1fr);
   border-radius: 22px;
@@ -3884,11 +3842,11 @@ body {
 }
 
 .home-topbar[data-scrolled="true"] {
-  width: min(100% - 52px, 760px);
-  min-height: 56px;
+  width: min(100% - 44px, 500px);
+  min-height: 48px;
   grid-template-columns: auto auto auto;
-  gap: 10px;
-  padding: 0 10px;
+  gap: 8px;
+  padding: 0 8px;
   border-radius: 999px;
   background: rgba(255, 253, 248, 0.86);
   box-shadow: 0 18px 80px rgba(35, 48, 45, 0.18);
@@ -3929,10 +3887,14 @@ body {
   gap: 4px;
 }
 
+.home-topbar[data-scrolled="true"] .home-nav-center {
+  padding: 3px;
+}
+
 .home-nav-center a,
 .home-settings-nav a,
 .home-sign-out {
-  min-width: 38px;
+  min-width: 36px;
 }
 
 .home-profile {
@@ -3945,15 +3907,24 @@ body {
 .home-topbar[data-scrolled="true"] .home-nav-center a,
 .home-topbar[data-scrolled="true"] .home-settings-nav a,
 .home-topbar[data-scrolled="true"] .home-sign-out {
-  width: 38px;
+  width: 32px;
+  min-width: 32px;
+  min-height: 32px;
   padding: 0;
 }
 
 .home-topbar[data-scrolled="true"] .home-profile {
-  width: 34px;
-  max-width: 34px;
+  width: 30px;
+  min-width: 30px;
+  max-width: 30px;
   justify-content: center;
   padding: 0;
+}
+
+.home-topbar[data-scrolled="true"] .home-brand-mark {
+  width: 28px;
+  height: 28px;
+  border-radius: 10px;
 }
 
 .home-brand-label,

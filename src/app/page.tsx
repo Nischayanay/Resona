@@ -37,33 +37,6 @@ const relationshipNodes = [
   { name: "Opportunity", meta: "Infralabs" }
 ];
 
-const seoPriorities = [
-  {
-    title: "Own one clear search intent",
-    body: "Resona should rank around conversation memory, AI meeting memory, follow-up tracking, and remembering important conversations."
-  },
-  {
-    title: "Use descriptive title and meta copy",
-    body: "The page should say exactly what the product does: AI memory for conversations, people, opportunities, and follow-ups."
-  },
-  {
-    title: "Answer real buyer questions",
-    body: "FAQ content helps visitors and search systems understand use cases, privacy, calendar approval, and how Resona differs from notes apps."
-  },
-  {
-    title: "Make content crawlable",
-    body: "Important product explanations should live as real text on the landing page, not only inside images, animations, or logged-in screens."
-  },
-  {
-    title: "Build internal paths",
-    body: "Landing, sign-up, privacy, terms, and product pages should link clearly so users and crawlers can understand the product structure."
-  },
-  {
-    title: "Keep the experience fast and calm",
-    body: "Performance, mobile layout, accessible headings, and readable sections support both SEO and conversion."
-  }
-];
-
 const faqs = [
   {
     question: "What is Resona?",
@@ -238,22 +211,6 @@ export default function Home() {
           <span>Private by default</span>
           <span>Approval before actions</span>
           <span>Memory you can review</span>
-        </div>
-      </section>
-
-      <section className="seo-section reveal-section" aria-labelledby="seo-title">
-        <div className="section-heading">
-          <p className="landing-kicker">Search clarity</p>
-          <h2 id="seo-title">Top 6 things that help Resona rank.</h2>
-        </div>
-        <div className="seo-priority-grid">
-          {seoPriorities.map((item, index) => (
-            <article className="seo-priority-card signal-card" key={item.title}>
-              <span>{String(index + 1).padStart(2, "0")}</span>
-              <h3>{item.title}</h3>
-              <p>{item.body}</p>
-            </article>
-          ))}
         </div>
       </section>
 
