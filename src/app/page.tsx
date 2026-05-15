@@ -37,6 +37,66 @@ const relationshipNodes = [
   { name: "Opportunity", meta: "Infralabs" }
 ];
 
+const seoPriorities = [
+  {
+    title: "Own one clear search intent",
+    body: "Resona should rank around conversation memory, AI meeting memory, follow-up tracking, and remembering important conversations."
+  },
+  {
+    title: "Use descriptive title and meta copy",
+    body: "The page should say exactly what the product does: AI memory for conversations, people, opportunities, and follow-ups."
+  },
+  {
+    title: "Answer real buyer questions",
+    body: "FAQ content helps visitors and search systems understand use cases, privacy, calendar approval, and how Resona differs from notes apps."
+  },
+  {
+    title: "Make content crawlable",
+    body: "Important product explanations should live as real text on the landing page, not only inside images, animations, or logged-in screens."
+  },
+  {
+    title: "Build internal paths",
+    body: "Landing, sign-up, privacy, terms, and product pages should link clearly so users and crawlers can understand the product structure."
+  },
+  {
+    title: "Keep the experience fast and calm",
+    body: "Performance, mobile layout, accessible headings, and readable sections support both SEO and conversion."
+  }
+];
+
+const faqs = [
+  {
+    question: "What is Resona?",
+    answer:
+      "Resona is an AI memory layer for conversations. It helps you remember people, opportunities, follow-ups, action items, and important context after meetings or real-life conversations."
+  },
+  {
+    question: "How is Resona different from a meeting notes app?",
+    answer:
+      "Meeting notes usually store transcripts. Resona focuses on what deserves attention next: who you spoke with, what mattered, what should be remembered, and which actions need approval."
+  },
+  {
+    question: "Can Resona create calendar events automatically?",
+    answer:
+      "Resona can suggest calendar actions, but the product keeps approval in the user’s hands. You approve only the calendar events you actually want created."
+  },
+  {
+    question: "Who should use Resona?",
+    answer:
+      "Resona is useful for founders, students, operators, builders, and anyone who has important conversations and does not want opportunities or follow-ups to disappear."
+  },
+  {
+    question: "Does Resona remember personal context?",
+    answer:
+      "Yes. Resona is designed to preserve useful conversation context such as people, relationships, opportunities, decisions, and durable memory facts."
+  },
+  {
+    question: "Is my conversation data controllable?",
+    answer:
+      "Yes. The product direction is privacy-first: users should be able to review memory, control what is remembered, and choose what actions Resona takes."
+  }
+];
+
 function AmbientMemoryArtwork() {
   return (
     <div className="memory-art" aria-hidden="true">
@@ -178,6 +238,37 @@ export default function Home() {
           <span>Private by default</span>
           <span>Approval before actions</span>
           <span>Memory you can review</span>
+        </div>
+      </section>
+
+      <section className="seo-section reveal-section" aria-labelledby="seo-title">
+        <div className="section-heading">
+          <p className="landing-kicker">Search clarity</p>
+          <h2 id="seo-title">Top 6 things that help Resona rank.</h2>
+        </div>
+        <div className="seo-priority-grid">
+          {seoPriorities.map((item, index) => (
+            <article className="seo-priority-card signal-card" key={item.title}>
+              <span>{String(index + 1).padStart(2, "0")}</span>
+              <h3>{item.title}</h3>
+              <p>{item.body}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="faq-section reveal-section" aria-labelledby="faq-title">
+        <div className="section-heading">
+          <p className="landing-kicker">FAQ</p>
+          <h2 id="faq-title">Questions people search before they trust a memory product.</h2>
+        </div>
+        <div className="faq-list">
+          {faqs.map((faq) => (
+            <details className="faq-item" key={faq.question}>
+              <summary>{faq.question}</summary>
+              <p>{faq.answer}</p>
+            </details>
+          ))}
         </div>
       </section>
 
