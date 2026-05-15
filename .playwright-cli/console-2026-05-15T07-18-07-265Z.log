@@ -1,0 +1,41 @@
+[    2776ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ webpack-internal:///(app-pages-browser)/./node_modules/next/dist/compiled/react-dom/cjs/react-dom-client.development.js:25630
+[  167544ms] [LOG] [Fast Refresh] rebuilding @ webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/dev/hot-reloader/app/hot-reloader-app.js:196
+[  168122ms] [LOG] [Fast Refresh] done in 580ms @ webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/dev/report-hmr-latency.js:13
+[  486519ms] [LOG] [Fast Refresh] rebuilding @ webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/dev/hot-reloader/app/hot-reloader-app.js:196
+[  487150ms] [LOG] [Fast Refresh] done in 633ms @ webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/dev/report-hmr-latency.js:13
+[  487630ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3000/_next/static/css/app/layout.css?v=1778829974870:0
+[  487707ms] Event
+[  487828ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3000/:0
+[  488059ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ webpack-internal:///(pages-dir-browser)/./node_modules/react-dom/cjs/react-dom-client.development.js:28004
+[  488142ms] TypeError: __webpack_modules__[moduleId] is not a function
+    at Object.__webpack_require__ [as require] (file:///Users/anaybauskar/Downloads/resona/.next/server/webpack-runtime.js:25:42)
+    at Object.require (file:///Users/anaybauskar/Downloads/resona/node_modules/next/dist/compiled/next-server/app-page.runtime.dev.js:39:28568)
+    at globalThis.__next_require__ (file:///Users/anaybauskar/Downloads/resona/node_modules/next/dist/compiled/next-server/app-page.runtime.dev.js:39:29391)
+    at requireModule (file:///Users/anaybauskar/Downloads/resona/node_modules/next/dist/compiled/next-server/app-page.runtime.dev.js:2:318257)
+    at initializeModuleChunk (file:///Users/anaybauskar/Downloads/resona/node_modules/next/dist/compiled/next-server/app-page.runtime.dev.js:2:347653)
+    at getOutlinedModel (file:///Users/anaybauskar/Downloads/resona/node_modules/next/dist/compiled/next-server/app-page.runtime.dev.js:2:357412)
+    at <unknown> (file:///Users/anaybauskar/Downloads/resona/node_modules/next/dist/compiled/next-server/app-page.runtime.dev.js:2:365365)
+    at ResponseInstance._fromJSON (file:///Users/anaybauskar/Downloads/resona/node_modules/next/dist/compiled/next-server/app-page.runtime.dev.js:2:365456)
+    at JSON.parse (<anonymous>)
+    at initializeModelChunk (file:///Users/anaybauskar/Downloads/resona/node_modules/next/dist/compiled/next-server/app-page.runtime.dev.js:2:347044)
+    at resolveModelChunk (file:///Users/anaybauskar/Downloads/resona/node_modules/next/dist/compiled/next-server/app-page.runtime.dev.js:2:345332)
+    at processFullStringRow (file:///Users/anaybauskar/Downloads/resona/node_modules/next/dist/compiled/next-server/app-page.runtime.dev.js:2:384476)
+    at <unknown> (file:///Users/anaybauskar/Downloads/resona/node_modules/next/dist/compiled/next-server/app-page.runtime.dev.js:2:386879)
+    at processBinaryChunk (file:///Users/anaybauskar/Downloads/resona/node_modules/next/dist/compiled/next-server/app-page.runtime.dev.js:2:386951)
+    at progress (file:///Users/anaybauskar/Downloads/resona/node_modules/next/dist/compiled/next-server/app-page.runtime.dev.js:2:388479)
+[  488141ms] [LOG] [HMR] connected @ webpack-internal:///(pages-dir-browser)/./node_modules/next/dist/client/dev/hot-reloader/pages/websocket.js:45
+[  488152ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3000/favicon.ico:0
+[  585852ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr' failed:  @ webpack-internal:///(pages-dir-browser)/./node_modules/next/dist/client/dev/hot-reloader/pages/websocket.js:88
+[  586900ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ webpack-internal:///(pages-dir-browser)/./node_modules/next/dist/client/dev/hot-reloader/pages/websocket.js:88
+[  587902ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ webpack-internal:///(pages-dir-browser)/./node_modules/next/dist/client/dev/hot-reloader/pages/websocket.js:88
+[  588907ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ webpack-internal:///(pages-dir-browser)/./node_modules/next/dist/client/dev/hot-reloader/pages/websocket.js:88
+[  589911ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ webpack-internal:///(pages-dir-browser)/./node_modules/next/dist/client/dev/hot-reloader/pages/websocket.js:88
+[  590916ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ webpack-internal:///(pages-dir-browser)/./node_modules/next/dist/client/dev/hot-reloader/pages/websocket.js:88
+[  597277ms] [LOG] [HMR] connected @ webpack-internal:///(pages-dir-browser)/./node_modules/next/dist/client/dev/hot-reloader/pages/websocket.js:45
+[  597307ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3000/_next/static/webpack/e6bba9a6ded2d6f5.webpack.hot-update.json:0
+[  597310ms] [WARNING] [Fast Refresh] performing full reload because your application had an unrecoverable error @ webpack-internal:///(pages-dir-browser)/./node_modules/next/dist/client/dev/hot-reloader/pages/hot-reloader-pages.js:347
+[  597619ms] [LOG] [Fast Refresh] rebuilding @ webpack-internal:///(pages-dir-browser)/./node_modules/next/dist/client/dev/hot-reloader/pages/hot-reloader-pages.js:206
+[  598019ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3000/_next/static/webpack/e6bba9a6ded2d6f5.webpack.hot-update.json:0
+[  598019ms] [WARNING] [Fast Refresh] performing full reload because your application had an unrecoverable error @ webpack-internal:///(pages-dir-browser)/./node_modules/next/dist/client/dev/hot-reloader/pages/hot-reloader-pages.js:347
+[  598657ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ webpack-internal:///(app-pages-browser)/./node_modules/next/dist/compiled/react-dom/cjs/react-dom-client.development.js:25630
+[  677429ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ webpack-internal:///(app-pages-browser)/./node_modules/next/dist/compiled/react-dom/cjs/react-dom-client.development.js:25630

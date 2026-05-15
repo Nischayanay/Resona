@@ -4,18 +4,17 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ChangeEvent, useEffect, useMemo, useRef, useState } from "react";
 import type { Session } from "@supabase/supabase-js";
-import { Mic, Square, Upload, RefreshCw, Play } from "lucide-react";
+import { CalendarDays, CheckCircle2, Mic, Play, RefreshCw, Square, Upload } from "lucide-react";
 import { apiFetch } from "@/lib/api-client";
-import { StatusChip } from "@/components/app/StatusChip";
-import type { ResonaSession } from "@/components/app/types";
+import type { ToolAction } from "@/components/app/types";
 
 type UploadResponse = {
   session_id: string;
   status: string;
 };
 
-type SessionsResponse = {
-  sessions: ResonaSession[];
+type ToolActionsResponse = {
+  tool_actions: ToolAction[];
 };
 
 const sourceTypes = ["meeting", "event", "lecture", "casual", "mentorship", "other"] as const;
@@ -49,9 +48,9 @@ export function CaptureWorkspace({ session }: { session: Session }) {
   const [recordSeconds, setRecordSeconds] = useState(0);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [sessions, setSessions] = useState<ResonaSession[]>([]);
+  const [toolActions, setToolActions] = useState<ToolAction[]>([]);
   const [isUploading, setIsUploading] = useState(false);
-  const [isLoadingSessions, setIsLoadingSessions] = useState(false);
+  const [isLoadingActions, setIsLoadingActions] = useState(false);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const chunksRef = useRef<Blob[]>([]);
@@ -60,9 +59,9 @@ export function CaptureWorkspace({ session }: { session: Session }) {
   const canSubmit = Boolean(activeAudio) && !isUploading && !isRecording;
 
   useEffect(() => {
-    void loadSessions();
+    void loadActionables();
     const interval = window.setInterval(() => {
-      void loadSessions();
+      void loadActionables();
     }, 5000);
     return () => window.clearInterval(interval);
   }, []);
@@ -84,15 +83,15 @@ export function CaptureWorkspace({ session }: { session: Session }) {
     };
   }, [recordedUrl]);
 
-  async function loadSessions() {
-    setIsLoadingSessions(true);
+  async function loadActionables() {
+    setIsLoadingActions(true);
     try {
-      const payload = await apiFetch<SessionsResponse>(session, "/api/sessions");
-      setSessions(payload.sessions);
+      const payload = await apiFetch<ToolActionsResponse>(session, "/api/tool-actions?status=suggested");
+      setToolActions(payload.tool_actions);
     } catch (loadError) {
-      setError(loadError instanceof Error ? loadError.message : "Could not load sessions.");
+      setError(loadError instanceof Error ? loadError.message : "Could not load actionables.");
     } finally {
-      setIsLoadingSessions(false);
+      setIsLoadingActions(false);
     }
   }
 
@@ -173,7 +172,7 @@ export function CaptureWorkspace({ session }: { session: Session }) {
         body: formData
       });
       setStatusMessage("Audio submitted. Processing has started.");
-      await loadSessions();
+      await loadActionables();
       router.push(`/conversations/${payload.session_id}`);
     } catch (submitError) {
       setError(submitError instanceof Error ? submitError.message : "Upload failed.");
@@ -190,28 +189,7 @@ export function CaptureWorkspace({ session }: { session: Session }) {
     return recordedBlob ? `Recorded audio - ${formatTimer(recordSeconds)}` : "No recording yet";
   }, [file, mode, recordedBlob, recordSeconds]);
 
-  const completedSessions = sessions.filter((item) => item.status === "completed");
-  const activeSessions = sessions.filter((item) => item.status !== "completed").slice(0, 3);
-  const meaningfulSessions = (completedSessions.length > 0 ? completedSessions : sessions).slice(0, 3);
-  const latestCompletedSession = completedSessions[0];
-  const attentionItems = [
-    ...activeSessions.map((item) => ({
-      title: item.title,
-      meta: `${item.status.replaceAll("_", " ")} - ${item.source_type}`,
-      href: `/conversations/${item.id}`
-    })),
-    ...completedSessions.slice(0, Math.max(0, 3 - activeSessions.length)).map((item) => ({
-      title: item.title,
-      meta: item.summary ? item.summary : `${item.source_type} conversation is ready to review.`,
-      href: `/conversations/${item.id}`
-    }))
-  ].slice(0, 3);
-  const processingCount = sessions.filter((item) => item.status !== "completed" && item.status !== "failed").length;
-  const memorySignals = [
-    completedSessions.length > 0 ? `${completedSessions.length} conversation${completedSessions.length === 1 ? "" : "s"} completed extraction.` : null,
-    processingCount > 0 ? `${processingCount} recording${processingCount === 1 ? " is" : "s are"} still moving through the intelligence engines.` : null,
-    latestCompletedSession?.summary ? `Latest clarity: ${latestCompletedSession.summary}` : null
-  ].filter((item): item is string => Boolean(item));
+  const actionables = toolActions.slice(0, 4);
 
   return (
     <main className="home-surface">
@@ -223,7 +201,7 @@ export function CaptureWorkspace({ session }: { session: Session }) {
             <span />
           </div>
           <p className="home-kicker">Memory entry point</p>
-          <h1 id="capture-title">Start a conversation memory</h1>
+          <h1 id="capture-title">Start your memory thread</h1>
           <p className="home-entry-copy editorial-copy">Capture what happened. Resona will compress it into priorities, memory, and action.</p>
 
           <div className="home-capture-actions" role="tablist" aria-label="Capture mode">
@@ -306,19 +284,23 @@ export function CaptureWorkspace({ session }: { session: Session }) {
 
         <section className="attention-section attention-section-command" aria-labelledby="attention-title">
           <div className="home-section-heading">
-            <p className="home-kicker">What matters now</p>
-            <h2 id="attention-title">What deserves your attention</h2>
+            <p className="home-kicker">{isLoadingActions ? "Refreshing actions" : "Actionables"}</p>
+            <h2 id="attention-title">Only what needs your next move.</h2>
           </div>
           <div className="attention-stack">
-            {attentionItems.length === 0 ? (
-              <div className="empty-state">No extracted priorities yet. Record or upload a conversation to create your first clarity surface.</div>
+            {actionables.length === 0 ? (
+              <div className="empty-state">No pending actions yet. Record or upload a conversation and Resona will surface calendar suggestions, tasks, and follow-ups here.</div>
             ) : (
-              attentionItems.map((item, index) => (
-                <Link className={`attention-card ${index === 0 ? "priority-card" : "signal-card"}`} href={item.href} key={`${item.title}-${index}`}>
+              actionables.map((item, index) => (
+                <Link className={`attention-card ${index === 0 ? "priority-card" : "signal-card"}`} href="/conversations" key={item.id}>
                   <span className="attention-index">0{index + 1}</span>
                   <div>
-                    <h3>{item.title}</h3>
-                    <p>{item.meta}</p>
+                    <h3>{item.payload_json.title ?? (item.tool_name === "google_calendar" ? "Review calendar suggestion" : "Review suggested action")}</h3>
+                    <p>{item.reason}</p>
+                    <span className="home-actionable-meta">
+                      {item.tool_name === "google_calendar" ? <CalendarDays size={14} aria-hidden="true" /> : <CheckCircle2 size={14} aria-hidden="true" />}
+                      {item.tool_name.replaceAll("_", " ")} · {item.action_type.replaceAll("_", " ")}
+                    </span>
                   </div>
                 </Link>
               ))
@@ -327,59 +309,17 @@ export function CaptureWorkspace({ session }: { session: Session }) {
         </section>
       </div>
 
-      <section className="important-conversations" aria-labelledby="important-title">
-        <div className="home-section-heading">
-          <p className="home-kicker">{isLoadingSessions ? "Refreshing memory" : "Important conversations"}</p>
-          <h2 id="important-title">Meaningful, actionable, unresolved.</h2>
+      <footer className="home-footer">
+        <div>
+          <strong>Resona</strong>
+          <span>Conversation memory, action only when it matters.</span>
         </div>
-        <div className="conversation-card-grid">
-          {meaningfulSessions.length === 0 ? (
-            <div className="empty-state">No conversation memories yet. Your recordings will appear here after upload.</div>
-          ) : (
-            meaningfulSessions.map((item) => (
-              <Link className="conversation-card" key={item.id} href={`/conversations/${item.id}`}>
-                <p>{new Date(item.created_at).toLocaleDateString()}</p>
-                <h3>{item.title}</h3>
-                <span>{item.source_type}</span>
-                <span>{item.summary ?? "Memory is still compressing."}</span>
-                <StatusChip status={item.status} />
-              </Link>
-            ))
-          )}
-        </div>
-      </section>
-
-      <section className="memory-signals-section" aria-labelledby="signals-title">
-        <div className="home-section-heading">
-          <p className="home-kicker">Memory signals</p>
-          <h2 id="signals-title">Patterns you should not have to hold yourself.</h2>
-        </div>
-        {memorySignals.length === 0 ? (
-          <div className="empty-state">Memory signals will appear after Resona has at least one extracted conversation.</div>
-        ) : (
-          <div className="memory-signal-list">
-            {memorySignals.slice(0, 3).map((signal) => (
-              <span key={signal}>{signal}</span>
-            ))}
-          </div>
-        )}
-      </section>
-
-      <section className="continuity-section" aria-labelledby="continuity-title">
-        <div className="home-section-heading">
-          <p className="home-kicker">Continuity layer</p>
-          <h2 id="continuity-title">Recently resurfaced</h2>
-        </div>
-        {latestCompletedSession ? (
-          <Link className="resurfaced-card" href={`/conversations/${latestCompletedSession.id}`}>
-            <span className="resurfaced-thread" aria-hidden="true" />
-            <h3>{latestCompletedSession.title}</h3>
-            <p>{latestCompletedSession.summary ?? "Recently completed and ready to reopen."}</p>
-          </Link>
-        ) : (
-          <div className="empty-state">Completed conversations will resurface here when there is memory to reconnect.</div>
-        )}
-      </section>
+        <nav aria-label="Home footer links">
+          <Link href="/conversations">Conversations</Link>
+          <Link href="/privacy">Privacy</Link>
+          <Link href="/terms">Terms</Link>
+        </nav>
+      </footer>
     </main>
   );
 }

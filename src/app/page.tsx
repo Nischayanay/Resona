@@ -188,6 +188,47 @@ export default function Home() {
           Start Remembering
         </Link>
       </section>
+
+      <footer className="landing-footer" aria-label="Resona footer">
+        <div className="landing-footer-grid">
+          <div className="landing-footer-brand">
+            <Link className="landing-brand" href="/" aria-label="Resona home">
+              <span className="landing-brand-mark">R</span>
+              <span>Resona</span>
+            </Link>
+            <p>Conversations should remember what mattered.</p>
+          </div>
+
+          <nav className="landing-footer-group" aria-label="Product links">
+            <h2>Product</h2>
+            <a href="#memory">Memory</a>
+            <Link href="/home">Capture</Link>
+            <Link href="/sign-up">Start Remembering</Link>
+          </nav>
+
+          <nav className="landing-footer-group" aria-label="Intelligence links">
+            <h2>Intelligence</h2>
+            <span>People</span>
+            <span>Opportunities</span>
+            <span>Follow-ups</span>
+          </nav>
+
+          <nav className="landing-footer-group" aria-label="Company links">
+            <h2>Company</h2>
+            <Link href="/sign-in">Sign In</Link>
+            <Link href="/privacy">Privacy</Link>
+            <Link href="/terms">Terms</Link>
+          </nav>
+        </div>
+
+        <div className="landing-footer-bottom">
+          <span>© 2026 Resona. All rights reserved.</span>
+          <div>
+            <Link href="/terms">Terms</Link>
+            <Link href="/privacy">Privacy</Link>
+          </div>
+        </div>
+      </footer>
     </main>
   );
 }

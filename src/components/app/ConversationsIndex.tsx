@@ -5,24 +5,24 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import type { Session } from "@supabase/supabase-js";
 import { ArrowUpRight, FileAudio, RefreshCw, Search } from "lucide-react";
 import { apiFetch } from "@/lib/api-client";
-import { StatusChip } from "@/components/app/StatusChip";
 import type { ResonaSession } from "@/components/app/types";
 
 type SessionsResponse = {
   sessions: ResonaSession[];
 };
 
-function formatDate(value: string) {
+function formatThreadDate(value: string) {
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) {
     return value;
   }
-  return new Intl.DateTimeFormat(undefined, {
-    month: "short",
-    day: "numeric",
-    hour: "numeric",
-    minute: "2-digit"
+  const day = new Intl.DateTimeFormat(undefined, { weekday: "long" }).format(date);
+  const dateText = new Intl.DateTimeFormat(undefined, {
+    day: "2-digit",
+    month: "long",
+    year: "numeric"
   }).format(date);
+  return `${day} - ${dateText}`;
 }
 
 function statusCopy(status: ResonaSession["status"]) {
@@ -113,13 +113,11 @@ export function ConversationsIndex({ session }: { session: Session }) {
               <div className="conversation-memory-main">
                 <div className="conversation-memory-title-row">
                   <h2>{item.title}</h2>
-                  <StatusChip status={item.status} />
                 </div>
                 <p className="conversation-memory-summary">{item.summary ?? statusCopy(item.status)}</p>
                 <div className="conversation-memory-meta">
+                  <span>{formatThreadDate(item.created_at)}</span>
                   <span>{item.source_type}</span>
-                  <span>{formatDate(item.created_at)}</span>
-                  <span>{item.status === "completed" ? "Extracted memory ready" : "Processing"}</span>
                 </div>
               </div>
               <span className="conversation-open-indicator">

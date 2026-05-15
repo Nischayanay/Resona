@@ -1,0 +1,117 @@
+- main [ref=e2]:
+  - navigation "Main navigation" [ref=e3]:
+    - link "Resona home" [ref=e4] [cursor=pointer]:
+      - /url: /
+      - generic [ref=e5]: R
+      - generic [ref=e6]: Resona
+    - generic [ref=e7]:
+      - link "Home" [ref=e8] [cursor=pointer]:
+        - /url: /
+      - link "Memory" [ref=e9] [cursor=pointer]:
+        - /url: "#memory"
+      - link "About" [ref=e10] [cursor=pointer]:
+        - /url: "#about"
+    - link "Get Started" [ref=e11] [cursor=pointer]:
+      - /url: /sign-up
+  - region "Conversations disappear too fast. Resona remembers what mattered." [ref=e12]:
+    - generic [ref=e13]:
+      - paragraph [ref=e14]: Conversation memory for real life
+      - heading "Conversations disappear too fast. Resona remembers what mattered." [level=1] [ref=e15]:
+        - generic [ref=e16]: Conversations disappear too fast.
+        - generic [ref=e17]: Resona remembers what mattered.
+      - paragraph [ref=e18]: A quiet intelligence layer for people, opportunities, commitments, and the emotional context you cannot keep carrying alone.
+      - generic [ref=e19]:
+        - link "Start Remembering" [ref=e20] [cursor=pointer]:
+          - /url: /sign-up
+        - link "Watch Conversation Demo" [ref=e21] [cursor=pointer]:
+          - /url: /home
+    - generic [ref=e22]:
+      - generic [ref=e27]: meaning reconnecting
+      - generic [ref=e28]: Rahul mentioned the intro
+      - generic [ref=e29]: May 16 - 4 PM
+      - generic [ref=e30]: AI infrastructure thread
+      - generic [ref=e31]: send the resume
+      - generic [ref=e32]: why it mattered
+      - generic [ref=e33]: memory is reconnecting
+      - generic [ref=e34]: not another note
+      - generic [ref=e35]: tomorrow evening
+      - generic [ref=e36]: 14:26
+      - generic [ref=e37]: yesterday
+      - generic [ref=e38]: unresolved
+  - region "What conversation overload feels like" [ref=e43]:
+    - paragraph [ref=e44]: Chaos
+    - heading "What conversation overload feels like" [level=2] [ref=e45]
+    - generic [ref=e46]:
+      - paragraph [ref=e47]: You meet incredible people.
+      - paragraph [ref=e48]: Have meaningful conversations.
+      - paragraph [ref=e49]: Discuss ideas that could change your life.
+      - paragraph [ref=e50]: Then forget most of it.
+    - generic [ref=e51]:
+      - generic [ref=e52]: send resume
+      - generic [ref=e53]: follow up tomorrow
+      - generic [ref=e54]: AI infrastructure
+      - generic [ref=e55]: why it mattered
+  - region "Resona turns conversations into clarity." [ref=e56]:
+    - generic [ref=e57]:
+      - paragraph [ref=e58]: Relief
+      - heading "Resona turns conversations into clarity." [level=2] [ref=e59]
+    - generic "Conversation to action flow" [ref=e60]:
+      - generic [ref=e61]: Conversation
+      - generic [ref=e62]: Understanding
+      - generic [ref=e63]: Memory
+      - generic [ref=e64]: Action
+  - region "A quiet surface for what deserves attention." [ref=e65]:
+    - generic [ref=e66]:
+      - paragraph [ref=e67]: Intelligence
+      - heading "A quiet surface for what deserves attention." [level=2] [ref=e68]
+    - generic [ref=e69]:
+      - article [ref=e70]:
+        - paragraph [ref=e71]: Most important now
+        - heading "Follow up with Rahul" [level=3] [ref=e72]
+        - generic [ref=e73]: Internship opportunity discussed
+        - generic [ref=e74]: AI infrastructure role
+        - generic [ref=e75]: Meeting tomorrow - 4 PM
+      - article [ref=e76]:
+        - paragraph [ref=e77]: Context
+        - heading "You mentioned AI infrastructure" [level=3] [ref=e78]
+        - generic [ref=e79]: 4 times this week.
+        - generic [ref=e80]: Resona kept the thread open.
+      - article [ref=e81]:
+        - paragraph [ref=e82]: Ambient memory
+        - heading "Important conversations resurfaced" [level=3] [ref=e83]
+        - generic [ref=e84]: before they were forgotten.
+        - generic [ref=e85]: No transcript digging required.
+  - region "People, ideas, and opportunities stay softly connected." [ref=e86]:
+    - generic [ref=e87]:
+      - paragraph [ref=e88]: Continuity
+      - heading "People, ideas, and opportunities stay softly connected." [level=2] [ref=e89]
+    - generic [ref=e90]:
+      - generic [ref=e94]:
+        - strong [ref=e95]: Rahul
+        - generic [ref=e96]: internship - AI infra
+      - generic [ref=e97]:
+        - strong [ref=e98]: Resona
+        - generic [ref=e99]: memory layer
+      - generic [ref=e100]:
+        - strong [ref=e101]: Follow-up
+        - generic [ref=e102]: May 16 - 4 PM
+      - generic [ref=e103]:
+        - strong [ref=e104]: Positioning
+        - generic [ref=e105]: not meeting notes
+      - generic [ref=e106]:
+        - strong [ref=e107]: Opportunity
+        - generic [ref=e108]: Infralabs
+  - region "Your conversations belong to you." [ref=e109]:
+    - generic [ref=e110]:
+      - paragraph [ref=e111]: Calmness
+      - heading "Your conversations belong to you." [level=2] [ref=e112]
+      - paragraph [ref=e113]: Control what Resona remembers. Control what it forgets.
+    - generic [ref=e114]:
+      - generic [ref=e115]: Private by default
+      - generic [ref=e116]: Approval before actions
+      - generic [ref=e117]: Memory you can review
+  - region "Never lose an important conversation again." [ref=e118]:
+    - paragraph [ref=e119]: Resona
+    - heading "Never lose an important conversation again." [level=2] [ref=e120]
+    - link "Start Remembering" [ref=e121] [cursor=pointer]:
+      - /url: /sign-up

@@ -35,6 +35,49 @@ function dateLabel(value?: string | null) {
   return date.toLocaleString();
 }
 
+function threadDateLabel(value: string) {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    return value;
+  }
+  const day = new Intl.DateTimeFormat(undefined, { weekday: "long" }).format(date);
+  const dateText = new Intl.DateTimeFormat(undefined, {
+    day: "2-digit",
+    month: "long",
+    year: "numeric"
+  }).format(date);
+  const timeText = new Intl.DateTimeFormat(undefined, {
+    hour: "numeric",
+    minute: "2-digit"
+  }).format(date);
+  return `${day} - ${dateText} - ${timeText}`;
+}
+
+function statusWord(status: string) {
+  if (status === "completed") {
+    return "crystallized";
+  }
+  if (status === "failed" || status === "partial_failed") {
+    return "needs care";
+  }
+  if (status === "queued" || status === "uploaded") {
+    return "warming up";
+  }
+  return "thinking";
+}
+
+function CollapsibleText({ text, className }: { text: string; className?: string }) {
+  const [isExpanded, setIsExpanded] = useState(false);
+  return (
+    <div className="collapsible-copy">
+      <div className={`${className ?? ""} ${isExpanded ? "" : "is-clamped"}`.trim()}>{text}</div>
+      <button className="show-more-button" type="button" onClick={() => setIsExpanded((value) => !value)}>
+        {isExpanded ? "Show less" : "Show more"}
+      </button>
+    </div>
+  );
+}
+
 export function SessionDetailView({ session, backHref = "/home" }: { session: Session; backHref?: string }) {
   const params = useParams<{ id: string }>();
   const pathname = usePathname();
@@ -46,6 +89,8 @@ export function SessionDetailView({ session, backHref = "/home" }: { session: Se
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [needsCalendarConnect, setNeedsCalendarConnect] = useState(false);
+  const [actionDecisions, setActionDecisions] = useState<Record<string, "done" | "skip">>({});
+  const [followUpDecisions, setFollowUpDecisions] = useState<Record<string, "done" | "skip">>({});
 
   const loadDetail = useCallback(async () => {
     setError(null);
@@ -194,17 +239,13 @@ export function SessionDetailView({ session, backHref = "/home" }: { session: Se
               <h1 id="session-title" className="panel-title">
                 {detail.session.title}
               </h1>
-              <p className="panel-copy">
-                {detail.session.source_type} · {new Date(detail.session.created_at).toLocaleString()}
-              </p>
+              <p className="panel-copy session-date-copy">{threadDateLabel(detail.session.created_at)}</p>
             </div>
-            <StatusChip status={detail.session.status} />
+            <span className="session-mood-chip">{statusWord(detail.session.status)}</span>
           </div>
           {detail.session.summary ? (
             <div className="panel-body">
-              <p className="data-item-copy" style={{ margin: 0 }}>
-                {detail.session.summary}
-              </p>
+              <CollapsibleText text={detail.session.summary} className="data-item-copy session-summary-copy" />
             </div>
           ) : null}
         </section>
@@ -236,9 +277,8 @@ export function SessionDetailView({ session, backHref = "/home" }: { session: Se
           </div>
         ) : null}
 
-        <div className="detail-grid">
-          <div className="section-stack">
-            <section className="panel detail-intelligence-panel" aria-labelledby="opps-title">
+        <div className="detail-bento-grid">
+          <section className="panel detail-intelligence-panel" aria-labelledby="opps-title">
               <div className="panel-header">
                 <div>
                   <h2 id="opps-title" className="panel-title">
@@ -262,49 +302,9 @@ export function SessionDetailView({ session, backHref = "/home" }: { session: Se
                   )}
                 />
               </div>
-            </section>
+          </section>
 
-            <section className="panel detail-intelligence-panel" aria-labelledby="people-title">
-              <div className="panel-header">
-                <div>
-                  <h2 id="people-title" className="panel-title">
-                    People
-                  </h2>
-                  <p className="panel-copy">People and relationship context found in the session.</p>
-                </div>
-              </div>
-              <div className="panel-body">
-                <DataList<Person>
-                  items={detail.people}
-                  empty="No people extracted yet."
-                  render={(person) => (
-                    <article className="data-item signal-card" key={person.id}>
-                      <h3 className="data-item-title">{person.name}</h3>
-                      <p className="data-item-copy">{[person.role, person.company, person.email].filter(Boolean).join(" · ")}</p>
-                      {person.relationship_context || person.notes ? <p className="data-item-copy">{person.relationship_context ?? person.notes}</p> : null}
-                    </article>
-                  )}
-                />
-              </div>
-            </section>
-
-            <section className="panel detail-intelligence-panel detail-transcript-panel" aria-labelledby="transcript-title">
-              <div className="panel-header">
-                <div>
-                  <h2 id="transcript-title" className="panel-title">
-                    Transcript
-                  </h2>
-                  <p className="panel-copy">Source text used by the extraction pipeline.</p>
-                </div>
-              </div>
-              <div className="panel-body">
-                {detail.transcript?.raw_text ? <div className="transcript-box">{detail.transcript.raw_text}</div> : <div className="empty-state">Transcript not available yet.</div>}
-              </div>
-            </section>
-          </div>
-
-          <div className="section-stack">
-            <section className="panel detail-action-panel priority-card" aria-labelledby="actions-title">
+          <section className="panel detail-action-panel priority-card" aria-labelledby="actions-title">
               <div className="panel-header">
                 <div>
                   <h2 id="actions-title" className="panel-title">
@@ -318,23 +318,30 @@ export function SessionDetailView({ session, backHref = "/home" }: { session: Se
                   items={detail.action_items}
                   empty="No action items extracted yet."
                   render={(item) => (
-                    <article className="data-item signal-card" key={item.id}>
-                      <div className="button-row" style={{ justifyContent: "space-between", alignItems: "center" }}>
+                    <article className="data-item signal-card actionable-item" data-decision={actionDecisions[item.id] ?? "open"} key={item.id}>
+                      <div>
                         <h3 className="data-item-title">{item.title}</h3>
-                        <StatusChip status={item.status} />
+                        <p className="data-item-copy">
+                          {[item.description, item.owner_name ? `Owner: ${item.owner_name}` : null, dateLabel(item.due_at) ? `Due: ${dateLabel(item.due_at)}` : null]
+                            .filter(Boolean)
+                            .join(" · ")}
+                        </p>
                       </div>
-                      <p className="data-item-copy">
-                        {[item.description, item.owner_name ? `Owner: ${item.owner_name}` : null, dateLabel(item.due_at) ? `Due: ${dateLabel(item.due_at)}` : null]
-                          .filter(Boolean)
-                          .join(" · ")}
-                      </p>
+                      <div className="decision-controls" aria-label={`Decision for ${item.title}`}>
+                        <button className="decision-button decision-done" type="button" aria-label="Mark completed" onClick={() => setActionDecisions((current) => ({ ...current, [item.id]: "done" }))}>
+                          <Check size={15} aria-hidden="true" />
+                        </button>
+                        <button className="decision-button decision-skip" type="button" aria-label="Mark not needed" onClick={() => setActionDecisions((current) => ({ ...current, [item.id]: "skip" }))}>
+                          <X size={15} aria-hidden="true" />
+                        </button>
+                      </div>
                     </article>
                   )}
                 />
               </div>
-            </section>
+          </section>
 
-            <section className="panel detail-action-panel priority-card" aria-labelledby="calendar-title">
+          <section className="panel detail-action-panel priority-card" aria-labelledby="calendar-title">
               <div className="panel-header">
                 <div>
                   <h2 id="calendar-title" className="panel-title">
@@ -371,36 +378,9 @@ export function SessionDetailView({ session, backHref = "/home" }: { session: Se
                   )}
                 />
               </div>
-            </section>
+          </section>
 
-            <section className="panel detail-action-panel" aria-labelledby="followups-title">
-              <div className="panel-header">
-                <div>
-                  <h2 id="followups-title" className="panel-title">
-                    Follow-ups
-                  </h2>
-                  <p className="panel-copy">Suggested messages and reasons.</p>
-                </div>
-              </div>
-              <div className="panel-body">
-                <DataList<FollowUp>
-                  items={detail.follow_ups}
-                  empty="No follow-ups suggested yet."
-                  render={(item) => (
-                    <article className="data-item signal-card" key={item.id}>
-                      <div className="button-row" style={{ justifyContent: "space-between", alignItems: "center" }}>
-                        <h3 className="data-item-title">{item.reason}</h3>
-                        <StatusChip status={item.status} />
-                      </div>
-                      <p className="data-item-copy">{item.suggested_message}</p>
-                      {dateLabel(item.suggested_date) ? <p className="data-item-copy">Suggested: {dateLabel(item.suggested_date)}</p> : null}
-                    </article>
-                  )}
-                />
-              </div>
-            </section>
-
-            <section className="panel detail-intelligence-panel" aria-labelledby="memory-title">
+          <section className="panel detail-intelligence-panel" aria-labelledby="memory-title">
               <div className="panel-header">
                 <div>
                   <h2 id="memory-title" className="panel-title">
@@ -424,8 +404,83 @@ export function SessionDetailView({ session, backHref = "/home" }: { session: Se
                   )}
                 />
               </div>
-            </section>
-          </div>
+          </section>
+
+          <section className="panel detail-action-panel" aria-labelledby="followups-title">
+              <div className="panel-header">
+                <div>
+                  <h2 id="followups-title" className="panel-title">
+                    Follow-ups
+                  </h2>
+                  <p className="panel-copy">Suggested messages and reasons.</p>
+                </div>
+              </div>
+              <div className="panel-body">
+                <DataList<FollowUp>
+                  items={detail.follow_ups}
+                  empty="No follow-ups suggested yet."
+                  render={(item) => (
+                    <article className="data-item signal-card actionable-item" data-decision={followUpDecisions[item.id] ?? "open"} key={item.id}>
+                      <div>
+                        <h3 className="data-item-title">{item.reason}</h3>
+                        <p className="data-item-copy">{item.suggested_message}</p>
+                        {dateLabel(item.suggested_date) ? <p className="data-item-copy">Suggested: {dateLabel(item.suggested_date)}</p> : null}
+                      </div>
+                      <div className="decision-controls" aria-label={`Decision for ${item.reason}`}>
+                        <button className="decision-button decision-done" type="button" aria-label="Mark completed" onClick={() => setFollowUpDecisions((current) => ({ ...current, [item.id]: "done" }))}>
+                          <Check size={15} aria-hidden="true" />
+                        </button>
+                        <button className="decision-button decision-skip" type="button" aria-label="Mark not needed" onClick={() => setFollowUpDecisions((current) => ({ ...current, [item.id]: "skip" }))}>
+                          <X size={15} aria-hidden="true" />
+                        </button>
+                      </div>
+                    </article>
+                  )}
+                />
+              </div>
+          </section>
+
+          <section className="panel detail-intelligence-panel detail-people-panel" aria-labelledby="people-title">
+              <div className="panel-header">
+                <div>
+                  <h2 id="people-title" className="panel-title">
+                    People
+                  </h2>
+                  <p className="panel-copy">People and relationship context found in the session.</p>
+                </div>
+              </div>
+              <div className="panel-body">
+                <DataList<Person>
+                  items={detail.people}
+                  empty="No people extracted yet."
+                  render={(person) => (
+                    <article className="data-item signal-card" key={person.id}>
+                      <h3 className="data-item-title">{person.name}</h3>
+                      <p className="data-item-copy">{[person.role, person.company, person.email].filter(Boolean).join(" · ")}</p>
+                      {person.relationship_context || person.notes ? <p className="data-item-copy">{person.relationship_context ?? person.notes}</p> : null}
+                    </article>
+                  )}
+                />
+              </div>
+          </section>
+
+          <section className="panel detail-intelligence-panel detail-transcript-panel" aria-labelledby="transcript-title">
+            <div className="panel-header">
+              <div>
+                <h2 id="transcript-title" className="panel-title">
+                  Transcript
+                </h2>
+                <p className="panel-copy">Source text used by the extraction pipeline.</p>
+              </div>
+            </div>
+            <div className="panel-body">
+              {detail.transcript?.raw_text ? (
+                <CollapsibleText text={detail.transcript.raw_text} className="transcript-box" />
+              ) : (
+                <div className="empty-state">Transcript not available yet.</div>
+              )}
+            </div>
+          </section>
         </div>
       </div>
     </main>

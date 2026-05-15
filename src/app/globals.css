@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap");
+
 :root {
   --background: #fcfcfc;
   --foreground: #252728;
@@ -919,6 +921,92 @@ a {
   font-size: 56px;
 }
 
+.landing-footer {
+  width: min(100% - 40px, 1180px);
+  margin: 0 auto;
+  border-top: 1px solid rgba(32, 35, 35, 0.08);
+  padding: 58px 0 42px;
+}
+
+.landing-footer-grid {
+  display: grid;
+  grid-template-columns: minmax(260px, 1.3fr) repeat(3, minmax(140px, 0.6fr));
+  gap: 56px;
+  align-items: start;
+}
+
+.landing-footer-brand {
+  display: grid;
+  gap: 30px;
+}
+
+.landing-footer-brand .landing-brand {
+  justify-self: start;
+}
+
+.landing-footer-brand p {
+  width: min(100%, 340px);
+  margin: 0;
+  color: rgba(32, 35, 35, 0.42);
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 17px;
+  line-height: 1.5;
+}
+
+.landing-footer-group {
+  display: grid;
+  gap: 18px;
+}
+
+.landing-footer-group h2 {
+  margin: 0 0 8px;
+  color: rgba(32, 35, 35, 0.5);
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.landing-footer-group a,
+.landing-footer-group span {
+  color: rgba(32, 35, 35, 0.42);
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 15px;
+  line-height: 1.2;
+}
+
+.landing-footer-group a:hover {
+  color: #202323;
+}
+
+.landing-footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  border-top: 1px solid rgba(32, 35, 35, 0.08);
+  margin-top: 72px;
+  padding-top: 28px;
+  color: rgba(32, 35, 35, 0.38);
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 14px;
+}
+
+.landing-footer-bottom div {
+  display: flex;
+  gap: 10px;
+}
+
+.landing-footer-bottom a:hover {
+  color: rgba(32, 35, 35, 0.7);
+}
+
+.landing-footer-bottom a + a::before {
+  content: "·";
+  margin-right: 10px;
+  color: rgba(32, 35, 35, 0.28);
+}
+
 @keyframes memory-drift {
   0%, 100% {
     transform: translate3d(0, 0, 0);
@@ -1716,16 +1804,16 @@ a {
   min-width: 0;
   margin: 0;
   color: #202323;
-  font-size: 22px;
-  line-height: 1.2;
-  font-weight: 610;
+  font-size: 28px;
+  line-height: 1.08;
+  font-weight: 680;
 }
 
 .conversation-memory-summary {
   margin: 0;
   color: rgba(32, 35, 35, 0.58);
   font-family: Georgia, "Times New Roman", serif;
-  font-size: 17px;
+  font-size: 16px;
   line-height: 1.42;
 }
 
@@ -1734,12 +1822,12 @@ a {
   flex-wrap: wrap;
   gap: 8px;
   color: rgba(32, 35, 35, 0.44);
-  font-family: "IBM Plex Mono", ui-monospace, monospace;
-  font-size: 11px;
+  font-family: "Space Mono", "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 12px;
 }
 
 .conversation-memory-meta span:not(:last-child)::after {
-  content: "/";
+  content: "·";
   margin-left: 8px;
   color: rgba(32, 35, 35, 0.22);
 }
@@ -2522,6 +2610,19 @@ a {
   .final-cta {
     min-height: 500px;
   }
+
+  .landing-footer {
+    width: min(100% - 28px, 1180px);
+  }
+
+  .landing-footer-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 42px 28px;
+  }
+
+  .landing-footer-brand {
+    grid-column: 1 / -1;
+  }
 }
 
 @media (max-width: 520px) {
@@ -2569,6 +2670,14 @@ a {
     width: 138px;
     padding: 14px;
   }
+
+  .landing-footer-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .landing-footer-bottom {
+    flex-direction: column;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -2606,7 +2715,7 @@ a {
   --font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
   --font-ui: "Helvetica Neue", Helvetica, Arial, sans-serif;
   --font-editorial: Georgia, "Times New Roman", serif;
-  --font-mono: "IBM Plex Mono", "SF Mono", ui-monospace, monospace;
+  --font-mono: "Space Mono", "IBM Plex Mono", "SF Mono", ui-monospace, monospace;
 }
 
 body {
@@ -3107,6 +3216,24 @@ body {
   font-size: 12px;
 }
 
+.session-date-copy {
+  text-transform: none;
+}
+
+.session-mood-chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 30px;
+  border: 1px solid rgba(79, 133, 125, 0.2);
+  border-radius: 999px;
+  background: rgba(79, 133, 125, 0.1);
+  color: rgba(39, 94, 86, 0.9);
+  padding: 0 12px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-transform: lowercase;
+}
+
 .session-summary-panel .panel-body {
   padding: 28px 34px 34px;
 }
@@ -3119,9 +3246,20 @@ body {
   line-height: 1.45;
 }
 
-.detail-grid {
+.detail-grid,
+.detail-bento-grid {
   grid-template-columns: minmax(0, 0.96fr) minmax(340px, 0.62fr);
   gap: 18px;
+}
+
+.detail-bento-grid {
+  display: grid;
+  align-items: start;
+}
+
+.detail-transcript-panel,
+.detail-people-panel {
+  grid-column: 1 / -1;
 }
 
 .detail-action-panel {
@@ -3163,6 +3301,79 @@ body {
   max-height: 420px;
   color: rgba(23, 27, 27, 0.58);
   font-family: var(--font-ui);
+}
+
+.collapsible-copy {
+  display: grid;
+  gap: 12px;
+}
+
+.is-clamped {
+  display: -webkit-box;
+  -webkit-line-clamp: 5;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.show-more-button {
+  justify-self: start;
+  border: 0;
+  background: transparent;
+  color: rgba(39, 94, 86, 0.95);
+  padding: 0;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.actionable-item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: start;
+}
+
+.actionable-item[data-decision="done"] {
+  border-color: rgba(0, 121, 86, 0.24);
+  background: rgba(0, 121, 86, 0.055);
+}
+
+.actionable-item[data-decision="skip"] {
+  border-color: rgba(195, 51, 51, 0.22);
+  background: rgba(195, 51, 51, 0.045);
+}
+
+.decision-controls {
+  display: flex;
+  gap: 8px;
+}
+
+.decision-button {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border-radius: 9px;
+  background: rgba(255, 255, 252, 0.72);
+}
+
+.decision-done {
+  border: 1px solid rgba(0, 121, 86, 0.28);
+  color: #007956;
+}
+
+.decision-skip {
+  border: 1px solid rgba(195, 51, 51, 0.26);
+  color: #c33;
+}
+
+.decision-done:hover {
+  background: rgba(0, 121, 86, 0.1);
+}
+
+.decision-skip:hover {
+  background: rgba(195, 51, 51, 0.08);
 }
 
 .settings-surface {
@@ -3219,6 +3430,7 @@ body {
 @media (max-width: 920px) {
   .home-command-grid,
   .detail-grid,
+  .detail-bento-grid,
   .settings-hero {
     grid-template-columns: 1fr;
   }
@@ -3346,5 +3558,113 @@ body {
   .conversation-memory-card:hover,
   .resurfaced-card:hover {
     transform: none;
+  }
+}
+
+/* Focused logged-in home pass */
+.home-command-grid {
+  grid-template-columns: 1fr;
+  justify-items: center;
+  gap: 74px;
+}
+
+.home-command-grid .memory-entry-card {
+  width: min(100%, 860px);
+  min-height: 620px;
+  place-items: center;
+  text-align: center;
+}
+
+.home-command-grid .home-capture-actions {
+  justify-content: center;
+}
+
+.home-command-grid .home-capture-body {
+  width: min(100%, 680px);
+}
+
+.home-command-grid .attention-section-command {
+  width: min(100%, 900px);
+  padding-top: 0;
+}
+
+.home-command-grid .attention-section-command .home-section-heading {
+  width: min(100%, 680px);
+  margin: 0 auto 22px;
+  text-align: center;
+}
+
+.home-command-grid .attention-section-command .home-section-heading h2 {
+  font-size: clamp(38px, 5vw, 62px);
+}
+
+.home-actionable-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 14px;
+  color: rgba(23, 27, 27, 0.44);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+.home-footer {
+  width: min(100%, 960px);
+  display: flex;
+  justify-content: space-between;
+  gap: 28px;
+  border-top: 1px solid rgba(23, 27, 27, 0.08);
+  margin: 96px auto 0;
+  padding: 28px 0 52px;
+  color: rgba(23, 27, 27, 0.42);
+  font-family: var(--font-ui);
+}
+
+.home-footer div {
+  display: grid;
+  gap: 8px;
+}
+
+.home-footer strong {
+  color: rgba(23, 27, 27, 0.82);
+  font-size: 15px;
+}
+
+.home-footer span,
+.home-footer a {
+  color: rgba(23, 27, 27, 0.42);
+  font-size: 14px;
+}
+
+.home-footer nav {
+  display: flex;
+  align-items: flex-start;
+  gap: 18px;
+}
+
+.home-footer a:hover {
+  color: rgba(23, 27, 27, 0.78);
+}
+
+@media (max-width: 720px) {
+  .home-command-grid {
+    gap: 58px;
+  }
+
+  .home-command-grid .memory-entry-card {
+    min-height: auto;
+  }
+
+  .home-command-grid .attention-section-command .home-section-heading {
+    text-align: left;
+  }
+
+  .home-footer {
+    flex-direction: column;
+  }
+
+  .home-footer nav {
+    flex-wrap: wrap;
   }
 }
