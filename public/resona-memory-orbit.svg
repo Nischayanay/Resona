@@ -1,0 +1,75 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <title>Resona Memory Orbit</title>
+  <defs>
+    <radialGradient id="backgroundGlow" cx="50%" cy="44%" r="60%">
+      <stop offset="0%" stop-color="#202827"/>
+      <stop offset="48%" stop-color="#0E1111"/>
+      <stop offset="100%" stop-color="#050606"/>
+    </radialGradient>
+    <linearGradient id="silverStroke" x1="116" y1="109" x2="398" y2="407" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="18%" stop-color="#AEB7B7"/>
+      <stop offset="38%" stop-color="#F6FBFA"/>
+      <stop offset="58%" stop-color="#737B7D"/>
+      <stop offset="78%" stop-color="#DCE4E3"/>
+      <stop offset="100%" stop-color="#8B9495"/>
+    </linearGradient>
+    <linearGradient id="innerSilver" x1="160" y1="164" x2="345" y2="343" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#EEF5F3"/>
+      <stop offset="35%" stop-color="#777F81"/>
+      <stop offset="62%" stop-color="#FFFFFF"/>
+      <stop offset="100%" stop-color="#98A1A2"/>
+    </linearGradient>
+    <radialGradient id="centerChrome" cx="38%" cy="30%" r="76%">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="22%" stop-color="#CBD3D3"/>
+      <stop offset="58%" stop-color="#70797B"/>
+      <stop offset="100%" stop-color="#F4FAF8"/>
+    </radialGradient>
+    <filter id="softTealGlow" x="-40%" y="-40%" width="180%" height="180%" color-interpolation-filters="sRGB">
+      <feGaussianBlur stdDeviation="13" result="blur"/>
+      <feColorMatrix in="blur" type="matrix" values="0 0 0 0 0.22 0 0 0 0 0.55 0 0 0 0 0.50 0 0 0 0.68 0"/>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="chromeShadow" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="18" stdDeviation="24" flood-color="#000000" flood-opacity="0.58"/>
+      <feDropShadow dx="0" dy="0" stdDeviation="10" flood-color="#6FAEA6" flood-opacity="0.28"/>
+    </filter>
+  </defs>
+
+  <rect width="512" height="512" rx="128" fill="url(#backgroundGlow)"/>
+  <circle cx="256" cy="256" r="170" fill="#101514" opacity="0.58"/>
+  <circle cx="256" cy="256" r="156" stroke="#4F857D" stroke-width="1.5" opacity="0.22"/>
+
+  <g filter="url(#chromeShadow)">
+    <path
+      d="M160.5 141.4C201.5 104.8 270.9 95.1 320.1 121.7C372.4 150 401.3 209.9 391.1 268.6C380.8 327.8 331.8 374.8 271.4 383.6C214.6 391.9 157.2 363.2 130.9 312.1C107.1 265.7 119.5 187.8 160.5 141.4Z"
+      stroke="url(#silverStroke)"
+      stroke-width="22"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      filter="url(#softTealGlow)"
+    />
+    <path
+      d="M354.1 143.2C384.9 178.8 398.4 229.1 386.6 274.7C377.3 310.7 354.2 342.5 322.1 361.7"
+      stroke="#F4FAF8"
+      stroke-width="8"
+      stroke-linecap="round"
+      opacity="0.72"
+    />
+    <path
+      d="M175.3 174.1C210.5 143.8 263.3 138.2 304.5 160.8C349.4 185.4 368 238.8 349.3 286.1C330.6 333.5 277.2 358.3 228.8 341.3C184.8 325.8 156.6 279.5 164.8 233.5"
+      stroke="url(#innerSilver)"
+      stroke-width="11"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-dasharray="2 26"
+      opacity="0.88"
+    />
+    <circle cx="256" cy="256" r="32" fill="url(#centerChrome)"/>
+    <circle cx="244" cy="242" r="8" fill="#FFFFFF" opacity="0.82"/>
+  </g>
+</svg>

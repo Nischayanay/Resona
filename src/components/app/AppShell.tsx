@@ -113,9 +113,7 @@ export function AppShell({ children }: { children: (session: Session) => ReactNo
       />
       <header className="home-topbar" data-scrolled={hasScrolled}>
         <Link className="home-brand" href="/home" aria-label="Resona home">
-          <div className="home-brand-mark" aria-hidden="true">
-            R
-          </div>
+          <img className="home-brand-mark" src="/resona-memory-orbit.svg" alt="" />
           <span className="home-brand-label">Resona</span>
         </Link>
         <nav className="home-nav-center" aria-label="Primary app navigation">

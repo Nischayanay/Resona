@@ -100,7 +100,7 @@ export default function Home() {
     <main className="resona-landing">
       <nav className="landing-nav" aria-label="Main navigation">
         <Link className="landing-brand" href="/" aria-label="Resona home">
-          <span className="landing-brand-mark">R</span>
+          <img className="landing-brand-mark" src="/resona-memory-orbit.svg" alt="" />
           <span>Resona</span>
         </Link>
         <div className="landing-nav-links">
@@ -241,7 +241,7 @@ export default function Home() {
         <div className="landing-footer-grid">
           <div className="landing-footer-brand">
             <Link className="landing-brand" href="/" aria-label="Resona home">
-              <span className="landing-brand-mark">R</span>
+              <img className="landing-brand-mark" src="/resona-memory-orbit.svg" alt="" />
               <span>Resona</span>
             </Link>
             <p>Conversations should remember what mattered.</p>
