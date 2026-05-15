@@ -316,6 +316,15 @@ export function CaptureWorkspace({ session }: { session: Session }) {
         </div>
         <nav aria-label="Home footer links">
           <Link href="/conversations">Conversations</Link>
+          <a href="https://x.com/anaybauskar" target="_blank" rel="noreferrer">
+            X
+          </a>
+          <a href="https://www.linkedin.com/in/anay-bauskar" target="_blank" rel="noreferrer">
+            LinkedIn
+          </a>
+          <a href="https://heyiamanay.vercel.app/" target="_blank" rel="noreferrer">
+            ✦ Anay
+          </a>
           <Link href="/privacy">Privacy</Link>
           <Link href="/terms">Terms</Link>
         </nav>

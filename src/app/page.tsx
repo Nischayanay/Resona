@@ -219,11 +219,33 @@ export default function Home() {
             <Link href="/privacy">Privacy</Link>
             <Link href="/terms">Terms</Link>
           </nav>
+
+          <nav className="landing-footer-group" aria-label="Social links">
+            <h2>Connect</h2>
+            <a href="https://x.com/anaybauskar" target="_blank" rel="noreferrer">
+              X (Twitter)
+            </a>
+            <a href="https://www.linkedin.com/in/anay-bauskar" target="_blank" rel="noreferrer">
+              LinkedIn
+            </a>
+            <a href="https://heyiamanay.vercel.app/" target="_blank" rel="noreferrer">
+              ✦ Personal brand
+            </a>
+          </nav>
         </div>
 
         <div className="landing-footer-bottom">
           <span>© 2026 Resona. All rights reserved.</span>
           <div>
+            <a href="https://x.com/anaybauskar" target="_blank" rel="noreferrer">
+              X
+            </a>
+            <a href="https://www.linkedin.com/in/anay-bauskar" target="_blank" rel="noreferrer">
+              LinkedIn
+            </a>
+            <a href="https://heyiamanay.vercel.app/" target="_blank" rel="noreferrer">
+              ✦ Anay
+            </a>
             <Link href="/terms">Terms</Link>
             <Link href="/privacy">Privacy</Link>
           </div>

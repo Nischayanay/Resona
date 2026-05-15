@@ -1,15 +1,17 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { CSSProperties, useCallback, useEffect, useMemo, useState } from "react";
 import type { Session } from "@supabase/supabase-js";
-import { ArrowUpRight, FileAudio, RefreshCw, Search } from "lucide-react";
+import { ArrowUpRight, FileAudio, RefreshCw, Search, Trash2 } from "lucide-react";
 import { apiFetch } from "@/lib/api-client";
 import type { ResonaSession } from "@/components/app/types";
 
 type SessionsResponse = {
   sessions: ResonaSession[];
 };
+
+const hiddenStorageKey = "resona:hidden-conversations";
 
 function formatThreadDate(value: string) {
   const date = new Date(value);
@@ -38,6 +40,8 @@ function statusCopy(status: ResonaSession["status"]) {
 export function ConversationsIndex({ session }: { session: Session }) {
   const [sessions, setSessions] = useState<ResonaSession[]>([]);
   const [query, setQuery] = useState("");
+  const [expandedIds, setExpandedIds] = useState<Record<string, boolean>>({});
+  const [hiddenIds, setHiddenIds] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -54,6 +58,17 @@ export function ConversationsIndex({ session }: { session: Session }) {
   }, [session]);
 
   useEffect(() => {
+    try {
+      const storedHiddenIds = window.localStorage.getItem(hiddenStorageKey);
+      if (storedHiddenIds) {
+        setHiddenIds(JSON.parse(storedHiddenIds) as string[]);
+      }
+    } catch {
+      setHiddenIds([]);
+    }
+  }, []);
+
+  useEffect(() => {
     void loadSessions();
     const interval = window.setInterval(() => {
       void loadSessions();
@@ -63,13 +78,22 @@ export function ConversationsIndex({ session }: { session: Session }) {
 
   const visibleSessions = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
+    const visibleItems = sessions.filter((item) => !hiddenIds.includes(item.id));
     if (!normalizedQuery) {
-      return sessions;
+      return visibleItems;
     }
-    return sessions.filter((item) =>
+    return visibleItems.filter((item) =>
       [item.title, item.source_type, item.status, item.summary ?? ""].some((value) => value.toLowerCase().includes(normalizedQuery))
     );
-  }, [query, sessions]);
+  }, [hiddenIds, query, sessions]);
+
+  function hideConversation(id: string) {
+    setHiddenIds((current) => {
+      const next = current.includes(id) ? current : [...current, id];
+      window.localStorage.setItem(hiddenStorageKey, JSON.stringify(next));
+      return next;
+    });
+  }
 
   return (
     <main className="conversations-surface">
@@ -105,8 +129,13 @@ export function ConversationsIndex({ session }: { session: Session }) {
         ) : visibleSessions.length === 0 ? (
           <div className="empty-state">{sessions.length === 0 ? "No conversations yet. Start a recording from Home." : "No conversations match this search."}</div>
         ) : (
-          visibleSessions.map((item) => (
-            <Link className="conversation-memory-card" href={`/conversations/${item.id}`} key={item.id}>
+          visibleSessions.map((item, index) => (
+            <article
+              className="conversation-memory-card"
+              key={item.id}
+              style={{ "--thread-index": index } as CSSProperties}
+              data-expanded={expandedIds[item.id] ? "true" : "false"}
+            >
               <div className="conversation-memory-icon" aria-hidden="true">
                 <FileAudio size={18} />
               </div>
@@ -114,17 +143,26 @@ export function ConversationsIndex({ session }: { session: Session }) {
                 <div className="conversation-memory-title-row">
                   <h2>{item.title}</h2>
                 </div>
-                <p className="conversation-memory-summary">{item.summary ?? statusCopy(item.status)}</p>
                 <div className="conversation-memory-meta">
                   <span>{formatThreadDate(item.created_at)}</span>
                   <span>{item.source_type}</span>
                 </div>
+                {expandedIds[item.id] ? <p className="conversation-memory-summary">{item.summary ?? statusCopy(item.status)}</p> : null}
               </div>
-              <span className="conversation-open-indicator">
-                Open
-                <ArrowUpRight size={15} aria-hidden="true" />
-              </span>
-            </Link>
+              <div className="conversation-card-actions">
+                <button className="conversation-info-button" type="button" onClick={() => setExpandedIds((current) => ({ ...current, [item.id]: !current[item.id] }))}>
+                  {expandedIds[item.id] ? "Hide info" : "View info"}
+                </button>
+                <Link className="conversation-open-indicator" href={`/conversations/${item.id}`}>
+                  Open
+                  <ArrowUpRight size={15} aria-hidden="true" />
+                </Link>
+                <button className="conversation-delete-button" type="button" onClick={() => hideConversation(item.id)} aria-label={`Hide ${item.title} from your view`}>
+                  <Trash2 size={15} aria-hidden="true" />
+                  Hide
+                </button>
+              </div>
+            </article>
           ))
         )}
       </section>
