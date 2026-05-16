@@ -1,10 +1,10 @@
 import Link from "next/link";
 
 const fragments = [
-  "Rahul mentioned the intro",
+  "they mentioned the intro",
   "May 16 - 4 PM",
-  "AI infrastructure thread",
-  "send the resume",
+  "the real ask",
+  "send the deck",
   "why it mattered",
   "memory is reconnecting",
   "not another note",
@@ -13,40 +13,47 @@ const fragments = [
 
 const productCards = [
   {
-    label: "Most important now",
-    title: "Follow up with Rahul",
-    lines: ["Internship opportunity discussed", "AI infrastructure role", "Meeting tomorrow - 4 PM"]
+    label: "Priority surfaced",
+    title: "Follow up before the window closes",
+    lines: ["Rahul mentioned an AI infrastructure internship.", "Resona turns that into the next move, not another forgotten note."]
   },
   {
-    label: "Context",
-    title: "You mentioned AI infrastructure",
-    lines: ["4 times this week.", "Resona kept the thread open."]
+    label: "Context kept",
+    title: "Know why this person matters",
+    lines: ["People, dates, emotional cues, and decisions stay attached to the conversation."]
   },
   {
-    label: "Ambient memory",
-    title: "Important conversations resurfaced",
-    lines: ["before they were forgotten.", "No transcript digging required."]
+    label: "Action approved",
+    title: "Calendar and task suggestions wait for you",
+    lines: ["Resona suggests the follow-up.", "You decide what gets created."]
   }
 ];
 
 const relationshipNodes = [
-  { name: "Rahul", meta: "internship - AI infra" },
-  { name: "Resona", meta: "memory layer" },
-  { name: "Follow-up", meta: "May 16 - 4 PM" },
-  { name: "Positioning", meta: "not meeting notes" },
-  { name: "Opportunity", meta: "Infralabs" }
+  { name: "Send the deck", meta: "promised after the call" },
+  { name: "Warm intro", meta: "ask before Friday" },
+  { name: "Follow-up", meta: "tomorrow - 4 PM" },
+  { name: "Decision owner", meta: "needs the short version" },
+  { name: "Open question", meta: "pricing came up twice" }
+];
+
+const topologyChips = [
+  "message becomes task",
+  "date becomes reminder",
+  "promise becomes priority",
+  "context stays attached"
 ];
 
 const faqs = [
   {
     question: "What is Resona?",
     answer:
-      "Resona is an AI memory layer for conversations. It helps you remember people, opportunities, follow-ups, action items, and important context after meetings or real-life conversations."
+      "Resona is an AI memory layer for real conversations. It remembers people, opportunities, follow-ups, decisions, and context after the conversation ends."
   },
   {
     question: "How is Resona different from a meeting notes app?",
     answer:
-      "Meeting notes usually store transcripts. Resona focuses on what deserves attention next: who you spoke with, what mattered, what should be remembered, and which actions need approval."
+      "Meeting notes store what was said. Resona focuses on what deserves attention next: who matters, what changed, what to remember, and what action needs approval."
   },
   {
     question: "Can Resona create calendar events automatically?",
@@ -56,7 +63,7 @@ const faqs = [
   {
     question: "Who should use Resona?",
     answer:
-      "Resona is useful for founders, students, operators, builders, and anyone who has important conversations and does not want opportunities or follow-ups to disappear."
+      "Founders, students, operators, creators, and builders who meet people often and cannot afford to lose follow-ups, intros, opportunities, or relationship context."
   },
   {
     question: "Does Resona remember personal context?",
@@ -115,60 +122,60 @@ export default function Home() {
 
       <section className="landing-hero" aria-labelledby="landing-title">
         <div className="hero-copy">
-          <p className="landing-kicker">Conversation memory for real life</p>
+          <p className="landing-kicker">AI memory for conversations that matter</p>
           <h1 id="landing-title">
-            <span>Conversations disappear too fast.</span>
-            <span>Resona remembers what mattered.</span>
+            <span>Stop losing the conversations</span>
+            <span>that could change your life.</span>
           </h1>
-          <p className="hero-support editorial-copy">A quiet intelligence layer for people, opportunities, commitments, and the emotional context you cannot keep carrying alone.</p>
+          <p className="hero-support editorial-copy">Resona turns messy conversations into memory, priority, and approved actions, so people, opportunities, and promises do not fade after the call ends.</p>
           <div className="landing-actions">
             <Link className="landing-button landing-button-primary" href="/sign-up">
-              Start Remembering
+              Start Your Memory Thread
             </Link>
             <Link className="landing-button landing-button-secondary" href="/home">
-              Watch Conversation Demo
+              Try The Capture Flow
             </Link>
+          </div>
+          <div className="hero-proof-strip" aria-label="Resona output examples">
+            <span>Follow-ups</span>
+            <span>People</span>
+            <span>Opportunities</span>
+            <span>Memory facts</span>
           </div>
         </div>
         <AmbientMemoryArtwork />
       </section>
 
-      <section className="problem-section reveal-section" aria-labelledby="problem-title">
-        <p className="landing-kicker">Chaos</p>
-        <h2 id="problem-title" className="sr-only">
-          What conversation overload feels like
-        </h2>
-        <div className="problem-lines">
-          <p>You meet incredible people.</p>
-          <p>Have meaningful conversations.</p>
-          <p>Discuss ideas that could change your life.</p>
-          <p>Then forget most of it.</p>
+      <section className="problem-section problem-relief-section reveal-section" aria-labelledby="problem-title">
+        <div className="problem-relief-copy">
+          <p className="landing-kicker">From chaos to clarity</p>
+          <h2 id="problem-title">The hard part is not recording a conversation. It is remembering what deserves action.</h2>
+          <div className="problem-lines">
+            <p>You meet someone important.</p>
+            <p>You promise a follow-up.</p>
+            <p>The context disappears into your day.</p>
+          </div>
         </div>
-        <div className="fading-notes" aria-hidden="true">
-          <span>send resume</span>
-          <span>follow up tomorrow</span>
-          <span>AI infrastructure</span>
-          <span>why it mattered</span>
-        </div>
-      </section>
-
-      <section className="shift-section reveal-section" aria-labelledby="shift-title">
-        <div>
-          <p className="landing-kicker">Relief</p>
-          <h2 id="shift-title">Resona turns conversations into clarity.</h2>
-        </div>
-        <div className="clarity-flow" aria-label="Conversation to action flow">
-          <span>Conversation</span>
-          <span>Understanding</span>
-          <span>Memory</span>
-          <span>Action</span>
+        <div className="relief-panel">
+          <div className="fading-notes" aria-hidden="true">
+            <span>send resume</span>
+            <span>follow up tomorrow</span>
+            <span>AI infrastructure</span>
+            <span>why it mattered</span>
+          </div>
+          <div className="clarity-flow" aria-label="Conversation to action flow">
+            <span>Capture the conversation</span>
+            <span>Extract what mattered</span>
+            <span>Rank the next move</span>
+            <span>Approve the action</span>
+          </div>
         </div>
       </section>
 
       <section className="experience-section reveal-section" aria-labelledby="experience-title">
         <div className="section-heading">
-          <p className="landing-kicker">Intelligence</p>
-          <h2 id="experience-title">A quiet surface for what deserves attention.</h2>
+          <p className="landing-kicker">Attention surface</p>
+          <h2 id="experience-title">Resona shows the useful thing first.</h2>
         </div>
         <div className="calm-card-grid">
           {productCards.map((card, index) => (
@@ -186,14 +193,26 @@ export default function Home() {
       <section className="graph-section reveal-section" id="memory" aria-labelledby="graph-title">
         <div className="section-heading">
           <p className="landing-kicker">Continuity</p>
-          <h2 id="graph-title">People, ideas, and opportunities stay softly connected.</h2>
+          <h2 id="graph-title">The messy after-meeting part gets organized.</h2>
         </div>
-        <div className="memory-topology" aria-hidden="true">
+        <div className="memory-topology" aria-label="Example of conversation memory signals">
           <div className="topology-line topology-line-a" />
           <div className="topology-line topology-line-b" />
           <div className="topology-line topology-line-c" />
+          <div className="topology-line topology-line-d" />
+          <div className="topology-hub">
+            <img src="/resona-memory-orbit.svg" alt="" />
+            <span>one conversation</span>
+            <strong>connected memory</strong>
+          </div>
+          {topologyChips.map((chip, index) => (
+            <span className={`topology-chip topology-chip-${index + 1}`} key={chip}>
+              {chip}
+            </span>
+          ))}
           {relationshipNodes.map((node, index) => (
             <div className={`topology-node topology-node-${index + 1}`} key={node.name}>
+              <small>{String(index + 1).padStart(2, "0")}</small>
               <strong>{node.name}</strong>
               <span>{node.meta}</span>
             </div>
@@ -201,40 +220,35 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="trust-section reveal-section" id="about" aria-labelledby="trust-title">
+      <section className="trust-section trust-conversion-section reveal-section" id="about" aria-labelledby="trust-title">
         <div className="trust-copy">
-          <p className="landing-kicker">Calmness</p>
-          <h2 id="trust-title">Your conversations belong to you.</h2>
-          <p>Control what Resona remembers. Control what it forgets.</p>
+          <p className="landing-kicker">Trust before automation</p>
+          <h2 id="trust-title">Resona remembers quietly. You stay in control.</h2>
+          <p>Approve actions before they happen. Review what gets remembered. Keep the product calm enough to trust.</p>
+          <div className="trust-cta-card">
+            <span>Start with one conversation</span>
+            <strong>Upload or record. Resona will show the next move.</strong>
+            <Link className="landing-button landing-button-primary" href="/sign-up">
+              Start Remembering
+            </Link>
+          </div>
         </div>
-        <div className="trust-list">
-          <span>Private by default</span>
-          <span>Approval before actions</span>
-          <span>Memory you can review</span>
+        <div className="trust-stack">
+          <div className="trust-list">
+            <span>Approval before calendar or task actions</span>
+            <span>Memory facts you can review</span>
+            <span>Built for people and opportunities, not transcript hoarding</span>
+          </div>
+          <div className="faq-list compact-faq" aria-labelledby="faq-title">
+            <h3 id="faq-title">Questions before trusting a memory product</h3>
+            {faqs.map((faq) => (
+              <details className="faq-item" key={faq.question}>
+                <summary>{faq.question}</summary>
+                <p>{faq.answer}</p>
+              </details>
+            ))}
+          </div>
         </div>
-      </section>
-
-      <section className="faq-section reveal-section" aria-labelledby="faq-title">
-        <div className="section-heading">
-          <p className="landing-kicker">FAQ</p>
-          <h2 id="faq-title">Questions people search before they trust a memory product.</h2>
-        </div>
-        <div className="faq-list">
-          {faqs.map((faq) => (
-            <details className="faq-item" key={faq.question}>
-              <summary>{faq.question}</summary>
-              <p>{faq.answer}</p>
-            </details>
-          ))}
-        </div>
-      </section>
-
-      <section className="final-cta" aria-labelledby="final-title">
-        <p className="landing-kicker">Resona</p>
-        <h2 id="final-title">Never lose an important conversation again.</h2>
-        <Link className="landing-button landing-button-primary" href="/sign-up">
-          Start Remembering
-        </Link>
       </section>
 
       <footer className="landing-footer" aria-label="Resona footer">
