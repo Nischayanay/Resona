@@ -34,15 +34,47 @@ async function callGemini(parts: GeminiPart[]) {
   return text;
 }
 
-function parseJson(text: string) {
+export function parseGeminiJson(text: string) {
   try {
     return JSON.parse(text);
   } catch {
-    const match = text.match(/\{[\s\S]*\}/);
-    if (!match) {
+    const start = text.indexOf("{");
+    if (start === -1) {
       throw new Error("AI output was not JSON.");
     }
-    return JSON.parse(match[0]);
+
+    let depth = 0;
+    let inString = false;
+    let isEscaped = false;
+    for (let index = start; index < text.length; index += 1) {
+      const char = text[index];
+      if (isEscaped) {
+        isEscaped = false;
+        continue;
+      }
+      if (char === "\\") {
+        isEscaped = true;
+        continue;
+      }
+      if (char === "\"") {
+        inString = !inString;
+        continue;
+      }
+      if (inString) {
+        continue;
+      }
+      if (char === "{") {
+        depth += 1;
+      }
+      if (char === "}") {
+        depth -= 1;
+        if (depth === 0) {
+          return JSON.parse(text.slice(start, index + 1));
+        }
+      }
+    }
+
+    throw new Error("AI output was not complete JSON.");
   }
 }
 
@@ -59,7 +91,7 @@ export async function transcribeAudioWithGemini(audio: ArrayBuffer, mimeType: st
       }
     }
   ]);
-  const parsed = parseJson(text) as { transcript?: string; language?: string };
+  const parsed = parseGeminiJson(text) as { transcript?: string; language?: string };
   if (!parsed.transcript) {
     throw new Error("Transcription response did not include transcript.");
   }
@@ -74,7 +106,7 @@ export async function transcribeAudioWithGemini(audio: ArrayBuffer, mimeType: st
 export async function extractConversationWithGemini(transcript: string) {
   const prompt = buildExtractionPrompt(transcript, new Date().toISOString());
   const raw = await callGemini([{ text: prompt }]);
-  const parsed = parseJson(raw);
+  const parsed = parseGeminiJson(raw);
   const validated = conversationExtractionSchema.safeParse(parsed);
 
   if (validated.success) {
@@ -88,7 +120,7 @@ export async function extractConversationWithGemini(transcript: string) {
   }
 
   const repairedRaw = await callGemini([{ text: buildRepairPrompt(raw, validated.error.message) }]);
-  const repaired = conversationExtractionSchema.parse(parseJson(repairedRaw));
+  const repaired = conversationExtractionSchema.parse(parseGeminiJson(repairedRaw));
   return {
     raw: repairedRaw,
     extraction: repaired,

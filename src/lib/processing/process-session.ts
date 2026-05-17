@@ -2,6 +2,7 @@ import { createSupabaseServiceClient } from "@/lib/supabase/client";
 import { normalizeConversationExtraction } from "@/lib/processing/normalization";
 import { setProcessingStep } from "@/lib/processing/job-status";
 import type { ProcessingPayload } from "@/lib/types";
+import { parseGeminiJson } from "@/lib/ai/gemini";
 import { normalizeAudioMimeType } from "@/lib/audio/mime";
 import { transcribeConversationAudio } from "@/lib/intelligence/transcription/engine";
 import { understandConversation } from "@/lib/intelligence/understanding/engine";
@@ -69,7 +70,7 @@ export async function processConversationSession(payload: ProcessingPayload) {
         provider: understandingResult.provider,
         model: understandingResult.model,
         prompt_version: understandingResult.promptVersion,
-        raw_output_json: JSON.parse(understandingResult.raw),
+        raw_output_json: parseGeminiJson(understandingResult.raw),
         validated_output_json: understandingResult.extraction,
         status: "validated"
       });

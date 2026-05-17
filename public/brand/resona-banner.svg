@@ -1,0 +1,56 @@
+<svg width="1920" height="640" viewBox="0 0 1920 640" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <title>Resona banner</title>
+  <defs>
+    <radialGradient id="bgGlow" cx="34%" cy="35%" r="80%">
+      <stop offset="0" stop-color="#25302D"/>
+      <stop offset="0.48" stop-color="#101615"/>
+      <stop offset="1" stop-color="#050706"/>
+    </radialGradient>
+    <radialGradient id="tealAura" cx="78%" cy="44%" r="52%">
+      <stop offset="0" stop-color="#4BA394" stop-opacity="0.32"/>
+      <stop offset="0.45" stop-color="#2F756C" stop-opacity="0.12"/>
+      <stop offset="1" stop-color="#050706" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="markStroke" x1="141" y1="150" x2="358" y2="442" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#F8FFFC"/>
+      <stop offset="0.25" stop-color="#A5B0AD"/>
+      <stop offset="0.54" stop-color="#FFFFFF"/>
+      <stop offset="0.75" stop-color="#707B78"/>
+      <stop offset="1" stop-color="#DDE8E4"/>
+    </linearGradient>
+    <linearGradient id="wordmark" x1="425" y1="216" x2="1047" y2="374" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FFFFFF"/>
+      <stop offset="0.48" stop-color="#DCE8E4"/>
+      <stop offset="1" stop-color="#9CA9A5"/>
+    </linearGradient>
+    <radialGradient id="core" cx="38%" cy="30%" r="75%">
+      <stop offset="0" stop-color="#FFFFFF"/>
+      <stop offset="0.32" stop-color="#C9D5D2"/>
+      <stop offset="0.7" stop-color="#6E7A77"/>
+      <stop offset="1" stop-color="#F1F8F5"/>
+    </radialGradient>
+    <filter id="softShadow" x="-30%" y="-30%" width="160%" height="160%" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="28" stdDeviation="34" flood-color="#000000" flood-opacity="0.62"/>
+      <feDropShadow dx="0" dy="0" stdDeviation="15" flood-color="#6EBCB0" flood-opacity="0.24"/>
+    </filter>
+  </defs>
+  <rect width="1920" height="640" fill="url(#bgGlow)"/>
+  <rect width="1920" height="640" fill="url(#tealAura)"/>
+  <path d="M1177 92C1331 35 1510 54 1656 139C1764 202 1849 303 1891 420" stroke="#F3FAF7" stroke-opacity="0.08" stroke-width="2"/>
+  <path d="M1257 514C1413 438 1582 441 1732 519" stroke="#63B5A9" stroke-opacity="0.16" stroke-width="2"/>
+  <g opacity="0.18">
+    <circle cx="1430" cy="215" r="4" fill="#DDF4EF"/>
+    <circle cx="1574" cy="348" r="3" fill="#DDF4EF"/>
+    <circle cx="1730" cy="246" r="5" fill="#DDF4EF"/>
+    <circle cx="1668" cy="467" r="3" fill="#DDF4EF"/>
+  </g>
+  <g filter="url(#softShadow)">
+    <path d="M142.5 157.4C184.3 118.8 255 108.7 305.2 136.8C358.7 166.7 388 229.8 377.6 291.7C367.1 354.2 317.1 403.7 255.4 413.1C197.4 421.9 138.8 391.6 112 337.7C87.7 288.8 100.7 206.5 142.5 157.4Z" stroke="url(#markStroke)" stroke-width="25" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M340.2 159.2C371.6 196.8 385.5 249.9 373.4 298.1C363.9 336.2 340.2 369.8 307.4 390" stroke="#F7FEFB" stroke-width="10" stroke-linecap="round" opacity="0.72"/>
+    <path d="M157.7 192C193.6 160.1 247.5 154.2 289.5 177.9C335.3 203.7 354.3 260 335.2 310C316.1 360.1 261.6 386.3 212.2 368.4C167.3 352.1 138.5 303.2 146.9 254.6" stroke="url(#markStroke)" stroke-width="13" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="2 30" opacity="0.88"/>
+    <circle cx="248" cy="280" r="35" fill="url(#core)"/>
+    <circle cx="235" cy="265" r="8" fill="#FFFFFF" opacity="0.86"/>
+  </g>
+  <text x="438" y="313" fill="url(#wordmark)" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="150" font-weight="500" letter-spacing="0">Resona</text>
+  <text x="446" y="376" fill="#B8C8C3" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="30" font-weight="400" letter-spacing="0">AI memory for conversations that matter</text>
+</svg>
