@@ -1,7 +1,8 @@
 import { normalizeAudioMimeType } from "@/lib/audio/mime";
+import { BETA_FILE_SIZE_MESSAGE, BETA_MAX_AUDIO_BYTES } from "@/lib/beta-limits";
 import { sourceTypes } from "@/lib/types";
 
-export const MAX_AUDIO_BYTES = 100 * 1024 * 1024;
+export const MAX_AUDIO_BYTES = BETA_MAX_AUDIO_BYTES;
 
 export type IngestedAudioInput = {
   title: string;
@@ -17,7 +18,7 @@ export async function prepareUploadedAudio(audio: File, fields: { title?: string
     throw new Error(`Unsupported audio type: ${audio.type || "unknown"}.`);
   }
   if (audio.size > MAX_AUDIO_BYTES) {
-    throw new Error("Audio file is larger than 100MB.");
+    throw new Error(BETA_FILE_SIZE_MESSAGE);
   }
 
   return {

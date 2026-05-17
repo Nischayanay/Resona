@@ -6,6 +6,7 @@ import { ChangeEvent, useEffect, useMemo, useRef, useState } from "react";
 import type { Session } from "@supabase/supabase-js";
 import { CalendarDays, CheckCircle2, Mic, Play, RefreshCw, Square, Upload } from "lucide-react";
 import { apiFetch } from "@/lib/api-client";
+import { BETA_FILE_SIZE_MESSAGE, BETA_MAX_AUDIO_BYTES, BETA_MAX_AUDIO_SECONDS, BETA_SUPPORT_URL } from "@/lib/beta-limits";
 import type { ToolAction } from "@/components/app/types";
 
 type UploadResponse = {
@@ -34,6 +35,28 @@ function formatTimer(seconds: number) {
     .padStart(2, "0");
   const rest = (seconds % 60).toString().padStart(2, "0");
   return `${minutes}:${rest}`;
+}
+
+function getAudioDurationSeconds(file: Blob) {
+  return new Promise<number | null>((resolve) => {
+    const audio = document.createElement("audio");
+    const url = URL.createObjectURL(file);
+    const cleanup = () => {
+      URL.revokeObjectURL(url);
+      audio.remove();
+    };
+    audio.preload = "metadata";
+    audio.onloadedmetadata = () => {
+      const duration = Number.isFinite(audio.duration) ? audio.duration : null;
+      cleanup();
+      resolve(duration);
+    };
+    audio.onerror = () => {
+      cleanup();
+      resolve(null);
+    };
+    audio.src = url;
+  });
 }
 
 export function CaptureWorkspace({ session }: { session: Session }) {
@@ -75,6 +98,13 @@ export function CaptureWorkspace({ session }: { session: Session }) {
   }, [isRecording]);
 
   useEffect(() => {
+    if (isRecording && recordSeconds >= BETA_MAX_AUDIO_SECONDS) {
+      stopRecording();
+      setStatusMessage("Recording stopped at the 2 minute demo limit.");
+    }
+  }, [isRecording, recordSeconds]);
+
+  useEffect(() => {
     return () => {
       if (recordedUrl) {
         URL.revokeObjectURL(recordedUrl);
@@ -95,11 +125,38 @@ export function CaptureWorkspace({ session }: { session: Session }) {
     }
   }
 
-  function onFileChange(event: ChangeEvent<HTMLInputElement>) {
+  async function onFileChange(event: ChangeEvent<HTMLInputElement>) {
     const nextFile = event.target.files?.[0] ?? null;
-    setFile(nextFile);
     setError(null);
-    setStatusMessage(nextFile ? `${nextFile.name} is ready.` : null);
+    setStatusMessage(null);
+
+    if (!nextFile) {
+      setFile(null);
+      return;
+    }
+    if (nextFile.size > BETA_MAX_AUDIO_BYTES) {
+      setFile(null);
+      event.target.value = "";
+      setError(BETA_FILE_SIZE_MESSAGE);
+      return;
+    }
+
+    const duration = await getAudioDurationSeconds(nextFile);
+    if (duration === null) {
+      setFile(null);
+      event.target.value = "";
+      setError("Audio duration could not be verified. Please upload audio that is 2 minutes or less.");
+      return;
+    }
+    if (duration !== null && duration > BETA_MAX_AUDIO_SECONDS) {
+      setFile(null);
+      event.target.value = "";
+      setError("Audio must be 2 minutes or less.");
+      return;
+    }
+
+    setFile(nextFile);
+    setStatusMessage(`${nextFile.name} is ready.`);
   }
 
   async function startRecording() {
@@ -162,9 +219,31 @@ export function CaptureWorkspace({ session }: { session: Session }) {
         ? file
         : new File([activeAudio], `${uploadTitle.replace(/[^a-z0-9]+/gi, "-").toLowerCase()}.webm`, { type: activeAudio.type || "audio/webm" });
 
+    if (uploadFile.size > BETA_MAX_AUDIO_BYTES) {
+      setError(BETA_FILE_SIZE_MESSAGE);
+      setStatusMessage(null);
+      setIsUploading(false);
+      return;
+    }
+
+    const duration = mode === "record" ? recordSeconds : await getAudioDurationSeconds(uploadFile);
+    if (duration === null) {
+      setError("Audio duration could not be verified. Please upload audio that is 2 minutes or less.");
+      setStatusMessage(null);
+      setIsUploading(false);
+      return;
+    }
+    if (duration !== null && duration > BETA_MAX_AUDIO_SECONDS) {
+      setError("Audio must be 2 minutes or less.");
+      setStatusMessage(null);
+      setIsUploading(false);
+      return;
+    }
+
     formData.set("audio", uploadFile);
     formData.set("title", uploadTitle);
     formData.set("source_type", sourceType);
+    formData.set("duration_seconds", String(Math.ceil(duration)));
 
     try {
       const payload = await apiFetch<UploadResponse>(session, "/api/sessions/upload", {
@@ -175,8 +254,15 @@ export function CaptureWorkspace({ session }: { session: Session }) {
       await loadActionables();
       router.push(`/conversations/${payload.session_id}`);
     } catch (submitError) {
-      setError(submitError instanceof Error ? submitError.message : "Upload failed.");
+      const typedError = submitError as Error & { code?: string };
+      const message = submitError instanceof Error ? submitError.message : "Upload failed.";
+      setError(message);
       setStatusMessage(null);
+      if (typedError.code === "UPLOAD_LIMIT_REACHED") {
+        window.setTimeout(() => {
+          window.location.assign(BETA_SUPPORT_URL);
+        }, 1800);
+      }
     } finally {
       setIsUploading(false);
     }

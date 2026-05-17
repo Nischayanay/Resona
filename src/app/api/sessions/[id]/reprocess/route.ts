@@ -1,8 +1,17 @@
 import { NextRequest } from "next/server";
 import { requireUser } from "@/lib/auth/server";
-import { json, notFound, serverError, unauthorized } from "@/lib/http";
+import { json, notFound, serverError, tooManyRequests, unauthorized } from "@/lib/http";
 import { triggerConversationProcessing } from "@/lib/processing/trigger";
 import { createSupabaseServiceClient } from "@/lib/supabase/client";
+import {
+  BETA_ACTIVE_REPROCESS_MESSAGE,
+  BETA_REPROCESSES_PER_SESSION_PER_DAY,
+  BETA_REPROCESS_LIMIT_MESSAGE,
+  countReprocessAttemptsToday,
+  getDailyReprocessJobCount,
+  isActiveProcessingStatus,
+  startOfTodayInIndia
+} from "@/lib/beta-limits";
 
 export async function POST(request: NextRequest, context: { params: Promise<{ id: string }> }) {
   try {
@@ -12,7 +21,7 @@ export async function POST(request: NextRequest, context: { params: Promise<{ id
 
     const { data: session, error: sessionError } = await supabase
       .from("sessions")
-      .select("id")
+      .select("id,status,created_at")
       .eq("id", id)
       .eq("user_id", user.id)
       .maybeSingle();
@@ -21,6 +30,19 @@ export async function POST(request: NextRequest, context: { params: Promise<{ id
     }
     if (!session) {
       return notFound("Session");
+    }
+    if (isActiveProcessingStatus(session.status)) {
+      return tooManyRequests("SESSION_ALREADY_PROCESSING", BETA_ACTIVE_REPROCESS_MESSAGE);
+    }
+
+    const dayStart = startOfTodayInIndia();
+    const reprocessJobsToday = await getDailyReprocessJobCount({ supabase, userId: user.id, sessionId: id });
+    const reprocessAttemptsToday = countReprocessAttemptsToday({ jobsToday: reprocessJobsToday, sessionCreatedAt: session.created_at, dayStart });
+    if (reprocessAttemptsToday >= BETA_REPROCESSES_PER_SESSION_PER_DAY) {
+      return tooManyRequests("REPROCESS_LIMIT_REACHED", BETA_REPROCESS_LIMIT_MESSAGE, {
+        limit: BETA_REPROCESSES_PER_SESSION_PER_DAY,
+        reset_timezone: "Asia/Kolkata"
+      });
     }
 
     await supabase.from("sessions").update({ status: "queued", updated_at: new Date().toISOString() }).eq("id", id).eq("user_id", user.id);

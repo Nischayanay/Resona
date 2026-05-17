@@ -1,15 +1,25 @@
 import { NextRequest } from "next/server";
 import { z } from "zod";
 import { requireUser } from "@/lib/auth/server";
-import { badRequest, json, serverError, unauthorized } from "@/lib/http";
+import { badRequest, json, serverError, tooManyRequests, unauthorized } from "@/lib/http";
 import { createSupabaseServiceClient } from "@/lib/supabase/client";
 import { sourceTypes } from "@/lib/types";
 import { triggerConversationProcessing } from "@/lib/processing/trigger";
 import { buildSessionAudioStoragePath, prepareUploadedAudio } from "@/lib/intelligence/ingestion/engine";
+import {
+  BETA_GLOBAL_LIMIT_MESSAGE,
+  BETA_GLOBAL_UPLOADS_PER_DAY,
+  BETA_MAX_AUDIO_SECONDS,
+  BETA_SUPPORT_URL,
+  BETA_UPLOAD_LIMIT_MESSAGE,
+  BETA_UPLOADS_PER_USER_PER_DAY,
+  getDailyUploadUsage
+} from "@/lib/beta-limits";
 
 const uploadFieldsSchema = z.object({
   title: z.string().min(1).max(140).optional(),
-  source_type: z.enum(sourceTypes).optional()
+  source_type: z.enum(sourceTypes).optional(),
+  duration_seconds: z.coerce.number().min(0).max(BETA_MAX_AUDIO_SECONDS).optional()
 });
 
 export async function POST(request: NextRequest) {
@@ -23,11 +33,33 @@ export async function POST(request: NextRequest) {
     }
     const fields = uploadFieldsSchema.parse({
       title: formData.get("title") || undefined,
-      source_type: formData.get("source_type") || undefined
+      source_type: formData.get("source_type") || undefined,
+      duration_seconds: formData.get("duration_seconds") || undefined
     });
-    const preparedAudio = await prepareUploadedAudio(audio, fields);
-
+    if (fields.duration_seconds === undefined) {
+      return badRequest("Audio duration could not be verified. Please upload audio that is 2 minutes or less.");
+    }
     const supabase = createSupabaseServiceClient();
+    const usage = await getDailyUploadUsage({ supabase, userId: user.id });
+
+    if (usage.userUploads >= BETA_UPLOADS_PER_USER_PER_DAY) {
+      return tooManyRequests("UPLOAD_LIMIT_REACHED", BETA_UPLOAD_LIMIT_MESSAGE, {
+        limit: BETA_UPLOADS_PER_USER_PER_DAY,
+        used: usage.userUploads,
+        reset_timezone: "Asia/Kolkata",
+        support_url: BETA_SUPPORT_URL
+      });
+    }
+
+    if (BETA_GLOBAL_UPLOADS_PER_DAY !== null && usage.globalUploads >= BETA_GLOBAL_UPLOADS_PER_DAY) {
+      return tooManyRequests("GLOBAL_DEMO_QUOTA_REACHED", BETA_GLOBAL_LIMIT_MESSAGE, {
+        limit: BETA_GLOBAL_UPLOADS_PER_DAY,
+        used: usage.globalUploads,
+        reset_timezone: "Asia/Kolkata"
+      });
+    }
+
+    const preparedAudio = await prepareUploadedAudio(audio, fields);
     const sessionId = crypto.randomUUID();
     const storagePath = buildSessionAudioStoragePath(user.id, sessionId, preparedAudio.extension);
     const normalizedAudio = new Blob([preparedAudio.bytes], { type: preparedAudio.contentType });
@@ -90,7 +122,7 @@ export async function POST(request: NextRequest) {
     if (error instanceof z.ZodError) {
       return badRequest("Invalid upload fields.", error.flatten());
     }
-    if (error instanceof Error && (error.message.startsWith("Unsupported audio type") || error.message.includes("larger than 100MB"))) {
+    if (error instanceof Error && (error.message.startsWith("Unsupported audio type") || error.message.includes("15MB or smaller"))) {
       return badRequest(error.message);
     }
     return serverError(error);

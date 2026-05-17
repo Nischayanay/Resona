@@ -9,6 +9,10 @@ export function badRequest(message: string, details?: unknown) {
   return json({ error: "BAD_REQUEST", message, details }, 400);
 }
 
+export function tooManyRequests(error: string, message: string, details?: unknown) {
+  return json({ error, message, details }, 429);
+}
+
 export function unauthorized() {
   return json({ error: "UNAUTHORIZED", message: "Authentication is required." }, 401);
 }
