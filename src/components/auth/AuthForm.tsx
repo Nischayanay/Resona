@@ -2,7 +2,10 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { ArrowRight, Check, LockKeyhole, Mail } from "lucide-react";
 import { FormEvent, useState } from "react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { createSupabaseBrowserClient } from "@/lib/supabase/browser";
 
 type AuthMode = "sign-up" | "sign-in";
@@ -16,6 +19,11 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
   const [error, setError] = useState<string | null>(null);
 
   const isSignUp = mode === "sign-up";
+  const headline = isSignUp ? "Start with one remembered conversation." : "Return to what matters.";
+  const support = isSignUp
+    ? "Keep people, promises, dates, and openings connected from the first conversation."
+    : "Open the workspace where your people, promises, dates, and openings stay connected.";
+  const submitLabel = isSubmitting ? (isSignUp ? "Creating..." : "Opening...") : isSignUp ? "Create account" : "Sign in";
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -48,83 +56,101 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
   }
 
   return (
-    <main className="auth-page">
-      <div className="auth-card">
-        <div className="brand-lockup" aria-label="Vynora">
-          <div className="brand-mark" aria-hidden="true">
-            V
+    <main className="vy-auth-page">
+      <section className="vy-auth-shell" aria-labelledby="auth-title">
+        <div className="vy-auth-form-column">
+          <Link className="vy-auth-brand" href="/" aria-label="Vynora home">
+            <img className="vy-auth-brand-mark" src="/resona-memory-orbit.svg" alt="" />
+            <span>Vynora</span>
+          </Link>
+
+          <div className="vy-auth-heading">
+            <Badge>{isSignUp ? "N° 01 / Create memory" : "N° 02 / Continue thread"}</Badge>
+            <h1 id="auth-title">
+              {headline.replace(/\.$/, "")}
+              <em>.</em>
+            </h1>
+            <p>{support}</p>
           </div>
-          <span>Vynora</span>
-        </div>
 
-        <section className="auth-panel" aria-labelledby="auth-title">
-          <h1 id="auth-title" className="auth-heading">
-            {isSignUp ? "Create your account" : "Welcome back"}
-          </h1>
-          <p className="auth-copy">
-            {isSignUp ? "Turn conversations into memory, actions, and follow-ups." : "Open your conversation memory workspace."}
-          </p>
-
-          <form className="form-stack" onSubmit={onSubmit}>
-            <label className="field">
-              <span className="label">Email</span>
-              <input
-                className="input"
-                type="email"
-                autoComplete="email"
-                value={email}
-                onChange={(event) => setEmail(event.target.value)}
-                required
-              />
+          <form className="vy-auth-form" onSubmit={onSubmit}>
+            <label className="vy-auth-field">
+              <span>Email</span>
+              <div className="vy-auth-input-wrap">
+                <Mail size={17} strokeWidth={1.7} aria-hidden="true" />
+                <input
+                  type="email"
+                  autoComplete="email"
+                  value={email}
+                  onChange={(event) => setEmail(event.target.value)}
+                  placeholder="you@example.com"
+                  required
+                />
+              </div>
             </label>
 
-            <label className="field">
-              <span className="label">Password</span>
-              <input
-                className="input"
-                type="password"
-                autoComplete={isSignUp ? "new-password" : "current-password"}
-                minLength={6}
-                value={password}
-                onChange={(event) => setPassword(event.target.value)}
-                required
-              />
+            <label className="vy-auth-field">
+              <span>Password</span>
+              <div className="vy-auth-input-wrap">
+                <LockKeyhole size={17} strokeWidth={1.7} aria-hidden="true" />
+                <input
+                  type="password"
+                  autoComplete={isSignUp ? "new-password" : "current-password"}
+                  minLength={6}
+                  value={password}
+                  onChange={(event) => setPassword(event.target.value)}
+                  placeholder={isSignUp ? "Create a password" : "Enter your password"}
+                  required
+                />
+              </div>
             </label>
 
             {error ? (
-              <div className="notice notice-error" role="alert">
+              <div className="vy-auth-notice vy-auth-notice-error" role="alert">
                 {error}
               </div>
             ) : null}
 
             {message ? (
-              <div className="notice" role="status" aria-live="polite">
+              <div className="vy-auth-notice vy-auth-notice-success" role="status" aria-live="polite">
                 {message}
               </div>
             ) : null}
 
-            <button className="button button-primary" type="submit" disabled={isSubmitting}>
-              {isSubmitting ? "Working..." : isSignUp ? "Create account" : "Sign in"}
-            </button>
+            <Button className="vy-auth-submit" type="submit" disabled={isSubmitting}>
+              {submitLabel}
+              <ArrowRight size={17} strokeWidth={1.8} aria-hidden="true" />
+            </Button>
           </form>
-        </section>
 
-        <p className="form-footer">
-          {isSignUp ? "Already have an account?" : "New to Vynora?"}{" "}
-          <Link className="text-link" href={isSignUp ? "/sign-in" : "/sign-up"}>
-            {isSignUp ? "Sign in" : "Create account"}
-          </Link>
-        </p>
+          <div className="vy-auth-switch">
+            <span>{isSignUp ? "Already have a thread?" : "New to Vynora?"}</span>
+            <Link href={isSignUp ? "/sign-in" : "/sign-up"}>{isSignUp ? "Sign in" : "Create account"}</Link>
+          </div>
 
-        <p className="legal-links" aria-label="Legal links">
-          <Link className="text-link" href="/privacy">
-            Privacy
-          </Link>
-          <Link className="text-link" href="/terms">
-            Terms
-          </Link>
-        </p>
-      </div>
+          <nav className="vy-auth-legal" aria-label="Legal links">
+            <Link href="/privacy">Privacy</Link>
+            <Link href="/terms">Terms</Link>
+          </nav>
+        </div>
+
+        <aside className="vy-auth-art-panel" aria-label="Vynora memory artwork">
+          <img src="/brand/vynora-hero-art.png" alt="" />
+          <div className="vy-auth-art-grid" aria-hidden="true" />
+          <div className="vy-auth-art-caption vy-auth-art-caption-top">FIG. 02 / ACCESS</div>
+          <div className="vy-auth-art-caption vy-auth-art-caption-side">PRIVATE PLATE</div>
+          <div className="vy-auth-art-ledger" aria-hidden="true">
+            <span>01 PERSON</span>
+            <span>02 PROMISE</span>
+            <span>03 DATE</span>
+            <span>04 DECIDE</span>
+          </div>
+          <div className="vy-auth-art-proof" aria-hidden="true">
+            <Check size={14} strokeWidth={1.8} />
+            <span>Nothing moves without approval</span>
+          </div>
+        </aside>
+      </section>
     </main>
   );
 }
