@@ -117,7 +117,7 @@ export function SettingsControlCenter({ session }: { session: Session }) {
       const blob = await response.blob();
       const objectUrl = URL.createObjectURL(blob);
       const disposition = response.headers.get("content-disposition");
-      const filename = disposition?.match(/filename="([^"]+)"/)?.[1] ?? `resona-memory-archive-${new Date().toISOString()}.json`;
+      const filename = disposition?.match(/filename="([^"]+)"/)?.[1] ?? `vynora-memory-archive-${new Date().toISOString()}.json`;
       const anchor = document.createElement("a");
       anchor.href = objectUrl;
       anchor.download = filename;
@@ -134,7 +134,7 @@ export function SettingsControlCenter({ session }: { session: Session }) {
   }
 
   async function deleteAllStoredMemory() {
-    const confirmation = window.prompt("This permanently deletes your stored Resona conversation memory and uploaded audio. Type DELETE MEMORY to continue.");
+    const confirmation = window.prompt("This permanently deletes your stored Vynora conversation memory and uploaded audio. Type DELETE MEMORY to continue.");
     if (confirmation !== "DELETE MEMORY") {
       setMessage("Memory deletion cancelled.");
       return;
@@ -163,7 +163,7 @@ export function SettingsControlCenter({ session }: { session: Session }) {
       <section className="settings-hero" aria-labelledby="settings-title">
         <div>
           <p className="home-kicker">Trust architecture</p>
-          <h1 id="settings-title">Control what Resona remembers.</h1>
+          <h1 id="settings-title">Control what Vynora remembers.</h1>
           <p>Your conversations, relationships, opportunities, and emotional context stay understandable and controllable.</p>
         </div>
         <div className="settings-archive-orbit" aria-hidden="true">
@@ -191,7 +191,7 @@ export function SettingsControlCenter({ session }: { session: Session }) {
             <Shield size={18} aria-hidden="true" />
             <div>
               <h2 id="memory-settings-title">Memory</h2>
-              <p>Control what Resona remembers.</p>
+              <p>Control what Vynora remembers.</p>
             </div>
           </div>
 
@@ -216,7 +216,7 @@ export function SettingsControlCenter({ session }: { session: Session }) {
             <Brain size={18} aria-hidden="true" />
             <div>
               <h2 id="intelligence-settings-title">Intelligence</h2>
-              <p>Shape how Resona helps you think.</p>
+              <p>Shape how Vynora helps you think.</p>
             </div>
           </div>
 
@@ -239,7 +239,7 @@ export function SettingsControlCenter({ session }: { session: Session }) {
             <Workflow size={18} aria-hidden="true" />
             <div>
               <h2 id="integrations-settings-title">Connected systems</h2>
-              <p>Expand what Resona can do after you approve actions.</p>
+              <p>Expand what Vynora can do after you approve actions.</p>
             </div>
           </div>
 
@@ -319,7 +319,7 @@ export function SettingsControlCenter({ session }: { session: Session }) {
             </button>
             <button type="button">
               <Eye size={16} aria-hidden="true" />
-              See how Resona processes conversations
+              See how Vynora processes conversations
             </button>
             <button className="settings-danger-action" type="button" onClick={() => void deleteAllStoredMemory()} disabled={isDeletingMemory}>
               <Trash2 size={16} aria-hidden="true" />

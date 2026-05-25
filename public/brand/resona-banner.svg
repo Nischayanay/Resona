@@ -1,5 +1,5 @@
 <svg width="1920" height="640" viewBox="0 0 1920 640" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <title>Resona banner</title>
+  <title>Vynora banner</title>
   <defs>
     <radialGradient id="bgGlow" cx="34%" cy="35%" r="80%">
       <stop offset="0" stop-color="#25302D"/>
@@ -51,6 +51,6 @@
     <circle cx="248" cy="280" r="35" fill="url(#core)"/>
     <circle cx="235" cy="265" r="8" fill="#FFFFFF" opacity="0.86"/>
   </g>
-  <text x="438" y="313" fill="url(#wordmark)" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="150" font-weight="500" letter-spacing="0">Resona</text>
+  <text x="438" y="313" fill="url(#wordmark)" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="150" font-weight="500" letter-spacing="0">Vynora</text>
   <text x="446" y="376" fill="#B8C8C3" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="30" font-weight="400" letter-spacing="0">AI memory for conversations that matter</text>
 </svg>

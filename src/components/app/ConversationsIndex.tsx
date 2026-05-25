@@ -5,13 +5,13 @@ import { CSSProperties, useCallback, useEffect, useMemo, useState } from "react"
 import type { Session } from "@supabase/supabase-js";
 import { ArrowUpRight, FileAudio, RefreshCw, Search, Trash2 } from "lucide-react";
 import { apiFetch } from "@/lib/api-client";
-import type { ResonaSession } from "@/components/app/types";
+import type { VynoraSession } from "@/components/app/types";
 
 type SessionsResponse = {
-  sessions: ResonaSession[];
+  sessions: VynoraSession[];
 };
 
-const hiddenStorageKey = "resona:hidden-conversations";
+const hiddenStorageKey = "vynora:hidden-conversations";
 
 function formatThreadDate(value: string) {
   const date = new Date(value);
@@ -27,7 +27,7 @@ function formatThreadDate(value: string) {
   return `${day} - ${dateText}`;
 }
 
-function statusCopy(status: ResonaSession["status"]) {
+function statusCopy(status: VynoraSession["status"]) {
   if (status === "completed") {
     return "Opportunities, people, actions, and transcript are ready.";
   }
@@ -38,7 +38,7 @@ function statusCopy(status: ResonaSession["status"]) {
 }
 
 export function ConversationsIndex({ session }: { session: Session }) {
-  const [sessions, setSessions] = useState<ResonaSession[]>([]);
+  const [sessions, setSessions] = useState<VynoraSession[]>([]);
   const [query, setQuery] = useState("");
   const [expandedIds, setExpandedIds] = useState<Record<string, boolean>>({});
   const [hiddenIds, setHiddenIds] = useState<string[]>([]);
@@ -102,7 +102,7 @@ export function ConversationsIndex({ session }: { session: Session }) {
         <div className="conversations-hero-row">
           <div>
             <h1 id="conversations-title">Recorded conversations</h1>
-            <p>Open an audio memory to review the opportunities, people, follow-ups, actions, and transcript extracted by Resona.</p>
+            <p>Open an audio memory to review the opportunities, people, follow-ups, actions, and transcript extracted by Vynora.</p>
           </div>
           <button className="button button-secondary" type="button" onClick={() => void loadSessions()}>
             <RefreshCw size={16} aria-hidden="true" />

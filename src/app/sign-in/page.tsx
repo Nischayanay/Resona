@@ -1,7 +1,7 @@
 import { AuthForm } from "@/components/auth/AuthForm";
 
 export const metadata = {
-  title: "Sign in - Resona"
+  title: "Sign in - Vynora"
 };
 
 export default function SignInPage() {

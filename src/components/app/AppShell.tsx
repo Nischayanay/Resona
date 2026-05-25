@@ -98,7 +98,7 @@ export function AppShell({ children }: { children: (session: Session) => ReactNo
     return (
       <main className="auth-page">
         <div className="notice" role="status">
-          Opening Resona...
+          Opening Vynora...
         </div>
       </main>
     );
@@ -112,9 +112,9 @@ export function AppShell({ children }: { children: (session: Session) => ReactNo
         aria-hidden="true"
       />
       <header className="home-topbar" data-scrolled={hasScrolled}>
-        <Link className="home-brand" href="/home" aria-label="Resona home">
+        <Link className="home-brand" href="/home" aria-label="Vynora home">
           <img className="home-brand-mark" src="/resona-memory-orbit.svg" alt="" />
-          <span className="home-brand-label">Resona</span>
+          <span className="home-brand-label">Vynora</span>
         </Link>
         <nav className="home-nav-center" aria-label="Primary app navigation">
           <Link href="/home">

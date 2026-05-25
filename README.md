@@ -1,6 +1,6 @@
-# Resona
+# Vynora
 
-Resona is an open-source conversation intelligence app built with Next.js, Supabase, Trigger.dev, Gemini/Google AI, and Google Calendar. It turns recorded conversations into transcripts, structured memory, priority signals, and approval-based follow-up actions.
+Vynora is an open-source conversation intelligence app built with Next.js, Supabase, Trigger.dev, Gemini/Google AI, and Google Calendar. It turns recorded conversations into transcripts, structured memory, priority signals, and approval-based follow-up actions.
 
 ## Backend Loop
 
@@ -148,4 +148,4 @@ supabase db push
 
 ## License
 
-Resona is released under the [MIT License](./LICENSE).
+Vynora is released under the [MIT License](./LICENSE).

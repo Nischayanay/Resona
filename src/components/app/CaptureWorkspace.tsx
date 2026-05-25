@@ -288,7 +288,7 @@ export function CaptureWorkspace({ session }: { session: Session }) {
           </div>
           <p className="home-kicker">Memory entry point</p>
           <h1 id="capture-title">Start your memory thread</h1>
-          <p className="home-entry-copy editorial-copy">Capture what happened. Resona will compress it into priorities, memory, and action.</p>
+          <p className="home-entry-copy editorial-copy">Capture what happened. Vynora will compress it into priorities, memory, and action.</p>
 
           <div className="home-capture-actions" role="tablist" aria-label="Capture mode">
             <button className="home-action-button" type="button" data-active={mode === "record"} onClick={() => setMode("record")}>
@@ -375,7 +375,7 @@ export function CaptureWorkspace({ session }: { session: Session }) {
           </div>
           <div className="attention-stack">
             {actionables.length === 0 ? (
-              <div className="empty-state">No pending actions yet. Record or upload a conversation and Resona will surface calendar suggestions, tasks, and follow-ups here.</div>
+              <div className="empty-state">No pending actions yet. Record or upload a conversation and Vynora will surface calendar suggestions, tasks, and follow-ups here.</div>
             ) : (
               actionables.map((item, index) => (
                 <Link className={`attention-card ${index === 0 ? "priority-card" : "signal-card"}`} href="/conversations" key={item.id}>

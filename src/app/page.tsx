@@ -1,318 +1,309 @@
+import Image from "next/image";
 import Link from "next/link";
+import type { CSSProperties } from "react";
+import { ArrowDown, ArrowUpRight, CalendarCheck, Check, Download, ShieldCheck } from "lucide-react";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 
-const fragments = [
-  "they mentioned the intro",
-  "May 16 - 4 PM",
-  "the real ask",
-  "send the deck",
-  "why it mattered",
-  "memory is reconnecting",
-  "not another note",
-  "tomorrow evening"
+const noticeRows = [
+  { index: "01", label: "Person", title: "Rahul from the demo night", detail: "Asked for the short deck before Friday." },
+  { index: "02", label: "Promise", title: "Send the new intro", detail: "Mentioned after the pricing question." },
+  { index: "03", label: "Date", title: "Tomorrow evening", detail: "Good window for a calm follow-up." },
+  { index: "04", label: "Opening", title: "AI infrastructure internship", detail: "Needs one paragraph and the right proof." },
+  { index: "05", label: "Decision", title: "Wait for approval", detail: "Nothing reaches calendar until you say yes." }
 ];
 
-const productCards = [
+const proofItems = ["people", "promises", "dates", "openings", "decisions", "context"];
+
+const processSteps = [
   {
-    label: "Priority surfaced",
-    title: "Follow up before the window closes",
-    lines: ["Rahul mentioned an AI infrastructure internship.", "Resona turns that into the next move, not another forgotten note."]
+    number: "01",
+    title: "You talk.",
+    copy: "A call, a hallway chat, a late-night idea, a promise made too quickly."
   },
   {
-    label: "Context kept",
-    title: "Know why this person matters",
-    lines: ["People, dates, emotional cues, and decisions stay attached to the conversation."]
+    number: "02",
+    title: "Vynora remembers what mattered.",
+    copy: "Names, asks, dates, emotional weight, and the reason it mattered stay together."
   },
   {
-    label: "Action approved",
-    title: "Calendar and task suggestions wait for you",
-    lines: ["Resona suggests the follow-up.", "You decide what gets created."]
+    number: "03",
+    title: "The thread comes back when it counts.",
+    copy: "The right follow-up sits above the noise before the moment goes cold."
+  },
+  {
+    number: "04",
+    title: "You choose the next move.",
+    copy: "Calendar and task suggestions wait for your approval. Quiet by default."
   }
 ];
 
-const relationshipNodes = [
-  { name: "Send the deck", meta: "promised after the call" },
-  { name: "Warm intro", meta: "ask before Friday" },
-  { name: "Follow-up", meta: "tomorrow - 4 PM" },
-  { name: "Decision owner", meta: "needs the short version" },
-  { name: "Open question", meta: "pricing came up twice" }
-];
-
-const topologyChips = [
-  "message becomes task",
-  "date becomes reminder",
-  "promise becomes priority",
-  "context stays attached"
+const trustItems = [
+  { icon: ShieldCheck, title: "Review memory", copy: "See what Vynora keeps from your conversations." },
+  { icon: Download, title: "Export your archive", copy: "Take your conversation memory out when you need it." },
+  { icon: CalendarCheck, title: "Approve actions", copy: "Calendar events and follow-ups happen only after you decide." }
 ];
 
 const faqs = [
   {
-    question: "What is Resona?",
+    question: "Is Vynora another meeting notes app?",
     answer:
-      "Resona is an AI memory layer for real conversations. It remembers people, opportunities, follow-ups, decisions, and context after the conversation ends."
+      "No. Notes preserve a transcript. Vynora focuses on the person, promise, date, opening, and decision you meant to come back to."
   },
   {
-    question: "How is Resona different from a meeting notes app?",
+    question: "Will it create calendar events by itself?",
     answer:
-      "Meeting notes store what was said. Resona focuses on what deserves attention next: who matters, what changed, what to remember, and what action needs approval."
+      "No. Vynora can suggest a calendar action, but the user approves the title, timing, and details before anything is created."
   },
   {
-    question: "Can Resona create calendar events automatically?",
+    question: "Who is this for?",
     answer:
-      "Resona can suggest calendar actions, but the product keeps approval in the user’s hands. You approve only the calendar events you actually want created."
-  },
-  {
-    question: "Who should use Resona?",
-    answer:
-      "Founders, students, operators, creators, and builders who meet people often and cannot afford to lose follow-ups, intros, opportunities, or relationship context."
-  },
-  {
-    question: "Does Resona remember personal context?",
-    answer:
-      "Yes. Resona is designed to preserve useful conversation context such as people, relationships, opportunities, decisions, and durable memory facts."
-  },
-  {
-    question: "Is my conversation data controllable?",
-    answer:
-      "Yes. The product direction is privacy-first: users should be able to review memory, control what is remembered, and choose what actions Resona takes."
+      "Founders, students, operators, builders, and creators who meet people often and cannot afford to lose warm openings or important promises."
   }
 ];
 
-function AmbientMemoryArtwork() {
+function IssueBar() {
   return (
-    <div className="memory-art" aria-hidden="true">
-      <div className="memory-thread memory-thread-a" />
-      <div className="memory-thread memory-thread-b" />
-      <div className="memory-thread memory-thread-c" />
-      <div className="memory-core">
-        <span>meaning reconnecting</span>
+    <div className="vy-issue-bar" aria-label="Vynora issue metadata">
+      <span>
+        <strong>VY / 2026</strong> · VOL. 01 / ISSUE N° 01
+      </span>
+      <span>
+        FILED UNDER <b>MEMORY · CONVERSATION</b>
+      </span>
+      <span>LOCAL-FIRST · HUMAN APPROVED</span>
+      <span>
+        <i aria-hidden="true" /> LIVE · V0.1
+      </span>
+    </div>
+  );
+}
+
+function SideRail({ side }: { side: "left" | "right" }) {
+  return (
+    <aside className={`vy-side-rail vy-side-rail-${side}`} aria-hidden="true">
+      <span>{side === "left" ? "PEOPLE · PROMISES · OPENINGS · MEMORY" : "VYNORA · VOL. 01 · ISSUE N° 01 · CONTROL"}</span>
+    </aside>
+  );
+}
+
+function ArtPlate() {
+  return (
+    <div className="vy-art-wrap" aria-label="Vynora abstract memory artwork">
+      <div className="vy-art-corner vy-art-corner-a" />
+      <div className="vy-art-corner vy-art-corner-b" />
+      <div className="vy-art-plate">
+        <Image
+          src="/brand/vynora-hero-art.png"
+          alt="Abstract editorial artwork showing a memory field around a classical head and architectural forms"
+          fill
+          priority
+          sizes="(max-width: 900px) 92vw, 48vw"
+          className="vy-art-image"
+        />
+        <div className="vy-art-grid" aria-hidden="true" />
+        <div className="vy-art-caption vy-art-caption-top">FIG. 01 / VY-01</div>
+        <div className="vy-art-caption vy-art-caption-side">PLATE N° 08</div>
+        <div className="vy-art-menu" aria-hidden="true">
+          <span>01 NOTICE</span>
+          <span>02 REMEMBER</span>
+          <span>03 RETURN</span>
+          <span>04 DECIDE</span>
+        </div>
+        <div className="vy-art-proof">SHA · a1b2c3d</div>
       </div>
-      {fragments.map((fragment, index) => (
-        <span className={`memory-fragment memory-fragment-${index + 1}`} key={fragment}>
-          {fragment}
+    </div>
+  );
+}
+
+function MemoryLedger() {
+  return (
+    <div className="vy-ledger">
+      {noticeRows.map((row) => (
+        <article className="vy-ledger-row" key={row.index}>
+          <span>{row.index}</span>
+          <small>{row.label}</small>
+          <strong>{row.title}</strong>
+          <p>{row.detail}</p>
+        </article>
+      ))}
+    </div>
+  );
+}
+
+function ProofStrip() {
+  return (
+    <div className="vy-proof-strip" aria-label="What Vynora remembers">
+      {proofItems.map((item, index) => (
+        <span style={{ "--delay": `${index * 90}ms` } as CSSProperties} key={item}>
+          {item}
         </span>
       ))}
-      <span className="memory-time memory-time-a">14:26</span>
-      <span className="memory-time memory-time-b">yesterday</span>
-      <span className="memory-time memory-time-c">unresolved</span>
-      <span className="memory-particle memory-particle-a" />
-      <span className="memory-particle memory-particle-b" />
-      <span className="memory-particle memory-particle-c" />
-      <span className="memory-particle memory-particle-d" />
     </div>
   );
 }
 
 export default function Home() {
   return (
-    <main className="resona-landing">
-      <nav className="landing-nav" aria-label="Main navigation">
-        <Link className="landing-brand" href="/" aria-label="Resona home">
-          <img className="landing-brand-mark" src="/resona-memory-orbit.svg" alt="" />
-          <span>Resona</span>
+    <main className="vynora-landing">
+      <IssueBar />
+      <SideRail side="left" />
+      <SideRail side="right" />
+
+      <nav className="vy-nav" aria-label="Main navigation">
+        <Link className="vy-brand" href="/" aria-label="Vynora home">
+          <img className="vy-brand-mark" src="/resona-memory-orbit.svg" alt="" />
+          <span>Vynora</span>
         </Link>
-        <div className="landing-nav-links">
-          <Link href="/">Home</Link>
-          <a href="#memory">Memory</a>
-          <a href="#about">About</a>
+        <div className="vy-nav-links">
+          <a href="#notices">Notices</a>
+          <a href="#remembering">Remembering</a>
+          <a href="#trust">Trust</a>
         </div>
-        <Link className="landing-nav-cta" href="/sign-up">
-          Get Started
-        </Link>
+        <div className="vy-nav-actions">
+          <Button asChild variant="outline" size="sm">
+            <Link href="/sign-in">Sign in</Link>
+          </Button>
+          <Button asChild className="vy-button-solid" size="sm">
+            <Link href="/sign-up">Start</Link>
+          </Button>
+        </div>
       </nav>
 
-      <section className="landing-hero" aria-labelledby="landing-title">
-        <div className="hero-copy">
-          <p className="landing-kicker">AI memory for conversations that matter</p>
+      <section className="vy-hero" aria-labelledby="landing-title">
+        <div className="vy-hero-copy">
+          <Badge>Private conversation memory · N° 01</Badge>
           <h1 id="landing-title">
-            <span>Stop losing the conversations</span>
-            <span>that could change your life.</span>
+            Your conversations should be <em>remembered.</em>
           </h1>
-          <p className="hero-support editorial-copy">Resona turns messy conversations into memory, priority, and approved actions, so people, opportunities, and promises do not fade after the call ends.</p>
-          <div className="landing-actions">
-            <Link className="landing-button landing-button-primary" href="/sign-up">
-              Start Your Memory Thread
-            </Link>
-            <Link className="landing-button landing-button-secondary" href="/home">
-              Try The Capture Flow
-            </Link>
+          <p>
+            Vynora keeps the person, promise, date, opening, and reason together, so the thing you meant to come back to does not fade after the call.
+          </p>
+          <div className="vy-actions">
+            <Button asChild className="vy-button-solid" size="lg">
+              <Link href="/sign-up">
+                Start with one conversation
+                <ArrowUpRight size={17} strokeWidth={1.8} aria-hidden="true" />
+              </Link>
+            </Button>
+            <Button asChild className="vy-button-outline" variant="outline" size="lg">
+              <a href="#notices">
+                See how it works
+                <ArrowDown size={16} strokeWidth={1.8} aria-hidden="true" />
+              </a>
+            </Button>
           </div>
-          <div className="hero-proof-strip" aria-label="Resona output examples">
-            <span>Follow-ups</span>
-            <span>People</span>
-            <span>Opportunities</span>
-            <span>Memory facts</span>
-          </div>
+          <ProofStrip />
         </div>
-        <AmbientMemoryArtwork />
+        <ArtPlate />
       </section>
 
-      <section className="problem-section problem-relief-section reveal-section" aria-labelledby="problem-title">
-        <div className="problem-relief-copy">
-          <p className="landing-kicker">From chaos to clarity</p>
-          <h2 id="problem-title">The hard part is not recording a conversation. It is remembering what deserves action.</h2>
-          <div className="problem-lines">
-            <p>You meet someone important.</p>
-            <p>You promise a follow-up.</p>
-            <p>The context disappears into your day.</p>
-          </div>
+      <section className="vy-section vy-notices" id="notices" aria-labelledby="notices-title">
+        <div className="vy-section-heading">
+          <Badge>01 / What Vynora notices</Badge>
+          <h2 id="notices-title">
+            The important pieces stop drifting <em>apart.</em>
+          </h2>
         </div>
-        <div className="relief-panel">
-          <div className="fading-notes" aria-hidden="true">
-            <span>send resume</span>
-            <span>follow up tomorrow</span>
-            <span>AI infrastructure</span>
-            <span>why it mattered</span>
-          </div>
-          <div className="clarity-flow" aria-label="Conversation to action flow">
-            <span>Capture the conversation</span>
-            <span>Extract what mattered</span>
-            <span>Rank the next move</span>
-            <span>Approve the action</span>
-          </div>
-        </div>
+        <MemoryLedger />
       </section>
 
-      <section className="experience-section reveal-section" aria-labelledby="experience-title">
-        <div className="section-heading">
-          <p className="landing-kicker">Attention surface</p>
-          <h2 id="experience-title">Resona shows the useful thing first.</h2>
-        </div>
-        <div className="calm-card-grid">
-          {productCards.map((card, index) => (
-            <article className={`calm-card ${index === 0 ? "calm-card-primary priority-card" : "signal-card"}`} key={card.title}>
-              <p>{card.label}</p>
-              <h3>{card.title}</h3>
-              {card.lines.map((line) => (
-                <span key={line}>{line}</span>
-              ))}
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="graph-section reveal-section" id="memory" aria-labelledby="graph-title">
-        <div className="section-heading">
-          <p className="landing-kicker">Continuity</p>
-          <h2 id="graph-title">The messy after-meeting part gets organized.</h2>
-        </div>
-        <div className="memory-topology" aria-label="Example of conversation memory signals">
-          <div className="topology-line topology-line-a" />
-          <div className="topology-line topology-line-b" />
-          <div className="topology-line topology-line-c" />
-          <div className="topology-line topology-line-d" />
-          <div className="topology-hub">
-            <img src="/resona-memory-orbit.svg" alt="" />
-            <span>one conversation</span>
-            <strong>connected memory</strong>
-          </div>
-          {topologyChips.map((chip, index) => (
-            <span className={`topology-chip topology-chip-${index + 1}`} key={chip}>
-              {chip}
-            </span>
-          ))}
-          {relationshipNodes.map((node, index) => (
-            <div className={`topology-node topology-node-${index + 1}`} key={node.name}>
-              <small>{String(index + 1).padStart(2, "0")}</small>
-              <strong>{node.name}</strong>
-              <span>{node.meta}</span>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section className="trust-section trust-conversion-section reveal-section" id="about" aria-labelledby="trust-title">
-        <div className="trust-copy">
-          <p className="landing-kicker">Trust before automation</p>
-          <h2 id="trust-title">Resona remembers quietly. You stay in control.</h2>
-          <p>Approve actions before they happen. Review what gets remembered. Keep the product calm enough to trust.</p>
-          <div className="trust-cta-card">
-            <span>Start with one conversation</span>
-            <strong>Upload or record. Resona will show the next move.</strong>
-            <Link className="landing-button landing-button-primary" href="/sign-up">
-              Start Remembering
-            </Link>
-          </div>
-        </div>
-        <div className="trust-stack">
-          <div className="trust-list">
-            <span>Approval before calendar or task actions</span>
-            <span>Memory facts you can review</span>
-            <span>Built for people and opportunities, not transcript hoarding</span>
-          </div>
-          <div className="faq-list compact-faq" aria-labelledby="faq-title">
-            <h3 id="faq-title">Questions before trusting a memory product</h3>
-            {faqs.map((faq) => (
-              <details className="faq-item" key={faq.question}>
-                <summary>{faq.question}</summary>
-                <p>{faq.answer}</p>
-              </details>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <footer className="landing-footer" aria-label="Resona footer">
-        <div className="landing-footer-grid">
-          <div className="landing-footer-brand">
-            <Link className="landing-brand" href="/" aria-label="Resona home">
-              <img className="landing-brand-mark" src="/resona-memory-orbit.svg" alt="" />
-              <span>Resona</span>
-            </Link>
-            <p>Conversations should remember what mattered.</p>
-          </div>
-
-          <nav className="landing-footer-group" aria-label="Product links">
-            <h2>Product</h2>
-            <a href="#memory">Memory</a>
-            <Link href="/home">Capture</Link>
-            <Link href="/sign-up">Start Remembering</Link>
-          </nav>
-
-          <nav className="landing-footer-group" aria-label="Intelligence links">
-            <h2>Intelligence</h2>
-            <span>People</span>
-            <span>Opportunities</span>
-            <span>Follow-ups</span>
-          </nav>
-
-          <nav className="landing-footer-group" aria-label="Company links">
-            <h2>Company</h2>
-            <Link href="/sign-in">Sign In</Link>
-            <Link href="/privacy">Privacy</Link>
-            <Link href="/terms">Terms</Link>
-          </nav>
-
-          <nav className="landing-footer-group" aria-label="Social links">
-            <h2>Connect</h2>
-            <a href="https://x.com/anaybauskar" target="_blank" rel="noreferrer">
-              X (Twitter)
-            </a>
-            <a href="https://www.linkedin.com/in/anay-bauskar" target="_blank" rel="noreferrer">
-              LinkedIn
-            </a>
-            <a href="https://heyiamanay.vercel.app/" target="_blank" rel="noreferrer">
-              ✦ Personal brand
-            </a>
-          </nav>
-        </div>
-
-        <div className="landing-footer-bottom">
-          <span>© 2026 Resona. All rights reserved.</span>
+      <section className="vy-section vy-remembering" id="remembering" aria-labelledby="remembering-title">
+        <div className="vy-before-after">
           <div>
-            <a href="https://x.com/anaybauskar" target="_blank" rel="noreferrer">
-              X
-            </a>
-            <a href="https://www.linkedin.com/in/anay-bauskar" target="_blank" rel="noreferrer">
-              LinkedIn
-            </a>
-            <a href="https://heyiamanay.vercel.app/" target="_blank" rel="noreferrer">
-              ✦ Anay
-            </a>
-            <Link href="/terms">Terms</Link>
-            <Link href="/privacy">Privacy</Link>
+            <Badge>02 / The remembering layer</Badge>
+            <h2 id="remembering-title">
+              Messy notes become a living thread <em>again.</em>
+            </h2>
+          </div>
+          <div className="vy-thread-board" aria-label="Before and after conversation memory">
+            <div className="vy-scattered">
+              <span>send deck?</span>
+              <span>pricing came up</span>
+              <span>Friday maybe</span>
+              <span>intro to Mira</span>
+            </div>
+            <Separator />
+            <div className="vy-clean-thread">
+              {processSteps.map((step) => (
+                <article key={step.number}>
+                  <small>{step.number}</small>
+                  <strong>{step.title}</strong>
+                  <p>{step.copy}</p>
+                </article>
+              ))}
+            </div>
           </div>
         </div>
-      </footer>
+      </section>
+
+      <section className="vy-section vy-next-move" aria-labelledby="next-title">
+        <div className="vy-next-copy">
+          <Badge>03 / Your next move</Badge>
+          <h2 id="next-title">
+            Follow-ups feel lighter when the context is still <em>warm.</em>
+          </h2>
+          <p>
+            Vynora does not try to run your relationships. It brings back the thread, shows why it matters, and keeps the final move in your hands.
+          </p>
+        </div>
+        <div className="vy-approval-card">
+          <span>Suggested, not automatic</span>
+          <strong>Send a short deck to Rahul before Friday.</strong>
+          <p>Reason: he asked for proof after the infrastructure internship conversation.</p>
+          <div>
+            <Button className="vy-approval-primary" size="sm">
+              <Check size={15} strokeWidth={2} aria-hidden="true" />
+              Approve
+            </Button>
+            <Button className="vy-approval-secondary" variant="outline" size="sm">
+              Later
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      <section className="vy-section vy-trust" id="trust" aria-labelledby="trust-title">
+        <div className="vy-section-heading">
+          <Badge>04 / Trust and control</Badge>
+          <h2 id="trust-title">
+            Quiet memory. Clear control. No surprise <em>automation.</em>
+          </h2>
+        </div>
+        <div className="vy-trust-grid">
+          {trustItems.map((item) => {
+            const Icon = item.icon;
+            return (
+              <article key={item.title}>
+                <Icon size={22} strokeWidth={1.7} aria-hidden="true" />
+                <h3>{item.title}</h3>
+                <p>{item.copy}</p>
+              </article>
+            );
+          })}
+        </div>
+        <Accordion type="single" collapsible className="vy-faq">
+          {faqs.map((faq, index) => (
+            <AccordionItem value={`item-${index}`} key={faq.question}>
+              <AccordionTrigger>{faq.question}</AccordionTrigger>
+              <AccordionContent>{faq.answer}</AccordionContent>
+            </AccordionItem>
+          ))}
+        </Accordion>
+      </section>
+
+      <section className="vy-final" aria-labelledby="final-title">
+        <Badge>05 / Begin</Badge>
+        <h2 id="final-title">
+          Start with one <em>conversation.</em>
+        </h2>
+        <p>Let Vynora remember what you meant to come back to.</p>
+        <Button asChild className="vy-button-solid" size="lg">
+          <Link href="/sign-up">Start with one conversation</Link>
+        </Button>
+      </section>
     </main>
   );
 }

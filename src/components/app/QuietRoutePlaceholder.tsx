@@ -15,7 +15,7 @@ const routeCopy = {
   },
   settings: {
     eyebrow: "Settings",
-    title: "Control what Resona remembers.",
+    title: "Control what Vynora remembers.",
     body: "Privacy, profile, integrations, and memory controls will stay here."
   }
 } as const;

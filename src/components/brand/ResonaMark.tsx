@@ -1,8 +1,8 @@
-type ResonaMarkProps = {
+type VynoraMarkProps = {
   className?: string;
 };
 
-export function ResonaMark({ className = "resona-mark-icon" }: ResonaMarkProps) {
+export function VynoraMark({ className = "vynora-mark-icon" }: VynoraMarkProps) {
   return (
     <svg
       className={className}

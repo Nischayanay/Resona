@@ -2,7 +2,7 @@ export const EXTRACTION_PROMPT_VERSION = "resona-extraction-v2-six-engine";
 
 export function buildExtractionPrompt(transcript: string, currentIsoDate: string) {
   return `
-You are Resona's conversation intelligence engine.
+You are Vynora's conversation intelligence engine.
 
 Return strict JSON only. Do not wrap it in markdown.
 
@@ -54,7 +54,7 @@ ${transcript}
 
 export function buildRepairPrompt(rawOutput: unknown, validationError: string) {
   return `
-Repair the following output into valid strict JSON for Resona's extraction schema.
+Repair the following output into valid strict JSON for Vynora's extraction schema.
 Return JSON only. Do not add markdown.
 
 Validation error:

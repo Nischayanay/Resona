@@ -50,11 +50,11 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
   return (
     <main className="auth-page">
       <div className="auth-card">
-        <div className="brand-lockup" aria-label="Resona">
+        <div className="brand-lockup" aria-label="Vynora">
           <div className="brand-mark" aria-hidden="true">
-            R
+            V
           </div>
-          <span>Resona</span>
+          <span>Vynora</span>
         </div>
 
         <section className="auth-panel" aria-labelledby="auth-title">
@@ -110,7 +110,7 @@ export function AuthForm({ mode }: { mode: AuthMode }) {
         </section>
 
         <p className="form-footer">
-          {isSignUp ? "Already have an account?" : "New to Resona?"}{" "}
+          {isSignUp ? "Already have an account?" : "New to Vynora?"}{" "}
           <Link className="text-link" href={isSignUp ? "/sign-in" : "/sign-up"}>
             {isSignUp ? "Sign in" : "Create account"}
           </Link>

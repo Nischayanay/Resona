@@ -11,7 +11,7 @@ export type SessionStatus =
   | "failed"
   | "partial_failed";
 
-export type ResonaSession = {
+export type VynoraSession = {
   id: string;
   title: string;
   source_type: string;
@@ -108,7 +108,7 @@ export type PrioritySignal = {
 };
 
 export type SessionDetail = {
-  session: ResonaSession;
+  session: VynoraSession;
   transcript?: Transcript | null;
   people: Person[];
   action_items: ActionItem[];

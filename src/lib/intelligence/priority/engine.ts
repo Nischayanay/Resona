@@ -188,7 +188,7 @@ export function buildSessionInsights(extraction: ConversationExtraction, signals
     description: signal.reason,
     priority: (signal.finalScore >= 0.75 ? "high" : signal.finalScore >= 0.45 ? "medium" : "low") as PriorityLevel,
     priorityScore: signal.finalScore,
-    signalReason: `Ranked #${signal.rank} by Resona priority scoring.`,
+    signalReason: `Ranked #${signal.rank} by Vynora priority scoring.`,
     source: signal,
     confidence: signal.confidenceScore
   }));

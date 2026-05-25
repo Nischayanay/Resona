@@ -1,5 +1,5 @@
 <svg width="1200" height="360" viewBox="0 0 1200 360" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <title>Resona logo lockup</title>
+  <title>Vynora logo lockup</title>
   <defs>
     <linearGradient id="markStroke" x1="102" y1="70" x2="274" y2="280" gradientUnits="userSpaceOnUse">
       <stop offset="0" stop-color="#F8FFFC"/>
@@ -36,5 +36,5 @@
     <circle cx="180" cy="180" r="25" fill="url(#core)"/>
     <circle cx="171" cy="169" r="6" fill="#FFFFFF" opacity="0.86"/>
   </g>
-  <text x="344" y="219" fill="url(#wordmark)" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="128" font-weight="500" letter-spacing="0">Resona</text>
+  <text x="344" y="219" fill="url(#wordmark)" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-size="128" font-weight="500" letter-spacing="0">Vynora</text>
 </svg>

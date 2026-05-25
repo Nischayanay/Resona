@@ -1,0 +1,185 @@
+- generic [active] [ref=e1]:
+  - main [ref=e2]:
+    - generic "Vynora issue metadata" [ref=e3]:
+      - generic [ref=e4]:
+        - strong [ref=e5]: VY / 2026
+        - text: · VOL. 01 / ISSUE N° 01
+      - generic [ref=e6]: FILED UNDER MEMORY · CONVERSATION
+      - generic [ref=e7]: LOCAL-FIRST · HUMAN APPROVED
+      - generic [ref=e8]: LIVE · V0.1
+    - complementary:
+      - generic: PEOPLE · PROMISES · OPENINGS · MEMORY
+    - complementary:
+      - generic: VYNORA · VOL. 01 · ISSUE N° 01 · CONTROL
+    - navigation "Main navigation" [ref=e10]:
+      - link "Vynora home" [ref=e11] [cursor=pointer]:
+        - /url: /
+        - generic [ref=e12]: Vynora
+      - generic [ref=e13]:
+        - link "Notices" [ref=e14] [cursor=pointer]:
+          - /url: "#notices"
+        - link "Remembering" [ref=e15] [cursor=pointer]:
+          - /url: "#remembering"
+        - link "Trust" [ref=e16] [cursor=pointer]:
+          - /url: "#trust"
+      - generic [ref=e17]:
+        - link "Sign in" [ref=e18] [cursor=pointer]:
+          - /url: /sign-in
+        - link "Start" [ref=e19] [cursor=pointer]:
+          - /url: /sign-up
+    - region "Your conversations should be remembered." [ref=e20]:
+      - generic [ref=e21]:
+        - generic [ref=e22]: Private conversation memory · N° 01
+        - heading "Your conversations should be remembered." [level=1] [ref=e23]:
+          - text: Your conversations should be
+          - emphasis [ref=e24]: remembered.
+        - paragraph [ref=e25]: Vynora keeps the person, promise, date, opening, and reason together, so the thing you meant to come back to does not fade after the call.
+        - generic [ref=e26]:
+          - link "Start with one conversation" [ref=e27] [cursor=pointer]:
+            - /url: /sign-up
+            - text: Start with one conversation
+            - img [ref=e28]
+          - link "See how it works" [ref=e31] [cursor=pointer]:
+            - /url: "#notices"
+            - text: See how it works
+            - img [ref=e32]
+        - generic "What Vynora remembers" [ref=e34]:
+          - generic [ref=e35]: people
+          - generic [ref=e36]: promises
+          - generic [ref=e37]: dates
+          - generic [ref=e38]: openings
+          - generic [ref=e39]: decisions
+          - generic [ref=e40]: context
+      - generic "Vynora abstract memory artwork" [ref=e41]:
+        - generic [ref=e44]:
+          - img "Abstract editorial artwork showing a memory field around a classical head and architectural forms" [ref=e45]
+          - generic [ref=e46]: FIG. 01 / VY-01
+          - generic [ref=e47]: PLATE N° 08
+          - generic [ref=e48]:
+            - generic [ref=e49]: 01 NOTICE
+            - generic [ref=e50]: 02 REMEMBER
+            - generic [ref=e51]: 03 RETURN
+            - generic [ref=e52]: 04 DECIDE
+          - generic [ref=e53]: SHA · a1b2c3d
+    - region "The important pieces stop drifting apart." [ref=e54]:
+      - generic [ref=e55]:
+        - generic [ref=e56]: 01 / What Vynora notices
+        - heading "The important pieces stop drifting apart." [level=2] [ref=e57]:
+          - text: The important pieces stop drifting
+          - emphasis [ref=e58]: apart.
+      - generic [ref=e59]:
+        - article [ref=e60]:
+          - generic [ref=e61]: "01"
+          - generic [ref=e62]: Person
+          - strong [ref=e63]: Rahul from the demo night
+          - paragraph [ref=e64]: Asked for the short deck before Friday.
+        - article [ref=e65]:
+          - generic [ref=e66]: "02"
+          - generic [ref=e67]: Promise
+          - strong [ref=e68]: Send the new intro
+          - paragraph [ref=e69]: Mentioned after the pricing question.
+        - article [ref=e70]:
+          - generic [ref=e71]: "03"
+          - generic [ref=e72]: Date
+          - strong [ref=e73]: Tomorrow evening
+          - paragraph [ref=e74]: Good window for a calm follow-up.
+        - article [ref=e75]:
+          - generic [ref=e76]: "04"
+          - generic [ref=e77]: Opening
+          - strong [ref=e78]: AI infrastructure internship
+          - paragraph [ref=e79]: Needs one paragraph and the right proof.
+        - article [ref=e80]:
+          - generic [ref=e81]: "05"
+          - generic [ref=e82]: Decision
+          - strong [ref=e83]: Wait for approval
+          - paragraph [ref=e84]: Nothing reaches calendar until you say yes.
+    - region "Messy notes become a living thread again." [ref=e85]:
+      - generic [ref=e86]:
+        - generic [ref=e87]:
+          - generic [ref=e88]: 02 / The remembering layer
+          - heading "Messy notes become a living thread again." [level=2] [ref=e89]:
+            - text: Messy notes become a living thread
+            - emphasis [ref=e90]: again.
+        - generic "Before and after conversation memory" [ref=e91]:
+          - generic [ref=e92]:
+            - generic [ref=e93]: send deck?
+            - generic [ref=e94]: pricing came up
+            - generic [ref=e95]: Friday maybe
+            - generic [ref=e96]: intro to Mira
+          - separator [ref=e97]
+          - generic [ref=e98]:
+            - article [ref=e99]:
+              - generic [ref=e100]: "01"
+              - strong [ref=e101]: You talk.
+              - paragraph [ref=e102]: A call, a hallway chat, a late-night idea, a promise made too quickly.
+            - article [ref=e103]:
+              - generic [ref=e104]: "02"
+              - strong [ref=e105]: Vynora remembers what mattered.
+              - paragraph [ref=e106]: Names, asks, dates, emotional weight, and the reason it mattered stay together.
+            - article [ref=e107]:
+              - generic [ref=e108]: "03"
+              - strong [ref=e109]: The thread comes back when it counts.
+              - paragraph [ref=e110]: The right follow-up sits above the noise before the moment goes cold.
+            - article [ref=e111]:
+              - generic [ref=e112]: "04"
+              - strong [ref=e113]: You choose the next move.
+              - paragraph [ref=e114]: Calendar and task suggestions wait for your approval. Quiet by default.
+    - region "Follow-ups feel lighter when the context is still warm." [ref=e115]:
+      - generic [ref=e116]:
+        - generic [ref=e117]: 03 / Your next move
+        - heading "Follow-ups feel lighter when the context is still warm." [level=2] [ref=e118]:
+          - text: Follow-ups feel lighter when the context is still
+          - emphasis [ref=e119]: warm.
+        - paragraph [ref=e120]: Vynora does not try to run your relationships. It brings back the thread, shows why it matters, and keeps the final move in your hands.
+      - generic [ref=e121]:
+        - generic [ref=e122]: Suggested, not automatic
+        - strong [ref=e123]: Send a short deck to Rahul before Friday.
+        - paragraph [ref=e124]: "Reason: he asked for proof after the infrastructure internship conversation."
+        - generic [ref=e125]:
+          - button "Approve" [ref=e126] [cursor=pointer]:
+            - img [ref=e127]
+            - text: Approve
+          - button "Later" [ref=e129] [cursor=pointer]
+    - region "Quiet memory. Clear control. No surprise automation." [ref=e130]:
+      - generic [ref=e131]:
+        - generic [ref=e132]: 04 / Trust and control
+        - heading "Quiet memory. Clear control. No surprise automation." [level=2] [ref=e133]:
+          - text: Quiet memory. Clear control. No surprise
+          - emphasis [ref=e134]: automation.
+      - generic [ref=e135]:
+        - article [ref=e136]:
+          - img [ref=e137]
+          - heading "Review memory" [level=3] [ref=e140]
+          - paragraph [ref=e141]: See what Vynora keeps from your conversations.
+        - article [ref=e142]:
+          - img [ref=e143]
+          - heading "Export your archive" [level=3] [ref=e146]
+          - paragraph [ref=e147]: Take your conversation memory out when you need it.
+        - article [ref=e148]:
+          - img [ref=e149]
+          - heading "Approve actions" [level=3] [ref=e152]
+          - paragraph [ref=e153]: Calendar events and follow-ups happen only after you decide.
+      - generic [ref=e154]:
+        - heading "Is Vynora another meeting notes app?" [level=3] [ref=e156]:
+          - button "Is Vynora another meeting notes app?" [ref=e157] [cursor=pointer]:
+            - text: Is Vynora another meeting notes app?
+            - img [ref=e158]
+        - heading "Will it create calendar events by itself?" [level=3] [ref=e161]:
+          - button "Will it create calendar events by itself?" [ref=e162] [cursor=pointer]:
+            - text: Will it create calendar events by itself?
+            - img [ref=e163]
+        - heading "Who is this for?" [level=3] [ref=e166]:
+          - button "Who is this for?" [ref=e167] [cursor=pointer]:
+            - text: Who is this for?
+            - img [ref=e168]
+    - region "Start with one conversation." [ref=e170]:
+      - generic [ref=e171]: 05 / Begin
+      - heading "Start with one conversation." [level=2] [ref=e172]:
+        - text: Start with one
+        - emphasis [ref=e173]: conversation.
+      - paragraph [ref=e174]: Let Vynora remember what you meant to come back to.
+      - link "Start with one conversation" [ref=e175] [cursor=pointer]:
+        - /url: /sign-up
+  - button "Open Next.js Dev Tools" [ref=e181] [cursor=pointer]:
+    - img [ref=e182]
+  - alert [ref=e185]

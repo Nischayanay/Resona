@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
       status: 200,
       headers: {
         "Content-Type": "application/json; charset=utf-8",
-        "Content-Disposition": `attachment; filename="resona-memory-archive-${exportedAt}.json"`,
+        "Content-Disposition": `attachment; filename="vynora-memory-archive-${exportedAt}.json"`,
         "Cache-Control": "no-store"
       }
     });
