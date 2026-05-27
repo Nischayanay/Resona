@@ -73,6 +73,7 @@ export type FollowUp = {
 
 export type ToolAction = {
   id: string;
+  session_id?: string | null;
   tool_name: string;
   action_type: string;
   payload_json: {
