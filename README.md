@@ -1,6 +1,6 @@
 # Vynora
 
-Vynora is an open-source conversation intelligence app built with Next.js, Supabase, Trigger.dev, Gemini/Google AI, and Google Calendar. It turns recorded conversations into transcripts, structured memory, priority signals, and approval-based follow-up actions.
+Vynora is an open-source conversation intelligence app built with Next.js, Supabase, Trigger.dev, Deepgram, Gemini/Google AI, and Google Calendar. It turns recorded conversations into transcripts, structured memory, priority signals, and approval-based follow-up actions.
 
 ## Backend Loop
 
@@ -21,7 +21,7 @@ Audio upload
 ## Features
 
 - Audio upload with Supabase Storage-backed session tracking.
-- Gemini-powered transcription and structured conversation extraction.
+- Deepgram-first transcription, Gemini transcription fallback, and Gemini structured conversation extraction.
 - Six-engine processing pipeline for ingestion, transcription, understanding, priority, memory, and actions.
 - Memory graph/profile updates across conversations.
 - Approval-based Google Calendar action suggestions.
@@ -43,6 +43,7 @@ The backend is organized under `src/lib/intelligence` so each engine has one job
 - Next.js App Router
 - Supabase Auth, Database, and Storage
 - Trigger.dev workers
+- Deepgram
 - Google Gemini / Google AI
 - Google Calendar API
 - Vitest
@@ -80,6 +81,7 @@ GOOGLE_CLIENT_ID=
 GOOGLE_CLIENT_SECRET=
 GOOGLE_REDIRECT_URI=
 GOOGLE_AI_API_KEY=
+DEEPGRAM_API_KEY=
 GOOGLE_CLOUD_PROJECT_ID=
 APP_URL=
 ```

@@ -77,9 +77,9 @@ export default function PrivacyPolicyPage() {
         <section>
           <h2>AI processing</h2>
           <p>
-            Vynora uses Google Gemini to transcribe audio and extract structured information from transcripts. Conversation content may be sent to Google
-            AI services for that processing. AI output can be incomplete or inaccurate, so calendar actions and other external effects should be reviewed
-            before you approve them.
+            Vynora uses Deepgram for audio transcription and Google Gemini to extract structured information from transcripts. Conversation content may be
+            sent to these AI services for that processing. AI output can be incomplete or inaccurate, so calendar actions and other external effects should
+            be reviewed before you approve them.
           </p>
         </section>
 
@@ -88,6 +88,7 @@ export default function PrivacyPolicyPage() {
           <p>We use third-party providers to run Vynora. These providers process information only as needed to deliver their services to us:</p>
           <ul>
             <li>Supabase for authentication, database storage, private audio storage, and row-level access controls.</li>
+            <li>Deepgram for audio transcription.</li>
             <li>Google APIs for Gemini AI processing and Google Calendar event creation.</li>
             <li>Trigger.dev for background processing orchestration.</li>
             <li>Vercel for hosting and deployment.</li>

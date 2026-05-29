@@ -14,6 +14,7 @@ export const env = {
   googleClientSecret: () => required("GOOGLE_CLIENT_SECRET"),
   googleRedirectUri: () => required("GOOGLE_REDIRECT_URI"),
   googleAiApiKey: () => required("GOOGLE_AI_API_KEY"),
+  deepgramApiKey: () => required("DEEPGRAM_API_KEY"),
   encryptionKey: () => required("ENCRYPTION_KEY"),
   appUrl: () => process.env.APP_URL ?? "http://localhost:3000"
 };

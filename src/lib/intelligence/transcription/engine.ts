@@ -1,3 +1,4 @@
+import { transcribeAudioWithDeepgram } from "@/lib/ai/deepgram";
 import { transcribeAudioWithGemini } from "@/lib/ai/gemini";
 
 export type StructuredTranscript = {
@@ -15,7 +16,23 @@ export function cleanTranscriptText(rawText: string) {
 }
 
 export async function transcribeConversationAudio(audio: ArrayBuffer, mimeType: string): Promise<StructuredTranscript> {
-  const transcription = await transcribeAudioWithGemini(audio, mimeType);
+  let transcription: {
+    transcript: string;
+    confidence?: number | null;
+    language?: string;
+    provider: string;
+    model: string;
+  };
+
+  try {
+    transcription = process.env.DEEPGRAM_API_KEY ? await transcribeAudioWithDeepgram(audio, mimeType) : await transcribeAudioWithGemini(audio, mimeType);
+  } catch (error) {
+    if (!process.env.DEEPGRAM_API_KEY) {
+      throw error;
+    }
+    transcription = await transcribeAudioWithGemini(audio, mimeType);
+  }
+
   return {
     rawText: transcription.transcript,
     cleanedText: cleanTranscriptText(transcription.transcript),
@@ -23,6 +40,6 @@ export async function transcribeConversationAudio(audio: ArrayBuffer, mimeType: 
     provider: transcription.provider,
     model: transcription.model,
     segments: [],
-    confidence: null
+    confidence: transcription.confidence ?? null
   };
 }
