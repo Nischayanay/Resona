@@ -86,8 +86,8 @@ export function AppShell({ children }: { children: (session: Session) => ReactNo
   }
 
   const primaryNav = [
-    { href: "/home", label: "Home", meta: "Desk", icon: House },
-    { href: "/conversations", label: "Conversations", meta: "Ledger", icon: MessagesSquare },
+    { href: "/home", label: "Desk", icon: House },
+    { href: "/conversations", label: "Ledger", icon: MessagesSquare },
   ];
 
   function isActiveRoute(href: string) {
@@ -142,7 +142,6 @@ export function AppShell({ children }: { children: (session: Session) => ReactNo
                 <Icon size={16} strokeWidth={1.8} aria-hidden="true" />
                 <span className="home-nav-copy">
                   <span className="home-nav-label">{item.label}</span>
-                  <span className="home-nav-meta">{item.meta}</span>
                 </span>
               </Link>
             );

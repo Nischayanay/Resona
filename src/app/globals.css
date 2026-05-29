@@ -4737,19 +4737,6 @@ body {
   background: rgba(255, 253, 248, 0.28);
 }
 
-.home-brand::after {
-  content: "VY / HOME";
-  position: absolute;
-  right: 14px;
-  bottom: 8px;
-  color: rgba(31, 33, 29, 0.42);
-  font-family: var(--font-vy-mono);
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-}
-
 .home-topbar[data-scrolled="true"] .home-brand {
   min-height: 58px;
   gap: 10px;
@@ -4921,7 +4908,6 @@ body {
   padding: 0;
 }
 
-.home-topbar[data-scrolled="true"] .home-brand::after,
 .home-topbar[data-scrolled="true"] .home-nav-index,
 .home-topbar[data-scrolled="true"] .home-nav-meta,
 .home-topbar[data-scrolled="true"] .home-brand-meta {
@@ -5026,7 +5012,6 @@ body {
     padding: 0 14px;
   }
 
-  .home-brand::after,
   .home-profile,
   .home-settings-nav {
     display: none;
