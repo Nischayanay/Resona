@@ -2,6 +2,8 @@
 
 Vynora is an open-source conversation intelligence app built with Next.js, Supabase, Trigger.dev, Deepgram, Gemini/Google AI, and Google Calendar. It turns recorded conversations into transcripts, structured memory, priority signals, and approval-based follow-up actions.
 
+For the current build status and recent shipped work, see [PROJECT_STATUS.md](./PROJECT_STATUS.md).
+
 ## Backend Loop
 
 ```txt
