@@ -20,6 +20,27 @@ Audio upload
 → approval-based Google Calendar event creation
 ```
 
+## Architecture
+
+```mermaid
+flowchart LR
+  User["User records or uploads conversation audio"] --> App["Next.js App Router"]
+  App --> Auth["Supabase Auth"]
+  App --> Storage["Supabase Storage"]
+  App --> API["Authenticated API routes"]
+  API --> Jobs["sessions + processing_jobs"]
+  Jobs --> Worker["Trigger.dev worker"]
+  Worker --> Ingestion["Ingestion Engine"]
+  Ingestion --> Transcription["Deepgram transcription + Gemini fallback"]
+  Transcription --> Understanding["Gemini / Google AI understanding"]
+  Understanding --> Priority["Priority Engine"]
+  Priority --> Memory["Memory Engine"]
+  Memory --> Actions["Action Engine"]
+  Actions --> Calendar["Google Calendar approval flow"]
+  Memory -. "production extension point" .-> MongoDB["MongoDB long-term memory store"]
+  Understanding -. "agent orchestration extension point" .-> AgentBuilder["Google Cloud Agent Builder"]
+```
+
 ## Features
 
 - Audio upload with Supabase Storage-backed session tracking.
@@ -50,10 +71,37 @@ The backend is organized under `src/lib/intelligence` so each engine has one job
 - Google Calendar API
 - Vitest
 
+## Hackathon Infrastructure Alignment
+
+The current MVP keeps its working Next.js, Supabase, Trigger.dev, Deepgram, Gemini/Google AI, and Google Calendar implementation intact. The repository also documents how MongoDB and Google Cloud Agent Builder fit into the production architecture without forcing a framework or backend rewrite during the hackathon window.
+
+### MongoDB Integration Path
+
+MongoDB is the intended document-oriented persistence layer for production conversation intelligence artifacts that benefit from flexible schemas:
+
+- normalized conversation summaries
+- long-term memory profiles
+- memory edges and relationship snapshots
+- extracted action context
+- agent-readable user preferences
+
+In the current build, these records are represented through the existing Supabase-backed MVP schema. A production MongoDB adapter can be introduced at the Memory Engine boundary, allowing the app to keep Supabase Auth and Storage while persisting high-volume intelligence documents in MongoDB.
+
+### Google Cloud Agent Builder Integration Path
+
+Google Cloud Agent Builder is the intended orchestration layer for production agent experiences. It can sit after the Understanding Engine, where transcript context has already been cleaned, structured, and validated.
+
+The integration point is designed around:
+
+- grounding agent responses in extracted conversation memory
+- routing follow-up suggestions through approval-based tool actions
+- connecting Google workspace actions, including Calendar, through a controlled agent layer
+- preserving the current human-in-the-loop approval model before external actions execute
+
 ## Setup
 
 1. Copy `.env.example` to `.env.local`.
-2. Fill Supabase, Trigger.dev, Google OAuth, Google AI, and `ENCRYPTION_KEY` values locally.
+2. Fill Supabase, Trigger.dev, Google OAuth, Google AI, optional MongoDB / Google Cloud Agent Builder, and `ENCRYPTION_KEY` values locally.
 3. Apply the Supabase migrations in order, including `20260511072226_resona_backend_mvp.sql` and `20260514073454_six_engine_intelligence.sql`.
 4. Install dependencies:
 
@@ -85,6 +133,9 @@ GOOGLE_REDIRECT_URI=
 GOOGLE_AI_API_KEY=
 DEEPGRAM_API_KEY=
 GOOGLE_CLOUD_PROJECT_ID=
+MONGODB_URI=
+GOOGLE_AGENT_BUILDER_APP_ID=
+GOOGLE_AGENT_BUILDER_LOCATION=
 APP_URL=
 ```
 
