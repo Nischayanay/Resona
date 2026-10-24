@@ -1,9 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { CSSProperties, useCallback, useEffect, useMemo, useState } from "react";
+import { CSSProperties, FormEvent, useCallback, useEffect, useMemo, useState } from "react";
 import type { Session } from "@supabase/supabase-js";
-import { ArrowUpRight, FileAudio, RefreshCw, Search, Trash2 } from "lucide-react";
+import { ArrowUpRight, FileAudio, RefreshCw, Search, Sparkles, Trash2 } from "lucide-react";
 import { apiFetch } from "@/lib/api-client";
 import type { VynoraSession } from "@/components/app/types";
 
@@ -44,6 +44,9 @@ export function ConversationsIndex({ session }: { session: Session }) {
   const [hiddenIds, setHiddenIds] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [recallQuestion, setRecallQuestion] = useState("");
+  const [recallAnswer, setRecallAnswer] = useState<string | null>(null);
+  const [isRecalling, setIsRecalling] = useState(false);
 
   const loadSessions = useCallback(async () => {
     setError(null);
@@ -95,6 +98,25 @@ export function ConversationsIndex({ session }: { session: Session }) {
     });
   }
 
+  async function askMemory(event: FormEvent) {
+    event.preventDefault();
+    if (!recallQuestion.trim()) return;
+    setIsRecalling(true);
+    setRecallAnswer(null);
+    try {
+      const result = await apiFetch<{ answer: string; source_session_ids: string[] }>(session, "/api/recall", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ question: recallQuestion })
+      });
+      setRecallAnswer(result.answer);
+    } catch (recallError) {
+      setRecallAnswer(recallError instanceof Error ? recallError.message : "Could not search memory.");
+    } finally {
+      setIsRecalling(false);
+    }
+  }
+
   return (
     <main className="conversations-surface">
       <section className="conversations-hero" aria-labelledby="conversations-title">
@@ -109,6 +131,20 @@ export function ConversationsIndex({ session }: { session: Session }) {
             Refresh
           </button>
         </div>
+      </section>
+
+      <section className="ledger-panel" aria-labelledby="recall-title">
+        <div className="ledger-panel-heading">
+          <Sparkles size={17} aria-hidden="true" />
+          <h2 id="recall-title">Ask your meeting memory</h2>
+        </div>
+        <form className="memory-search" onSubmit={askMemory}>
+          <Search size={17} aria-hidden="true" />
+          <label className="sr-only" htmlFor="recall-question">Ask your meeting memory</label>
+          <input id="recall-question" value={recallQuestion} onChange={(event) => setRecallQuestion(event.target.value)} placeholder="What did I promise this client?" />
+          <button className="button button-secondary" type="submit" disabled={isRecalling}>{isRecalling ? "Thinking..." : "Ask"}</button>
+        </form>
+        {recallAnswer ? <p className="ledger-brief-summary" role="status">{recallAnswer}</p> : null}
       </section>
 
       <label className="memory-search">

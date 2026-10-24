@@ -34,6 +34,10 @@ async function callGemini(parts: GeminiPart[]) {
   return text;
 }
 
+export async function answerWithGemini(prompt: string) {
+  return callGemini([{ text: prompt }]);
+}
+
 export function parseGeminiJson(text: string) {
   try {
     return JSON.parse(text);

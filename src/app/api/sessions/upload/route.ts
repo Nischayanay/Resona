@@ -37,7 +37,7 @@ export async function POST(request: NextRequest) {
       duration_seconds: formData.get("duration_seconds") || undefined
     });
     if (fields.duration_seconds === undefined) {
-      return badRequest("Audio duration could not be verified. Please upload audio that is 2 minutes or less.");
+      return badRequest("Audio duration could not be verified. Please upload audio that is 60 minutes or less.");
     }
     const supabase = createSupabaseServiceClient();
     const usage = await getDailyUploadUsage({ supabase, userId: user.id });

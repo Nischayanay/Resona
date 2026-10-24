@@ -2,7 +2,9 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { SessionStatus } from "@/lib/types";
 
 export const BETA_UPLOADS_PER_USER_PER_DAY = 2;
-export const BETA_MAX_AUDIO_SECONDS = 120;
+// A meeting capture needs to outlive the original demo clip limit. Keep a one-hour
+// ceiling so accidental all-day recordings do not become unbounded uploads.
+export const BETA_MAX_AUDIO_SECONDS = 60 * 60;
 export const BETA_MAX_AUDIO_BYTES = 15 * 1024 * 1024;
 export const BETA_REPROCESSES_PER_SESSION_PER_DAY = 1;
 export const BETA_GLOBAL_UPLOADS_PER_DAY: number | null = null;

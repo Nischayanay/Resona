@@ -138,9 +138,12 @@ export function CaptureWorkspace({ session }: { session: Session }) {
   const [isUploading, setIsUploading] = useState(false);
   const [isLoadingActions, setIsLoadingActions] = useState(false);
   const [isLoadingSessions, setIsLoadingSessions] = useState(true);
+  const [liveTranscript, setLiveTranscript] = useState("");
+  const [liveTranscriptSupported, setLiveTranscriptSupported] = useState<boolean | null>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const chunksRef = useRef<Blob[]>([]);
+  const speechRecognitionRef = useRef<any>(null);
 
   const activeAudio = mode === "upload" ? file : recordedBlob;
   const canSubmit = Boolean(activeAudio) && !isUploading && !isRecording;
@@ -169,7 +172,7 @@ export function CaptureWorkspace({ session }: { session: Session }) {
   useEffect(() => {
     if (isRecording && recordSeconds >= BETA_MAX_AUDIO_SECONDS) {
       stopRecording();
-      setStatusMessage("Recording stopped at the 2 minute demo limit.");
+      setStatusMessage("Recording stopped at the 60 minute meeting limit.");
     }
   }, [isRecording, recordSeconds]);
 
@@ -228,13 +231,13 @@ export function CaptureWorkspace({ session }: { session: Session }) {
     if (duration === null) {
       setFile(null);
       event.target.value = "";
-      setCaptureError("Audio duration could not be verified. Please upload audio that is 2 minutes or less.");
+      setCaptureError("Audio duration could not be verified. Please upload audio that is 60 minutes or less.");
       return;
     }
     if (duration !== null && duration > BETA_MAX_AUDIO_SECONDS) {
       setFile(null);
       event.target.value = "";
-      setCaptureError("Audio must be 2 minutes or less.");
+      setCaptureError("Audio must be 60 minutes or less.");
       return;
     }
 
@@ -246,6 +249,7 @@ export function CaptureWorkspace({ session }: { session: Session }) {
     setCaptureError(null);
     setStatusMessage(null);
     setRecordedBlob(null);
+    setLiveTranscript("");
     if (recordedUrl) {
       URL.revokeObjectURL(recordedUrl);
       setRecordedUrl(null);
@@ -275,6 +279,31 @@ export function CaptureWorkspace({ session }: { session: Session }) {
 
       setRecordSeconds(0);
       recorder.start();
+      const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+      if (SpeechRecognition) {
+        const recognition = new SpeechRecognition();
+        recognition.continuous = true;
+        recognition.interimResults = true;
+        recognition.lang = "en-IN";
+        recognition.onresult = (event: any) => {
+          let text = "";
+          for (let index = 0; index < event.results.length; index += 1) {
+            text += event.results[index][0].transcript + " ";
+          }
+          setLiveTranscript(text.trim());
+        };
+        recognition.onerror = () => setLiveTranscriptSupported(false);
+        recognition.onend = () => {
+          if (mediaRecorderRef.current?.state === "recording") {
+            try { recognition.start(); } catch { /* browser may already be restarting */ }
+          }
+        };
+        speechRecognitionRef.current = recognition;
+        setLiveTranscriptSupported(true);
+        recognition.start();
+      } else {
+        setLiveTranscriptSupported(false);
+      }
       setIsRecording(true);
     } catch {
       setCaptureError("Microphone access was blocked. Allow microphone access or upload an audio file.");
@@ -282,6 +311,8 @@ export function CaptureWorkspace({ session }: { session: Session }) {
   }
 
   function stopRecording() {
+    speechRecognitionRef.current?.stop();
+    speechRecognitionRef.current = null;
     mediaRecorderRef.current?.stop();
     setIsRecording(false);
   }
@@ -311,13 +342,13 @@ export function CaptureWorkspace({ session }: { session: Session }) {
 
     const duration = mode === "record" ? recordSeconds : await getAudioDurationSeconds(uploadFile);
     if (duration === null) {
-      setCaptureError("Audio duration could not be verified. Please upload audio that is 2 minutes or less.");
+      setCaptureError("Audio duration could not be verified. Please upload audio that is 60 minutes or less.");
       setStatusMessage(null);
       setIsUploading(false);
       return;
     }
     if (duration !== null && duration > BETA_MAX_AUDIO_SECONDS) {
-      setCaptureError("Audio must be 2 minutes or less.");
+      setCaptureError("Audio must be 60 minutes or less.");
       setStatusMessage(null);
       setIsUploading(false);
       return;
@@ -457,7 +488,7 @@ export function CaptureWorkspace({ session }: { session: Session }) {
               <label className="home-dropzone">
                 <FileAudio size={24} aria-hidden="true" />
                 <strong>{selectedFileLabel}</strong>
-                <span>MP3, WAV, M4A, OGG, or WebM audio. Two minutes max in beta.</span>
+                <span>MP3, WAV, M4A, OGG, or WebM audio. Up to 60 minutes per meeting.</span>
                 <input className="sr-only" type="file" accept="audio/*" onChange={onFileChange} />
               </label>
             ) : (
@@ -479,6 +510,15 @@ export function CaptureWorkspace({ session }: { session: Session }) {
                   <audio className="home-audio-preview" src={recordedUrl} controls>
                     <track kind="captions" />
                   </audio>
+                ) : null}
+                {isRecording && liveTranscriptSupported === true ? (
+                  <div className="home-live-transcript" aria-live="polite">
+                    <span>Live transcript</span>
+                    <p>{liveTranscript || "Listening for speech..."}</p>
+                  </div>
+                ) : null}
+                {isRecording && liveTranscriptSupported === false ? (
+                  <p className="home-live-transcript-note">Live words are unavailable in this browser. Audio recording is still active.</p>
                 ) : null}
               </div>
             )}

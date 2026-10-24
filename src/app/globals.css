@@ -2385,6 +2385,66 @@ a {
   width: min(100%, 420px);
 }
 
+.home-live-transcript {
+  width: min(100%, 520px);
+  max-height: 132px;
+  overflow: auto;
+  padding: 10px 12px;
+  border-left: 2px solid #8b6f47;
+  background: rgba(255, 255, 255, 0.5);
+  text-align: left;
+}
+
+.home-live-transcript span {
+  color: #8b6f47;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.home-live-transcript p,
+.home-live-transcript-note {
+  margin: 5px 0 0;
+  color: rgba(32, 35, 35, 0.72);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.standalone-meeting {
+  width: min(100% - 40px, 820px);
+  margin: 0 auto;
+  padding: 90px 0 70px;
+}
+
+.standalone-meeting h1 {
+  max-width: 680px;
+  margin: 10px 0 16px;
+  font-size: clamp(42px, 8vw, 84px);
+  line-height: 0.95;
+  letter-spacing: -0.06em;
+}
+
+.standalone-meeting-intro {
+  max-width: 600px;
+  color: rgba(32, 35, 35, 0.65);
+  font-size: 17px;
+  line-height: 1.6;
+}
+
+.standalone-meeting-timer {
+  margin: 46px 0 20px;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: clamp(54px, 12vw, 110px);
+  letter-spacing: -0.07em;
+}
+
+.standalone-meeting-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.standalone-meeting-actions .button { display: inline-flex; align-items: center; gap: 8px; text-decoration: none; }
+.standalone-meeting-transcript { margin-top: 34px; padding: 24px; border: 1px solid rgba(32, 35, 35, 0.14); border-radius: 16px; background: rgba(255, 255, 255, 0.52); }
+.standalone-meeting-transcript p { min-height: 140px; margin: 18px 0 0; color: rgba(32, 35, 35, 0.76); line-height: 1.7; white-space: pre-wrap; }
+.standalone-meeting-warning { margin-top: 18px; color: rgba(32, 35, 35, 0.5); font-size: 12px; }
+
 .home-capture-fields {
   display: grid;
   grid-template-columns: 1fr 180px;
