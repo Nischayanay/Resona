@@ -1,8 +1,8 @@
 "use client";
 
 import { AppShell } from "@/components/app/AppShell";
-import { CaptureWorkspace } from "@/components/app/CaptureWorkspace";
+import { DonnaChatWorkspace } from "@/components/app/DonnaChatWorkspace";
 
 export default function HomeExperiencePage() {
-  return <AppShell>{(session) => <CaptureWorkspace session={session} />}</AppShell>;
+  return <AppShell>{(session) => <DonnaChatWorkspace session={session} />}</AppShell>;
 }

@@ -7,6 +7,8 @@ import type { Session, SupabaseClient } from "@supabase/supabase-js";
 import { House, LogOut, MessagesSquare, Settings, UserCircle } from "lucide-react";
 import { createSupabaseBrowserClient } from "@/lib/supabase/browser";
 
+const INACTIVITY_LIMIT_MS = 4 * 24 * 60 * 60 * 1000;
+
 export function AppShell({ children }: { children: (session: Session) => ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
@@ -30,7 +32,7 @@ export function AppShell({ children }: { children: (session: Session) => ReactNo
       return;
     }
 
-    client.auth.getSession().then(({ data }) => {
+    client.auth.getSession().then(async ({ data }) => {
       if (!mounted) {
         return;
       }
@@ -38,6 +40,15 @@ export function AppShell({ children }: { children: (session: Session) => ReactNo
         router.replace("/sign-up");
         return;
       }
+      const activityKey = `donna:last-activity:${data.session.user.id}`;
+      const lastActivity = Number(window.localStorage.getItem(activityKey) ?? 0);
+      if (lastActivity > 0 && Date.now() - lastActivity >= INACTIVITY_LIMIT_MS) {
+        await client.auth.signOut();
+        window.localStorage.removeItem(activityKey);
+        router.replace("/sign-in?reason=inactive");
+        return;
+      }
+      window.localStorage.setItem(activityKey, String(Date.now()));
       setSession(data.session);
       setIsLoading(false);
     });
@@ -56,6 +67,33 @@ export function AppShell({ children }: { children: (session: Session) => ReactNo
       authListener.subscription.unsubscribe();
     };
   }, [router]);
+
+  useEffect(() => {
+    if (!session) return;
+    const activityKey = `donna:last-activity:${session.user.id}`;
+    let lastWrite = 0;
+    const markActivity = () => {
+      const now = Date.now();
+      if (now - lastWrite < 60_000) return;
+      lastWrite = now;
+      window.localStorage.setItem(activityKey, String(now));
+    };
+    const checkInactivity = () => {
+      const lastActivity = Number(window.localStorage.getItem(activityKey) ?? 0);
+      if (lastActivity > 0 && Date.now() - lastActivity >= INACTIVITY_LIMIT_MS) {
+        void supabase?.auth.signOut();
+        window.localStorage.removeItem(activityKey);
+        router.replace("/sign-in?reason=inactive");
+      }
+    };
+    const events = ["pointerdown", "keydown", "touchstart", "scroll"];
+    events.forEach((event) => window.addEventListener(event, markActivity, { passive: true }));
+    const interval = window.setInterval(checkInactivity, 60_000);
+    return () => {
+      events.forEach((event) => window.removeEventListener(event, markActivity));
+      window.clearInterval(interval);
+    };
+  }, [router, session, supabase]);
 
   useEffect(() => {
     function updateScrollState() {
