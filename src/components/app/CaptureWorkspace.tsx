@@ -12,6 +12,7 @@ import {
   CheckCircle2,
   CircleDot,
   DatabaseZap,
+  ExternalLink,
   FileAudio,
   LockKeyhole,
   Mic,
@@ -19,7 +20,8 @@ import {
   RefreshCw,
   ShieldCheck,
   Square,
-  Upload
+  Upload,
+  Video
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -124,6 +126,7 @@ export function CaptureWorkspace({ session }: { session: Session }) {
   const [mode, setMode] = useState<"record" | "upload">("record");
   const [title, setTitle] = useState("");
   const [sourceType, setSourceType] = useState<SourceType>("meeting");
+  const [meetingUrl, setMeetingUrl] = useState("https://meet.google.com/");
   const [file, setFile] = useState<File | null>(null);
   const [recordedBlob, setRecordedBlob] = useState<Blob | null>(null);
   const [recordedUrl, setRecordedUrl] = useState<string | null>(null);
@@ -462,6 +465,28 @@ export function CaptureWorkspace({ session }: { session: Session }) {
             {activeTab === "memory" ? "Recent conversations stay searchable, reviewable, and ready to reopen." : null}
             {activeTab === "control" ? "Settings keeps export, delete, and calendar controls away from the daily flow." : null}
           </p>
+        </div>
+      </section>
+
+      <section className="meeting-desk" aria-labelledby="meeting-desk-title">
+        <div className="meeting-desk-copy">
+          <p className="home-kicker">Meeting desk / 01</p>
+          <h2 id="meeting-desk-title">Run Resona beside Google Meet.</h2>
+          <p>Open your call in one tab and Resona capture in another. Tell everyone you are recording, then return here after the call to submit the audio for memory extraction.</p>
+        </div>
+        <div className="meeting-desk-actions">
+          <label className="field">
+            <span className="label">Google Meet link</span>
+            <input className="input" type="url" value={meetingUrl} onChange={(event) => setMeetingUrl(event.target.value)} placeholder="https://meet.google.com/abc-defg-hij" />
+          </label>
+          <div className="meeting-desk-buttons">
+            <a className="button button-secondary" href={meetingUrl || "https://meet.google.com/"} target="_blank" rel="noreferrer">
+              <Video size={16} aria-hidden="true" /> Open Google Meet <ExternalLink size={14} aria-hidden="true" />
+            </a>
+            <Link className="button button-primary" href="/meeting" target="_blank">
+              <Mic size={16} aria-hidden="true" /> Open Resona capture <ExternalLink size={14} aria-hidden="true" />
+            </Link>
+          </div>
         </div>
       </section>
 
