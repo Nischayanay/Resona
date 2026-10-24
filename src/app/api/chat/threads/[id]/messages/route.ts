@@ -4,8 +4,10 @@ import { requireUser } from "@/lib/auth/server";
 import { answerWithGemini, parseGeminiJson } from "@/lib/ai/gemini";
 import { badRequest, json, notFound, serverError, unauthorized } from "@/lib/http";
 import { createSupabaseServiceClient } from "@/lib/supabase/client";
+import { devMessages } from "@/lib/chat/dev-store";
 
 const messageSchema = z.object({ content: z.string().trim().min(1).max(6000), references: z.array(z.object({ type: z.string(), id: z.string(), label: z.string() })).max(12).default([]) });
+const DEV_AUTH_BYPASS = process.env.DEV_AUTH_BYPASS === "true" && process.env.NODE_ENV !== "production";
 
 function chatSchemaError(error: unknown) {
   return error && typeof error === "object" && "code" in error && (error as { code?: string }).code === "42P01";
@@ -15,6 +17,7 @@ export async function GET(request: NextRequest, routeContext: { params: Promise<
   try {
     const user = await requireUser(request);
     const { id } = await routeContext.params;
+    if (DEV_AUTH_BYPASS && user.id === "local-dev-user") return json({ messages: devMessages.get(id) ?? [] });
     const supabase = createSupabaseServiceClient();
     const { data, error } = await supabase.from("chat_messages").select("id,role,content,references_json,created_at").eq("user_id", user.id).eq("thread_id", id).order("created_at", { ascending: true });
     if (error) throw error;
@@ -31,6 +34,14 @@ export async function POST(request: NextRequest, routeContext: { params: Promise
     const user = await requireUser(request);
     const { id } = await routeContext.params;
     const body = messageSchema.parse(await request.json());
+    if (DEV_AUTH_BYPASS && user.id === "local-dev-user") {
+      const createdAt = new Date().toISOString();
+      const current = devMessages.get(id) ?? [];
+      const userMessage = { id: crypto.randomUUID(), role: "user" as const, content: body.content, references_json: body.references, created_at: createdAt };
+      const assistantMessage = { id: crypto.randomUUID(), role: "assistant" as const, content: "Local Donna is connected. Apply the Supabase migration and add your model key to test grounded answers.", references_json: [], created_at: new Date().toISOString() };
+      devMessages.set(id, [...current, userMessage, assistantMessage]);
+      return json({ messages: [userMessage, assistantMessage], actions: [], source_session_ids: [] });
+    }
     const supabase = createSupabaseServiceClient();
     const { data: thread, error: threadError } = await supabase.from("chat_threads").select("id,title").eq("id", id).eq("user_id", user.id).maybeSingle();
     if (threadError) throw threadError;

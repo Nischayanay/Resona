@@ -8,6 +8,11 @@ import { House, LogOut, MessagesSquare, Settings, UserCircle } from "lucide-reac
 import { createSupabaseBrowserClient } from "@/lib/supabase/browser";
 
 const INACTIVITY_LIMIT_MS = 4 * 24 * 60 * 60 * 1000;
+const DEV_AUTH_BYPASS =
+  process.env.NEXT_PUBLIC_DEV_AUTH_BYPASS === "true" ||
+  (process.env.NODE_ENV !== "production" &&
+    typeof window !== "undefined" &&
+    window.location.hostname === "localhost");
 
 export function AppShell({ children }: { children: (session: Session) => ReactNode }) {
   const router = useRouter();
@@ -20,6 +25,18 @@ export function AppShell({ children }: { children: (session: Session) => ReactNo
   const [scrollProgress, setScrollProgress] = useState(0);
 
   useEffect(() => {
+    if (DEV_AUTH_BYPASS) {
+      setSession({
+        access_token: "local-dev-bypass",
+        expires_in: 60 * 60 * 24,
+        expires_at: Math.floor(Date.now() / 1000) + 60 * 60 * 24,
+        refresh_token: "local-dev-bypass",
+        token_type: "bearer",
+        user: { id: "local-dev-user", email: "local@donna.test" }
+      } as Session);
+      setIsLoading(false);
+      return;
+    }
     let mounted = true;
     let client: SupabaseClient;
 

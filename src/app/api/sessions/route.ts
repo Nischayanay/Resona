@@ -3,9 +3,14 @@ import { requireUser } from "@/lib/auth/server";
 import { json, serverError, unauthorized } from "@/lib/http";
 import { createSupabaseServiceClient } from "@/lib/supabase/client";
 
+const DEV_AUTH_BYPASS = process.env.DEV_AUTH_BYPASS === "true" && process.env.NODE_ENV !== "production";
+
 export async function GET(request: NextRequest) {
   try {
     const user = await requireUser(request);
+    if (DEV_AUTH_BYPASS && user.id === "local-dev-user") {
+      return json({ sessions: [] });
+    }
     const supabase = createSupabaseServiceClient();
     const { data, error } = await supabase
       .from("sessions")

@@ -6,6 +6,8 @@ export type AuthenticatedUser = {
   email?: string;
 };
 
+const DEV_AUTH_BYPASS = process.env.DEV_AUTH_BYPASS === "true" && process.env.NODE_ENV !== "production";
+
 export function getBearerToken(request: NextRequest) {
   const header = request.headers.get("authorization");
   if (!header?.startsWith("Bearer ")) {
@@ -16,6 +18,9 @@ export function getBearerToken(request: NextRequest) {
 
 export async function getCurrentUser(request: NextRequest): Promise<AuthenticatedUser | null> {
   const token = getBearerToken(request);
+  if (DEV_AUTH_BYPASS && token === "local-dev-bypass") {
+    return { id: "local-dev-user", email: "local@donna.test" };
+  }
   if (!token) {
     return null;
   }

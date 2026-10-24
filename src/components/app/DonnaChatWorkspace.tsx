@@ -43,7 +43,10 @@ export function DonnaChatWorkspace({ session }: { session: Session }) {
     void Promise.all([
       loadThreads(),
       apiFetch<{ sessions: Conversation[] }>(session, "/api/sessions").then((data) => setConversations(data.sessions.slice(0, 12)))
-    ]).catch((loadError) => setError(loadError instanceof Error ? loadError.message : "Donna could not open your workspace."));
+  ]).catch((loadError) => {
+    setError(loadError instanceof Error ? loadError.message : "Donna could not open your workspace.");
+    setIsLoading(false);
+  });
   }, [loadThreads, session]);
 
   useEffect(() => {
@@ -108,9 +111,9 @@ export function DonnaChatWorkspace({ session }: { session: Session }) {
       <section className="donna-chat" aria-labelledby="donna-chat-title">
         <header className="donna-chat-header"><div><p className="home-kicker">Continuous workspace</p><h2 id="donna-chat-title">{activeThread?.title ?? "New chat"}</h2></div><span className="donna-status"><i /> Donna is ready</span></header>
         <div className="donna-message-scroll">
-          {isLoading ? <div className="donna-empty">Opening this chat...</div> : messages.length === 0 ? <div className="donna-empty"><Sparkles size={22} /><h3>What should Donna bring back?</h3><p>Ask about a past conversation, a promise, a person, or the next move.</p><div className="donna-suggestions"><button type="button" onClick={() => setInput("What did I promise this client?")}>What did I promise this client?</button><button type="button" onClick={() => setInput("Prepare me for my next meeting.")}>Prepare me for my next meeting.</button></div></div> : messages.map((message) => <article className={`donna-message donna-message-${message.role}`} key={message.id}><span className="donna-message-role">{message.role === "user" ? "You" : "Donna"}</span><p>{message.content}</p></article>)}
+          {isLoading && !error ? <div className="donna-empty"><span className="donna-empty-index">01 / OPEN THREAD</span><h3>Bring a thread back.</h3><p>Donna keeps the people, promises, decisions, and next moves from your conversations close at hand.</p></div> : error ? <div className="donna-empty donna-empty-error"><span className="donna-empty-index">02 / SETUP REQUIRED</span><h3>Donna is not connected yet.</h3><p>{error}</p><p className="donna-empty-help">Apply the Donna chat migration in Supabase, then refresh this workspace.</p></div> : messages.length === 0 ? <div className="donna-empty"><span className="donna-empty-index">01 / START HERE</span><Sparkles size={22} /><h3>What should Donna bring back?</h3><p>Ask about a past conversation, a promise, a person, or the next move.</p><div className="donna-suggestions"><button type="button" onClick={() => setInput("What did I promise this client?")}>What did I promise this client?</button><button type="button" onClick={() => setInput("Prepare me for my next meeting.")}>Prepare me for my next meeting.</button></div></div> : messages.map((message) => <article className={`donna-message donna-message-${message.role}`} key={message.id}><span className="donna-message-role">{message.role === "user" ? "You" : "Donna"}</span><p>{message.content}</p></article>)}
         </div>
-        {error ? <div className="donna-error" role="alert">{error}</div> : null}
+        {error && !isLoading ? <div className="donna-error" role="alert">Chat setup is incomplete. Your conversation data is safe.</div> : null}
         <div className="donna-composer-wrap">
           {references.length > 0 ? <div className="donna-reference-row">{references.map((reference) => <button type="button" key={`${reference.type}-${reference.id}`} onClick={() => toggleReference(reference)}>@{reference.label} ×</button>)}</div> : null}
           <form className="donna-composer" onSubmit={sendMessage}><textarea value={input} onChange={(event) => setInput(event.target.value)} placeholder="Message Donna… Use @ to add context" rows={2} /><button type="submit" className="donna-send-button" disabled={isSending || !input.trim()} aria-label="Send message"><ArrowUp size={18} /></button></form>
