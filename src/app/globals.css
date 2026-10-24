@@ -2488,6 +2488,37 @@ a {
 .donna-reference-picker button { padding: 4px 8px; font-size: 11px; }
 .donna-reference-picker button[data-selected="true"] { border-color: var(--vy-coral); color: #984c3d; }
 
+/* Donna dashboard: Swiss International system — paper, ink, Klein Blue. */
+.donna-workspace {
+  --donna-accent: #002fa7;
+  --donna-paper: #fafaf8;
+  --donna-ink: #0a0a0a;
+  background-color: var(--donna-paper);
+  color: var(--donna-ink);
+}
+.donna-workspace button,
+.donna-workspace a,
+.donna-workspace input,
+.donna-workspace textarea { border-radius: 0; }
+.donna-sidebar { background: rgba(250, 250, 248, 0.92); border-color: rgba(10, 10, 10, 0.22); }
+.donna-sidebar-heading h1,
+.donna-chat-header h2,
+.donna-empty h3 { font-family: Arial, Helvetica, sans-serif; font-weight: 700; }
+.donna-icon-button { border-color: var(--donna-ink); }
+.donna-thread { border-left-width: 3px; color: rgba(10, 10, 10, 0.58); }
+.donna-thread[data-active="true"] { border-left-color: var(--donna-accent); background: var(--donna-accent); color: #fff; }
+.donna-sidebar-footer { border-color: rgba(10, 10, 10, 0.22); }
+.donna-chat-header { border-color: rgba(10, 10, 10, 0.22); }
+.donna-status i { border-radius: 0; background: var(--donna-accent); }
+.donna-message-user { border-radius: 0; background: var(--donna-accent); color: #fff; }
+.donna-suggestions button,
+.donna-reference-picker button,
+.donna-reference-row button { border-radius: 0; border-color: rgba(10, 10, 10, 0.24); background: transparent; }
+.donna-reference-row button { border-color: var(--donna-accent); background: rgba(0, 47, 167, 0.08); color: var(--donna-accent); }
+.donna-composer { border-radius: 0; border-color: var(--donna-ink); background: var(--donna-paper); }
+.donna-send-button { border-radius: 0; background: var(--donna-accent); }
+.donna-reference-picker button[data-selected="true"] { border-color: var(--donna-accent); color: var(--donna-accent); }
+
 @media (max-width: 760px) {
   .donna-workspace { grid-template-columns: 1fr; }
   .donna-sidebar { min-height: auto; padding: 18px 16px; border-right: 0; border-bottom: 1px solid rgba(32, 35, 35, 0.12); }

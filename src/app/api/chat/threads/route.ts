@@ -7,6 +7,10 @@ import { createSupabaseServiceClient } from "@/lib/supabase/client";
 const createThreadSchema = z.object({ title: z.string().trim().min(1).max(80).optional() });
 const FREE_THREAD_LIMIT = 2;
 
+function chatSchemaError(error: unknown) {
+  return error && typeof error === "object" && "code" in error && (error as { code?: string }).code === "42P01";
+}
+
 export async function GET(request: NextRequest) {
   try {
     const user = await requireUser(request);
@@ -16,6 +20,7 @@ export async function GET(request: NextRequest) {
     return json({ threads: data ?? [], limit: FREE_THREAD_LIMIT });
   } catch (error) {
     if (error instanceof Error && error.message === "UNAUTHORIZED") return unauthorized();
+    if (chatSchemaError(error)) return json({ error: "CHAT_SCHEMA_NOT_READY", message: "Donna chat is not initialized in Supabase yet. Apply the Donna chat migration, then refresh this page." }, 503);
     return serverError(error);
   }
 }
@@ -34,6 +39,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     if (error instanceof Error && error.message === "UNAUTHORIZED") return unauthorized();
     if (error instanceof z.ZodError) return badRequest("Invalid chat title.", error.flatten());
+    if (chatSchemaError(error)) return json({ error: "CHAT_SCHEMA_NOT_READY", message: "Donna chat is not initialized in Supabase yet. Apply the Donna chat migration, then refresh this page." }, 503);
     return serverError(error);
   }
 }

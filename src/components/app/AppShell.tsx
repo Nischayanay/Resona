@@ -165,8 +165,8 @@ export function AppShell({ children }: { children: (session: Session) => ReactNo
             <img className="home-brand-mark" src="/resona-memory-orbit.svg" alt="" />
           </span>
           <span className="home-brand-copy">
-            <span className="home-brand-label">Vynora</span>
-            <span className="home-brand-meta">memory desk</span>
+            <span className="home-brand-label">Donna</span>
+            <span className="home-brand-meta">conversation workspace</span>
           </span>
         </Link>
         <nav className="home-nav-center" aria-label="Primary app navigation">

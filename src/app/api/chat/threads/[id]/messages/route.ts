@@ -7,6 +7,10 @@ import { createSupabaseServiceClient } from "@/lib/supabase/client";
 
 const messageSchema = z.object({ content: z.string().trim().min(1).max(6000), references: z.array(z.object({ type: z.string(), id: z.string(), label: z.string() })).max(12).default([]) });
 
+function chatSchemaError(error: unknown) {
+  return error && typeof error === "object" && "code" in error && (error as { code?: string }).code === "42P01";
+}
+
 export async function GET(request: NextRequest, routeContext: { params: Promise<{ id: string }> }) {
   try {
     const user = await requireUser(request);
@@ -17,6 +21,7 @@ export async function GET(request: NextRequest, routeContext: { params: Promise<
     return json({ messages: data ?? [] });
   } catch (error) {
     if (error instanceof Error && error.message === "UNAUTHORIZED") return unauthorized();
+    if (chatSchemaError(error)) return json({ error: "CHAT_SCHEMA_NOT_READY", message: "Donna chat is not initialized in Supabase yet. Apply the Donna chat migration, then refresh this page." }, 503);
     return serverError(error);
   }
 }
@@ -34,11 +39,13 @@ export async function POST(request: NextRequest, routeContext: { params: Promise
     const { data: history, error: historyError } = await supabase.from("chat_messages").select("role,content,references_json").eq("thread_id", id).eq("user_id", user.id).order("created_at", { ascending: true }).limit(24);
     if (historyError) throw historyError;
     const referenceIds = new Set(body.references.filter((reference) => reference.type === "conversation").map((reference) => reference.id));
-    const [sessions, facts, actions] = await Promise.all([
-      supabase.from("sessions").select("id,title,summary,created_at,status").eq("user_id", user.id).in("id", [...referenceIds]).limit(12),
-      supabase.from("memory_facts").select("session_id,fact,category").eq("user_id", user.id).in("session_id", [...referenceIds]).limit(80),
-      supabase.from("action_items").select("session_id,title,description,owner_name,due_at,status").eq("user_id", user.id).in("session_id", [...referenceIds]).limit(80)
-    ]);
+    const [sessions, facts, actions] = referenceIds.size === 0
+      ? [{ data: [], error: null }, { data: [], error: null }, { data: [], error: null }]
+      : await Promise.all([
+          supabase.from("sessions").select("id,title,summary,created_at,status").eq("user_id", user.id).in("id", [...referenceIds]).limit(12),
+          supabase.from("memory_facts").select("session_id,fact,category").eq("user_id", user.id).in("session_id", [...referenceIds]).limit(80),
+          supabase.from("action_items").select("session_id,title,description,owner_name,due_at,status").eq("user_id", user.id).in("session_id", [...referenceIds]).limit(80)
+        ]);
     for (const result of [sessions, facts, actions]) if (result.error) throw result.error;
 
     const modelContext = JSON.stringify({ references: body.references, conversations: sessions.data, memory_facts: facts.data, action_items: actions.data });
@@ -54,6 +61,7 @@ export async function POST(request: NextRequest, routeContext: { params: Promise
   } catch (error) {
     if (error instanceof Error && error.message === "UNAUTHORIZED") return unauthorized();
     if (error instanceof z.ZodError) return badRequest("Write a message before sending.", error.flatten());
+    if (chatSchemaError(error)) return json({ error: "CHAT_SCHEMA_NOT_READY", message: "Donna chat is not initialized in Supabase yet. Apply the Donna chat migration, then refresh this page." }, 503);
     return serverError(error);
   }
 }
