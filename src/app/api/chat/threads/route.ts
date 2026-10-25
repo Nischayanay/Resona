@@ -20,7 +20,7 @@ export async function GET(request: NextRequest) {
     return json({ threads: data ?? [], limit: FREE_THREAD_LIMIT });
   } catch (error) {
     if (error instanceof Error && error.message === "UNAUTHORIZED") return unauthorized();
-    if (chatSchemaError(error)) return json({ error: "CHAT_SCHEMA_NOT_READY", message: "Donna chat is not initialized in Supabase yet. Apply the Donna chat migration, then refresh this page." }, 503);
+    if (chatSchemaError(error)) return json({ error: "CHAT_STORAGE_UNAVAILABLE", message: "Chat storage is unavailable. Verify the database and deployment configuration." }, 503);
     return serverError(error);
   }
 }
@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     if (error instanceof Error && error.message === "UNAUTHORIZED") return unauthorized();
     if (error instanceof z.ZodError) return badRequest("Invalid chat title.", error.flatten());
-    if (chatSchemaError(error)) return json({ error: "CHAT_SCHEMA_NOT_READY", message: "Donna chat is not initialized in Supabase yet. Apply the Donna chat migration, then refresh this page." }, 503);
+    if (chatSchemaError(error)) return json({ error: "CHAT_STORAGE_UNAVAILABLE", message: "Chat storage is unavailable. Verify the database and deployment configuration." }, 503);
     return serverError(error);
   }
 }
