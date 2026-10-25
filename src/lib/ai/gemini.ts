@@ -2,7 +2,7 @@ import { env } from "@/lib/env";
 import { buildExtractionPrompt, buildRepairPrompt, EXTRACTION_PROMPT_VERSION } from "@/lib/ai/prompts";
 import { conversationExtractionSchema, type ConversationExtraction } from "@/lib/ai/extraction-schema";
 
-const GEMINI_TEXT_MODEL = process.env.GOOGLE_AI_MODEL ?? "gemini-2.5-flash-lite";
+const GEMINI_TEXT_MODEL = process.env.GOOGLE_AI_MODEL ?? "gemini-3.5-flash-lite";
 
 type GeminiPart = { text: string } | { inline_data: { mime_type: string; data: string } };
 
