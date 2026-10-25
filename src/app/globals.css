@@ -2480,9 +2480,13 @@ a {
 .donna-message p { margin: 0; white-space: pre-wrap; line-height: 1.7; }
 .donna-error { width: min(100% - 48px, 820px); margin: 0 auto 10px; padding: 10px 12px; border: 1px solid rgba(191, 92, 72, 0.35); background: rgba(223, 134, 112, 0.12); color: #984c3d; font-size: 13px; }
 .donna-composer-wrap { width: min(100% - 48px, 820px); margin: 0 auto 28px; }
+.donna-composer-tools { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-top: 10px; }
+.donna-template-control { display: grid; gap: 4px; color: rgba(32, 35, 35, 0.5); font-size: 11px; }
+.donna-template-control select { min-height: 30px; border: 1px solid rgba(32, 35, 35, 0.2); background: transparent; color: inherit; font: inherit; }
 .donna-reference-row, .donna-reference-picker { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
 .donna-reference-row { margin-bottom: 7px; }
 .donna-reference-row button { padding: 5px 9px; background: rgba(223, 134, 112, 0.12); color: #984c3d; font-size: 11px; }
+.donna-reference-row button { display: inline-flex; align-items: center; gap: 5px; }
 .donna-composer { display: flex; align-items: flex-end; gap: 10px; padding: 11px 12px 11px 15px; border: 1px solid rgba(32, 35, 35, 0.2); border-radius: 14px; background: rgba(255, 255, 255, 0.7); }
 .donna-composer textarea { flex: 1; min-height: 44px; resize: none; border: 0; outline: 0; background: transparent; color: #202323; font: inherit; line-height: 1.5; }
 .donna-send-button { display: grid; place-items: center; width: 34px; height: 34px; border: 0; border-radius: 50%; background: #202323; color: #f7f1e5; cursor: pointer; }
@@ -2490,6 +2494,9 @@ a {
 .donna-reference-picker { margin-top: 10px; color: rgba(32, 35, 35, 0.44); font-size: 11px; }
 .donna-reference-picker button { padding: 4px 8px; font-size: 11px; }
 .donna-reference-picker button[data-selected="true"] { border-color: var(--vy-coral); color: #984c3d; }
+.donna-reference-picker button { display: inline-flex; align-items: center; gap: 4px; }
+.donna-file-input { display: none; }
+.donna-file-note { margin: 8px 0 0; color: rgba(32, 35, 35, 0.4); font-size: 10px; }
 
 /* Donna dashboard: Swiss International system — paper, ink, Klein Blue. */
 .donna-workspace {
@@ -2521,6 +2528,7 @@ a {
 .donna-composer { border-radius: 0; border-color: var(--donna-ink); background: var(--donna-paper); }
 .donna-send-button { border-radius: 0; background: var(--donna-accent); }
 .donna-reference-picker button[data-selected="true"] { border-color: var(--donna-accent); color: var(--donna-accent); }
+.donna-template-control select { border-color: rgba(10, 10, 10, 0.24); color: var(--donna-ink); }
 
 @media (max-width: 760px) {
   .donna-workspace { grid-template-columns: 1fr; }
@@ -5427,14 +5435,15 @@ body {
 
 @media (max-width: 760px) {
   .app-shell-clarity {
-    padding-top: 164px;
+    padding-top: 126px;
   }
 
   .home-topbar {
     top: 10px;
     width: min(100% - 20px, 1160px);
-    min-height: 132px;
-    grid-template-columns: 1fr;
+    min-height: 106px;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-rows: 58px 46px;
     gap: 0;
     padding: 0;
   }
@@ -5442,7 +5451,8 @@ body {
   .home-topbar[data-scrolled="true"] {
     width: min(100% - 24px, 420px);
     min-height: 54px;
-    grid-template-columns: auto 1fr auto;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-rows: 52px;
     gap: 0;
     padding: 0;
   }
@@ -5453,14 +5463,46 @@ body {
 
   .home-brand {
     min-height: 58px;
+    grid-column: 1;
+    grid-row: 1;
     border-right: 0;
-    border-bottom: 1px solid rgba(31, 33, 29, 0.1);
+    border-bottom: 0;
     padding: 0 14px;
   }
 
   .home-profile,
   .home-settings-nav {
     display: none;
+  }
+
+  .home-nav-center {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    min-width: 0;
+    border-top: 1px solid rgba(31, 33, 29, 0.1);
+  }
+
+  .home-topbar[data-scrolled="true"] .home-nav-center {
+    grid-column: 2;
+    grid-row: 1;
+    border-top: 0;
+  }
+
+  .home-nav-right {
+    grid-column: 2;
+    grid-row: 1;
+    width: auto;
+    height: auto;
+    justify-self: end;
+    border: 0;
+    padding: 6px 10px;
+  }
+
+  .home-topbar[data-scrolled="true"] .home-nav-right {
+    grid-column: 3;
+    grid-row: 1;
+    width: auto;
+    justify-self: end;
   }
 
   .home-topbar[data-scrolled="true"] .home-nav-right {
@@ -5473,20 +5515,19 @@ body {
   }
 
   .home-nav-center a {
-    min-width: 116px;
-  }
-
-  .home-nav-right {
-    height: auto;
-    justify-self: stretch;
-    border-left: 0;
-    border-top: 1px solid rgba(31, 33, 29, 0.1);
-    padding: 6px;
+    min-width: 104px;
+    padding-inline: 9px;
   }
 
   .home-sign-out {
-    width: 100%;
+    width: auto;
+    min-height: 34px;
+    padding-inline: 10px;
   }
+
+  .home-topbar[data-scrolled="true"] .home-sign-out { width: auto; }
+
+  .home-command-copy h1 { font-size: clamp(42px, 14vw, 62px); }
 }
 
 @media (max-width: 980px) {
@@ -6358,6 +6399,13 @@ body {
   margin: 0 auto;
   padding: 18px 0 96px;
   color: var(--vy-ink);
+}
+
+.home-command-surface [id="capture-controls"],
+.home-command-surface [id="action-queue"],
+.home-command-surface [id="memory-ledger"],
+.home-command-surface [id="control-strip"] {
+  scroll-margin-top: 116px;
 }
 
 .home-issue-bar {

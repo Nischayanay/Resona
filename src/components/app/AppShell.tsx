@@ -4,7 +4,7 @@ import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import { ReactNode, useEffect, useState } from "react";
 import type { Session, SupabaseClient } from "@supabase/supabase-js";
-import { House, LogOut, MessagesSquare, Settings, UserCircle } from "lucide-react";
+import { House, LogOut, MessageCircle, MessagesSquare, Mic, Settings, UserCircle } from "lucide-react";
 import { createSupabaseBrowserClient } from "@/lib/supabase/browser";
 
 const INACTIVITY_LIMIT_MS = 4 * 24 * 60 * 60 * 1000;
@@ -141,8 +141,10 @@ export function AppShell({ children }: { children: (session: Session) => ReactNo
   }
 
   const primaryNav = [
-    { href: "/home", label: "Desk", icon: House },
-    { href: "/conversations", label: "Ledger", icon: MessagesSquare },
+    { href: "/home", label: "Dashboard", icon: House },
+    { href: "/conversations", label: "Meetings", icon: MessagesSquare },
+    { href: "/chat", label: "Ask Donna", icon: MessageCircle },
+    { href: "/capture", label: "Capture", icon: Mic },
   ];
 
   function isActiveRoute(href: string) {
@@ -177,7 +179,7 @@ export function AppShell({ children }: { children: (session: Session) => ReactNo
         aria-hidden="true"
       />
       <header className="home-topbar" data-scrolled={hasScrolled}>
-        <Link className="home-brand" href="/home" aria-label="Vynora home" data-active={pathname === "/home"}>
+        <Link className="home-brand" href="/home" aria-label="Donna home" data-active={pathname === "/home"}>
           <span className="home-brand-mark-wrap">
             <img className="home-brand-mark" src="/resona-memory-orbit.svg" alt="" />
           </span>

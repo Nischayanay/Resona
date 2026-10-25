@@ -48,11 +48,11 @@ type SourceType = (typeof sourceTypes)[number];
 
 const sourceTypes = ["meeting", "event", "lecture", "casual", "mentorship", "other"] as const;
 
-const tabs: { id: HomeTab; label: string; eyebrow: string }[] = [
-  { id: "capture", label: "Capture", eyebrow: "Start" },
-  { id: "moves", label: "Next Moves", eyebrow: "Approve" },
-  { id: "memory", label: "Memory", eyebrow: "Return" },
-  { id: "control", label: "Control", eyebrow: "Trust" }
+const tabs: { id: HomeTab; label: string; eyebrow: string; target: string }[] = [
+  { id: "capture", label: "Capture", eyebrow: "Start", target: "capture-controls" },
+  { id: "moves", label: "Next Moves", eyebrow: "Approve", target: "action-queue" },
+  { id: "memory", label: "Memory", eyebrow: "Return", target: "memory-ledger" },
+  { id: "control", label: "Control", eyebrow: "Trust", target: "control-strip" }
 ];
 
 function defaultTitle() {
@@ -153,6 +153,15 @@ export function CaptureWorkspace({ session }: { session: Session }) {
   const actionables = toolActions.slice(0, 4);
   const visibleSessions = recentSessions.slice(0, 5);
   const rememberedCount = recentSessions.filter((item) => item.status === "completed").length;
+
+  function navigateToDashboardTab(tab: (typeof tabs)[number]) {
+    setActiveTab(tab.id);
+    const target = document.getElementById(tab.target);
+    if (target) {
+      const top = target.getBoundingClientRect().top + window.scrollY - 116;
+      window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
+    }
+  }
 
   useEffect(() => {
     void loadActionables();
@@ -395,8 +404,8 @@ export function CaptureWorkspace({ session }: { session: Session }) {
   return (
     <main className="home-command-surface">
       <div className="home-issue-bar" aria-label="Vynora home status">
-        <span>VY / HOME</span>
-        <span>MEMORY DESK</span>
+        <span>DONNA / CAPTURE</span>
+        <span>MEETING WORKSPACE</span>
         <span>
           <CircleDot size={12} aria-hidden="true" />
           LIVE
@@ -409,10 +418,10 @@ export function CaptureWorkspace({ session }: { session: Session }) {
           <h1 id="home-command-title">
             Bring the right <em>conversation</em> back.
           </h1>
-          <p>Record, upload, or return to the promises Vynora already noticed.</p>
+          <p>Record, upload, or return to the promises Donna already noticed.</p>
           <div className="home-hero-actions">
-            <Button type="button" onClick={() => setActiveTab("capture")}>
-              Start with one conversation
+            <Button type="button" onClick={() => navigateToDashboardTab(tabs[0])}>
+              Start a meeting
               <ArrowDown size={16} aria-hidden="true" />
             </Button>
             <Button asChild variant="outline">
@@ -436,17 +445,13 @@ export function CaptureWorkspace({ session }: { session: Session }) {
         </div>
       </section>
 
-      <div className="home-editorial-tabs" role="tablist" aria-label="Dashboard views">
+      <nav className="home-editorial-tabs" aria-label="Dashboard shortcuts">
         {tabs.map((tab, index) => (
           <button
-            aria-controls="home-tab-panel"
-            aria-selected={activeTab === tab.id}
             className="home-editorial-tab"
             data-active={activeTab === tab.id}
-            id={`home-tab-${tab.id}`}
             key={tab.id}
-            onClick={() => setActiveTab(tab.id)}
-            role="tab"
+            onClick={() => navigateToDashboardTab(tab)}
             type="button"
           >
             <span>0{index + 1}</span>
@@ -454,9 +459,9 @@ export function CaptureWorkspace({ session }: { session: Session }) {
             <small>{tab.eyebrow}</small>
           </button>
         ))}
-      </div>
+      </nav>
 
-      <section className="home-tab-panel" id="home-tab-panel" role="tabpanel" aria-labelledby={`home-tab-${activeTab}`}>
+      <section className="home-tab-panel" aria-live="polite">
         <div className="home-tab-panel-copy">
           <span>{tabs.find((tab) => tab.id === activeTab)?.eyebrow}</span>
           <p>
@@ -471,8 +476,8 @@ export function CaptureWorkspace({ session }: { session: Session }) {
       <section className="meeting-desk" aria-labelledby="meeting-desk-title">
         <div className="meeting-desk-copy">
           <p className="home-kicker">Meeting desk / 01</p>
-          <h2 id="meeting-desk-title">Run Resona beside Google Meet.</h2>
-          <p>Open your call in one tab and Resona capture in another. Tell everyone you are recording, then return here after the call to submit the audio for memory extraction.</p>
+          <h2 id="meeting-desk-title">Keep Donna beside Google Meet.</h2>
+          <p>Open your call in one tab and Donna in another. Tell everyone you are recording, then submit the audio here to get a transcript, meeting notes, and next steps.</p>
         </div>
         <div className="meeting-desk-actions">
           <label className="field">
@@ -483,15 +488,15 @@ export function CaptureWorkspace({ session }: { session: Session }) {
             <a className="button button-secondary" href={meetingUrl || "https://meet.google.com/"} target="_blank" rel="noreferrer">
               <Video size={16} aria-hidden="true" /> Open Google Meet <ExternalLink size={14} aria-hidden="true" />
             </a>
-            <Link className="button button-primary" href="/meeting" target="_blank">
-              <Mic size={16} aria-hidden="true" /> Open Resona capture <ExternalLink size={14} aria-hidden="true" />
+            <Link className="button button-primary" href="#capture-controls">
+              <Mic size={16} aria-hidden="true" /> Open Donna capture <ArrowDown size={14} aria-hidden="true" />
             </Link>
           </div>
         </div>
       </section>
 
       <div className="home-command-desk">
-        <section className="home-panel home-capture-command" aria-labelledby="capture-title">
+        <section className="home-panel home-capture-command" id="capture-controls" aria-labelledby="capture-title">
           <div className="home-panel-heading">
             <p className="home-kicker">Capture</p>
             <h2 id="capture-title">Start with one conversation.</h2>
@@ -596,7 +601,7 @@ export function CaptureWorkspace({ session }: { session: Session }) {
 
 function ActionQueue({ items, isLoading, error }: { items: ToolAction[]; isLoading: boolean; error: string | null }) {
   return (
-    <section className="home-panel home-action-queue" aria-labelledby="action-queue-title">
+    <section className="home-panel home-action-queue" id="action-queue" aria-labelledby="action-queue-title">
       <div className="home-panel-heading">
         <p className="home-kicker">{isLoading ? "Refreshing" : "Next moves"}</p>
         <h2 id="action-queue-title">Nothing happens until you say yes.</h2>
@@ -612,7 +617,7 @@ function ActionQueue({ items, isLoading, error }: { items: ToolAction[]; isLoadi
         {items.length === 0 ? (
           <div className="home-empty-state">
             <CheckCircle2 size={18} aria-hidden="true" />
-            <span>No next moves waiting. Capture a conversation and Vynora will surface what needs your approval.</span>
+            <span>No next moves waiting. Capture a conversation and Donna will surface what needs your approval.</span>
           </div>
         ) : (
           items.map((item, index) => {
@@ -651,7 +656,7 @@ function RecentMemoryLedger({
   totalCount: number;
 }) {
   return (
-    <section className="home-memory-ledger" aria-labelledby="memory-ledger-title">
+    <section className="home-memory-ledger" id="memory-ledger" aria-labelledby="memory-ledger-title">
       <div className="home-ledger-heading">
         <div>
           <p className="home-kicker">Memory</p>
@@ -689,7 +694,7 @@ function RecentMemoryLedger({
             <span className="home-ledger-number">0{index + 1}</span>
             <div className="home-ledger-main">
               <h3>{item.title}</h3>
-              <p>{item.summary ?? "Vynora is still arranging what matters from this conversation."}</p>
+              <p>{item.summary ?? "Donna is still arranging what matters from this conversation."}</p>
             </div>
             <div className="home-ledger-meta">
               <span data-status={item.status}>{statusCopy(item.status)}</span>
@@ -704,7 +709,7 @@ function RecentMemoryLedger({
 
 function ControlStrip({ userEmail }: { userEmail: string }) {
   return (
-    <section className="home-control-strip" aria-labelledby="control-title">
+    <section className="home-control-strip" id="control-strip" aria-labelledby="control-title">
       <div>
         <p className="home-kicker">Control</p>
         <h2 id="control-title">Your memory stays reviewable.</h2>

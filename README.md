@@ -49,6 +49,8 @@ flowchart LR
 - Memory graph/profile updates across conversations.
 - Approval-based Google Calendar action suggestions.
 - Privacy controls for memory export and deletion.
+- Donna chat grounded in selected meeting transcripts, extracted actions/follow-ups, and per-message text references.
+- Chat response templates for meeting briefs, follow-up drafts, decision logs, and brainstorming.
 
 ## Six Intelligence Engines
 
@@ -102,7 +104,7 @@ The integration point is designed around:
 
 1. Copy `.env.example` to `.env.local`.
 2. Fill Supabase, Trigger.dev, Google OAuth, Google AI, optional MongoDB / Google Cloud Agent Builder, and `ENCRYPTION_KEY` values locally.
-3. Apply the Supabase migrations in order, including `20260511072226_resona_backend_mvp.sql` and `20260514073454_six_engine_intelligence.sql`.
+3. Apply the Supabase migrations in order, including `20260511072226_resona_backend_mvp.sql`, `20260514073454_six_engine_intelligence.sql`, and `20261024090000_donna_chat.sql`.
 4. Install dependencies:
 
 ```bash
@@ -115,6 +117,8 @@ npm install
 npm run dev
 npm run trigger:dev
 ```
+
+Donna chat needs the `20261024090000_donna_chat.sql` migration and `GOOGLE_AI_API_KEY`; chat answers use the configured Gemini model. To ask about meeting content, select one or more conversations in the chat context picker. Donna then grounds the answer in their transcripts and extracted summaries, action items, follow-ups, and memory facts. Response templates include meeting brief, follow-up draft, decision log, and brainstorm. You can also attach up to four plain-text, Markdown, CSV, JSON, or LOG files per message (25 KB each, 50,000 characters total); their contents are sent for that request only and are not persisted with chat history. Local development uses the real Gemini integration too, so missing model configuration or provider failures are shown as errors rather than simulated answers.
 
 ## Environment Variables
 
