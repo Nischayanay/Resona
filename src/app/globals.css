@@ -2462,8 +2462,6 @@ a {
 .donna-chat { min-width: 0; display: grid; grid-template-rows: auto minmax(0, 1fr) auto; min-height: calc(100svh - 74px); }
 .donna-chat-header { display: flex; align-items: center; justify-content: space-between; padding: 30px 5vw 22px; border-bottom: 1px solid rgba(32, 35, 35, 0.12); }
 .donna-chat-header h2 { margin: 3px 0 0; font-size: 25px; letter-spacing: -0.04em; }
-.donna-status { display: inline-flex; align-items: center; gap: 8px; color: rgba(32, 35, 35, 0.52); font-size: 12px; }
-.donna-status i { width: 7px; height: 7px; border-radius: 50%; background: #6f9785; }
 .donna-message-scroll { width: min(100%, 820px); min-height: 0; margin: 0 auto; padding: 34px 24px; overflow: auto; display: flex; flex-direction: column; }
 .donna-empty { display: grid; justify-items: center; max-width: 620px; margin: auto; padding: 36px 0 72px; color: rgba(32, 35, 35, 0.54); text-align: center; }
 .donna-empty h3 { margin: 15px 0 8px; color: #202323; font-size: clamp(32px, 4vw, 54px); letter-spacing: -0.06em; line-height: 0.98; }
@@ -2519,7 +2517,6 @@ a {
 .donna-thread[data-active="true"] { border-left-color: var(--donna-accent); background: var(--donna-accent); color: #fff; }
 .donna-sidebar-footer { border-color: rgba(10, 10, 10, 0.22); }
 .donna-chat-header { border-color: rgba(10, 10, 10, 0.22); }
-.donna-status i { border-radius: 0; background: var(--donna-accent); }
 .donna-message-user { border-radius: 0; background: var(--donna-accent); color: #fff; }
 .donna-suggestions button,
 .donna-reference-picker button,

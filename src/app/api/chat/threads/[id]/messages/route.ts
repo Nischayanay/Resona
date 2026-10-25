@@ -4,7 +4,6 @@ import { requireUser } from "@/lib/auth/server";
 import { answerWithGemini, parseGeminiJson } from "@/lib/ai/gemini";
 import { badRequest, json, notFound, serverError, unauthorized } from "@/lib/http";
 import { createSupabaseServiceClient } from "@/lib/supabase/client";
-import { devMessages, devThreads } from "@/lib/chat/dev-store";
 import {
   buildDonnaPrompt,
   chatTemplateSchema,
@@ -39,7 +38,6 @@ const messageSchema = z.object({
     context.addIssue({ code: z.ZodIssueCode.custom, message: "Select no more than eight conversations.", path: ["references"] });
   }
 });
-const DEV_AUTH_BYPASS = process.env.DEV_AUTH_BYPASS === "true" && process.env.NODE_ENV !== "production";
 
 function chatSchemaError(error: unknown) {
   return error && typeof error === "object" && "code" in error && (error as { code?: string }).code === "42P01";
@@ -49,10 +47,6 @@ export async function GET(request: NextRequest, routeContext: { params: Promise<
   try {
     const user = await requireUser(request);
     const { id } = await routeContext.params;
-    if (DEV_AUTH_BYPASS && user.id === "local-dev-user") {
-      if (!devThreads.some((thread) => thread.id === id)) return notFound("Chat");
-      return json({ messages: devMessages.get(id) ?? [] });
-    }
     const supabase = createSupabaseServiceClient();
     const { data, error } = await supabase.from("chat_messages").select("id,role,content,references_json,created_at").eq("user_id", user.id).eq("thread_id", id).order("created_at", { ascending: true });
     if (error) throw error;
@@ -77,27 +71,6 @@ export async function POST(request: NextRequest, routeContext: { params: Promise
     });
     const conversationIds = body.references.filter((reference) => reference.type === "conversation").map((reference) => reference.id);
     const savedReferences = body.references.map(({ type, id: referenceId, label }) => ({ type, id: referenceId, label }));
-
-    if (DEV_AUTH_BYPASS && user.id === "local-dev-user") {
-      const thread = devThreads.find((item) => item.id === id);
-      if (!thread) return notFound("Chat");
-      const current = devMessages.get(id) ?? [];
-      const raw = await answerWithGemini(buildDonnaPrompt({
-        content: body.content,
-        template: body.template,
-        history: current.slice(-12).map(({ role, content }) => ({ role, content })),
-        context: { reference_files: fileReferences.map(({ label, content }) => ({ label, content })), conversations: [] },
-        skills
-      }));
-      const parsed = donnaAnswerSchema.parse(parseGeminiJson(raw));
-      const createdAt = new Date().toISOString();
-      const userMessage = { id: crypto.randomUUID(), role: "user" as const, content: body.content, references_json: savedReferences, created_at: createdAt };
-      const assistantMessage = { id: crypto.randomUUID(), role: "assistant" as const, content: parsed.answer, references_json: [], created_at: new Date().toISOString() };
-      devMessages.set(id, [...current, userMessage, assistantMessage]);
-      if (thread.title === "New chat") thread.title = body.content.slice(0, 52);
-      thread.updated_at = new Date().toISOString();
-      return json({ messages: [userMessage, assistantMessage], actions: [], source_session_ids: [] });
-    }
 
     const supabase = createSupabaseServiceClient();
     const { data: thread, error: threadError } = await supabase.from("chat_threads").select("id,title").eq("id", id).eq("user_id", user.id).maybeSingle();
